@@ -133,6 +133,14 @@ void free_picture_file(Picture *p);
 int check_completion(void);
 
 /*=============================================================================
+ * calculate_preview_scale
+ *
+ * In map and replay modes, determine how much we should scale up the 
+ * rendered image to make it take up a reasonable amount of the screen.
+ *============================================================================*/
+void calculate_preview_scale(void);
+
+/*=============================================================================
  * int_handler
  *
  * An interrupt handler called 30 times per second.  Not currently used for

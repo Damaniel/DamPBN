@@ -77,8 +77,8 @@ int g_load_new_file;
 int g_replay_increment;
 int g_replay_total;
 
-int g_replay_x;
-int g_replay_y;
+int g_preview_x;
+int g_preview_y;
 
 int g_replay_first_time;
 
@@ -535,6 +535,28 @@ int check_completion(void) {
   if (g_correct_count >= g_total_picture_squares)
     return 1;
   return 0;
+}
+
+/*=============================================================================
+ * calculate_preview_scale
+ *============================================================================*/
+void calculate_preview_scale(void) {
+        /* Calculate the replay pixel scale */
+      g_preview_scale = 1;
+      if(g_picture->w >= g_picture->h) {
+        /* The picture is wider than it is tall, or it's square */
+        if (g_picture->w < 160)
+          g_preview_scale = 160 / g_picture->w;
+        
+      } else {
+        /* The picture is taller than it is wide */
+        if (g_picture->h < 100)
+          g_preview_scale = 100 / g_picture->h;
+      }
+
+      /* Calculate the start position of the replay */
+      g_preview_x = 160 - (g_picture->w * g_preview_scale / 2);
+      g_preview_y = 100 - (g_picture->h * g_preview_scale / 2);
 }
 
 /*=============================================================================

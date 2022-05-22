@@ -94,7 +94,7 @@ int g_draw_style;
 
 int g_help_page;
 
-int g_replay_scale;
+int g_preview_scale;
 
 BITMAP *g_logo;
 
@@ -535,12 +535,12 @@ void render_menu_buttons(BITMAP *dest) {
  *============================================================================*/
 void render_map_screen(BITMAP *dest, RenderComponents c) {
     int i, j, x_pos, y_pos, color, actual_color, row_1_width,
-        row_2_width, exit_width, center, box_width;
+        row_2_width, exit_width, center, box_width, pixel_x, pixel_y;
     char text[40], text2[40];
 
     if(c.render_map) {
-      x_pos = (SCREEN_W - g_picture->w) / 2;
-      y_pos = (SCREEN_H - g_picture->h) / 2;
+      x_pos = (SCREEN_W - (g_picture->w * g_preview_scale)) / 2;
+      y_pos = (SCREEN_H - (g_picture->h * g_preview_scale)) / 2;
 
       /* Clear the map area */
       clear_to_color(dest, 194);
@@ -550,25 +550,26 @@ void render_map_screen(BITMAP *dest, RenderComponents c) {
         for(i=0; i<g_picture->w; i++) {
           color = g_picture->pic_squares[j * g_picture->w + i].fill_value;
           actual_color = g_picture->pic_squares[j * g_picture->w + i].pal_entry;
+          pixel_x = x_pos + (i * g_preview_scale);
+          pixel_y = y_pos + (j * g_preview_scale);
           if (color != 0 && color == actual_color) {
-            putpixel(dest, x_pos + i, y_pos + j, color - 1);
+            rectfill(dest, pixel_x, pixel_y, pixel_x + g_preview_scale -1, pixel_y + g_preview_scale - 1, color - 1);
           }
           else {
-            putpixel(dest, x_pos + i, y_pos + j, 208);
+            rectfill(dest, pixel_x, pixel_y, pixel_x + g_preview_scale -1, pixel_y + g_preview_scale - 1, 208);            
           }
         }
       }
 
       /* If the picture is smaller than the screen, draw a border */
-      if(g_picture->w < SCREEN_W && g_picture->h < SCREEN_H) {
+      if((g_picture->w * g_preview_scale) < SCREEN_W && (g_picture->h * g_preview_scale) < SCREEN_H) {
         rect(dest, x_pos - 1, y_pos - 1,
-            x_pos + g_picture->w, y_pos + g_picture->h, 203);
+            x_pos + (g_picture->w * g_preview_scale), y_pos + (g_picture->h * g_preview_scale), 203);
       }
 
       /* Display the map text if requested */
       if(g_show_map_text == 1) {
         center = SCREEN_W / 2;
-
         sprintf(text, "Click or press C to toggle this message");
         sprintf(text2, "Press Exit button or M to exit map mode");
         row_1_width = get_prop_text_width(text);
@@ -1154,9 +1155,9 @@ void render_replay_state(BITMAP *dest, RenderComponents c) {
   if(g_replay_first_time == 1) {
     clear_to_color(dest, 194);
     g_replay_first_time = 0;
-    if (g_replay_x != 0 && g_replay_y !=0) {
-      rectfill(dest, g_replay_x, g_replay_y, g_replay_x + g_picture->w * g_replay_scale, g_replay_y + g_picture->h * g_replay_scale, 208);
-      rect(dest, g_replay_x -1 , g_replay_y - 1, g_replay_x + g_picture->w * g_replay_scale, g_replay_y + g_picture->h * g_replay_scale, 205);
+    if (g_preview_x != 0 && g_preview_y !=0) {
+      rectfill(dest, g_preview_x, g_preview_y, g_preview_x + g_picture->w * g_preview_scale, g_preview_y + g_picture->h * g_preview_scale, 208);
+      rect(dest, g_preview_x -1 , g_preview_y - 1, g_preview_x + g_picture->w * g_preview_scale, g_preview_y + g_picture->h * g_preview_scale, 205);
     }
   }
 
@@ -1165,9 +1166,9 @@ void render_replay_state(BITMAP *dest, RenderComponents c) {
       color = g_picture->pic_squares[g_picture->draw_order[i].y *
                                      g_picture->w +
                                      g_picture->draw_order[i].x].pal_entry - 1;
-      x = g_replay_x + (g_picture->draw_order[i].x * g_replay_scale);
-      y = g_replay_y + (g_picture->draw_order[i].y * g_replay_scale);
-      rectfill(dest, x, y, x+g_replay_scale-1, y+g_replay_scale-1, color);
+      x = g_preview_x + (g_picture->draw_order[i].x * g_preview_scale);
+      y = g_preview_y + (g_picture->draw_order[i].y * g_preview_scale);
+      rectfill(dest, x, y, x+g_preview_scale-1, y+g_preview_scale-1, color);
     }
   }
   draw_sprite(dest, g_finished_dialog, FINISHED_X, FINISHED_Y);
