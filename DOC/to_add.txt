@@ -1,27 +1,8 @@
-Next things to do
+Things to fix:
 
-- Refactor some of the code 
-   - Try changing rendering to a layer based thing, where different states
-     can specify layers of graphics to draw, instead of the weird things that
-     happen in the state/render code right now 
-
-Add 'or ESC' text to the map screen
-
-In the load picture screen invoked from the title menu, highlight the last 
- worked on picture (likely based on the time of the most recently accessed 
- progress file)
-
-Completed picture replay screen
-
-Add a MIDI player that cycles through MIDI songs in a MUSIC folder
-  - Add the folder
-  - Add the player
-  - Add new keys for the player
-     - Q / W - previous/next track
-     - E - Play / stop music
-     - , / . - volume down / up
-  - Add a popup message (where the 'Saving' message goes) with the current song filename
-  
-Logo -> Title -> Load Image dialog-> Game -> Complete |
-          ^                                           |
-          --------------------------------------------|
+- Make 'image complete' message one line long instead of 2
+- Make mistake X color light or dark depending on average intensity of color
+- Ensure that progress files hold 100% completion instead of saving one square short
+- Add the ability ('D' key) to remove progress for a highlighted file
+- Try making the background color for the replay and/or map screen black
+- Add image scaling to the map screen (like the replay screen)
