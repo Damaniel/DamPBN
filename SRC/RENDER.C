@@ -1237,8 +1237,8 @@ void update_overview_area(void) {
 
   /* I and J represent a block of 4*4 pixels */
   clear_to_color(g_overview_box, 192);
-  for(i=0; i< g_picture->w / OVERVIEW_BLOCK_SIZE + 1; i++) {
-    for(j=0; j< g_picture->h / OVERVIEW_BLOCK_SIZE + 1; j++) {
+  for(i=0; i< g_picture->w / OVERVIEW_BLOCK_SIZE ; i++) {
+    for(j=0; j< g_picture->h / OVERVIEW_BLOCK_SIZE ; j++) {
       update_overview_area_at(i, j);
     }
   }
