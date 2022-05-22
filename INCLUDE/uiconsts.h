@@ -282,8 +282,8 @@
 #define OVERVIEW_X                 224
 #define OVERVIEW_Y                  10
 
-#define FINISHED_X                 70
-#define FINISHED_Y                 170
+#define FINISHED_X                 0
+#define FINISHED_Y                 185
 
 #endif 
  

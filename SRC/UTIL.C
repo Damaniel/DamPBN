@@ -538,7 +538,7 @@ int check_completion(void) {
 }
 
 /*=============================================================================
- * calculate_preview_scale
+ * 
  *============================================================================*/
 void calculate_preview_scale(void) {
         /* Calculate the replay pixel scale */
