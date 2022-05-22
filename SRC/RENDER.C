@@ -113,7 +113,8 @@ BITMAP *g_large_pal;
 BITMAP *g_large_diamonds;
 BITMAP *g_large_crosses;
 BITMAP *g_pal_cursor;
-BITMAP *g_wrong;
+BITMAP *g_wrong_light;
+BITMAP *g_wrong_dark;
 BITMAP *g_page_buttons;
 BITMAP *g_main_buttons;
 BITMAP *g_prop_font;
@@ -350,9 +351,10 @@ void render_palette_item_at(BITMAP *dest, int palette_index, int change_page) {
 void render_main_area_square_at(BITMAP *dest, int tl_x, int tl_y,
                                int off_x, int off_y) {
   ColorSquare c;
-  int pal_offset, color_offset;
+  int pal_offset, color_offset, avg_col;
 
   BITMAP *draw_style;
+  RGB rgb;
 
   /* Pick the draw style */
   switch (g_draw_style) {
@@ -405,9 +407,18 @@ void render_main_area_square_at(BITMAP *dest, int tl_x, int tl_y,
         NUMBER_BOX_HEIGHT);
     /* Is it marked with the correct color?  If not, draw an X on it */
     if (!c.correct) {
-      draw_sprite(dest, g_wrong,
-                  DRAW_AREA_X + (off_x * NUMBER_BOX_RENDER_X_OFFSET),
-                  DRAW_AREA_Y + (off_y * NUMBER_BOX_RENDER_Y_OFFSET));
+      get_color(color_offset-1, &rgb);
+      avg_col = ((rgb.r + rgb.g + rgb.b) / 3);
+      if (avg_col < 32) {
+        draw_sprite(dest, g_wrong_light,
+                    DRAW_AREA_X + (off_x * NUMBER_BOX_RENDER_X_OFFSET),
+                    DRAW_AREA_Y + (off_y * NUMBER_BOX_RENDER_Y_OFFSET));
+      }
+      else {
+        draw_sprite(dest, g_wrong_dark,
+                    DRAW_AREA_X + (off_x * NUMBER_BOX_RENDER_X_OFFSET),
+                    DRAW_AREA_Y + (off_y * NUMBER_BOX_RENDER_Y_OFFSET));        
+      }
     }
   }
 }
@@ -1328,7 +1339,8 @@ int load_graphics(void) {
   g_large_diamonds = (BITMAP *)g_res[RES_LG_DIA].dat;
   g_large_crosses = (BITMAP *)g_res[RES_LG_CROSS].dat;
   g_pal_cursor = (BITMAP *)g_res[RES_PALCURS].dat;
-  g_wrong = (BITMAP *)g_res[RES_WRONG].dat;
+  g_wrong_light = (BITMAP *)g_res[RES_WRONG_L].dat;
+  g_wrong_dark = (BITMAP *)g_res[RES_WRONG_D].dat;
   g_page_buttons = (BITMAP *)g_res[RES_PAGEBUTN].dat;
   g_prop_font = (BITMAP *)g_res[RES_PROPFONT].dat;
   g_main_buttons = (BITMAP *)g_res[RES_BUTTONS].dat;

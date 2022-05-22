@@ -1,6 +1,6 @@
 /* Allegro datafile object indexes, produced by grabber v3.12 */
-/* Datafile: c:\projects\dos_games\dampbn\res\dampbn.dat */
-/* Date: Fri May 20 17:55:56 2022 */
+/* Datafile: c:\projects\dampbn\res\dampbn.dat */
+/* Date: Sun May 22 10:43:42 2022 */
 /* Do not hand edit! */
 
 #define RES_BG_LOWER                     0        /* BMP  */
@@ -29,6 +29,7 @@
 #define RES_SAVING                       23       /* BMP  */
 #define RES_SM_PAL                       24       /* BMP  */
 #define RES_TITLEBOX                     25       /* BMP  */
-#define RES_WRONG                        26       /* BMP  */
-#define RES_COUNT                        27
+#define RES_WRONG_D                      26       /* BMP  */
+#define RES_WRONG_L                      27       /* BMP  */
+#define RES_COUNT                        28
 

@@ -1,6 +1,5 @@
 Things to fix:
 
-- Make 'image complete' message one line long instead of 2
-- Make mistake X color light or dark depending on average intensity of color
 - Ensure that progress files hold 100% completion instead of saving one square short
 - Add the ability ('D' key) to remove progress for a highlighted file
+- Optimize draw calls.  For example, moving the cursor one space and marking an incorrect square redraws the play area 3 times
