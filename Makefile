@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-O2 -Wall -fgnu89-inline
 DEPS=include/dampbn.h include/palette.h include/uiconsts.h include/render.h include/input.h include/util.h include/globals.h
-LIBS=-lalleg
+LIBS=-lalleg -lemu
 
 all: dampbn
 
