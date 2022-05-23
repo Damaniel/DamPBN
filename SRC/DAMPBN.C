@@ -246,6 +246,7 @@ void print_mem_free(void) {
  *============================================================================*/
 int main(int argc, char *argv[]) {
 
+  printf("Loading, please wait...");
   allegro_init();
   install_keyboard();
   install_timer();
@@ -255,8 +256,6 @@ int main(int argc, char *argv[]) {
   install_int(int_handler, 1000/FRAME_RATE);
 
   srand(time(NULL));
-
-  set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
 
   buffer = create_bitmap(320, 200);
 
@@ -271,6 +270,8 @@ int main(int argc, char *argv[]) {
 
   load_graphics();
   init_defaults();
+
+  set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
 
   set_mouse_sprite(g_mouse_cursor);
 
