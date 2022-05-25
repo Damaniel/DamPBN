@@ -551,6 +551,7 @@ void process_style_press(void) {
                          STYLE_BUTTON_X  + MENU_BUTTON_WIDTH,
                          STYLE_BUTTON_Y  + MENU_BUTTON_HEIGHT,
                          1)) {
+    g_highlight_style_button = 1;                              
     update = 1;
   }
     /*-------------------------------------------------------------------------
@@ -560,10 +561,13 @@ void process_style_press(void) {
     if(!g_keypress_lockout[KEY_T]) {
       update = 1;        
       g_keypress_lockout[KEY_T] = 1;      
+      g_highlight_style_button = 1;      
     }
   }
   if(!key[KEY_T] && g_keypress_lockout[KEY_T]) {
     g_keypress_lockout[KEY_T] = 0;
+    g_highlight_style_button = 0;
+    g_components.render_buttons = 1;    
   }
 
   if(update) {
@@ -574,7 +578,7 @@ void process_style_press(void) {
     g_components.render_main_area_squares = 1;
     g_components.render_draw_cursor = 1;
     g_components.render_buttons = 1;
-    g_highlight_style_button = 1;
+
   }
 }
 
