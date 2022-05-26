@@ -218,6 +218,14 @@
 #define LOAD_FILE_PROGRESS_TEXT_X    (LOAD_DIALOG_X) + 166    
 #define LOAD_FILE_PROGRESS_TEXT_Y    (LOAD_DIALOG_Y) + 102
 
+#define LOAD_FILE_EXTRA_X             59
+#define LOAD_FILE_EXTRA_Y            166
+
+#define LOAD_FILE_EXTRA_WIDTH        201
+#define LOAD_FILE_EXTRA_HEIGHT         8
+
+#define LOAD_FILE_EXTRA_CENTER_X (LOAD_FILE_EXTRA_X + (LOAD_FILE_EXTRA_WIDTH / 2))
+
 /* Pick the button set depending on whether a button  is pressed or not */
 #define BUTTON_DEFAULT_OFFSET      0
 #define BUTTON_PRESSED_OFFSET      22

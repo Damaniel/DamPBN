@@ -853,8 +853,11 @@ void process_main_area_keyboard_input(void) {
           g_picture->pic_squares[square_offset].correct = 1;
           /* Check to see if we're done with the picture */
           done = check_completion();
-          if (done)
-           change_state(STATE_FINISHED, STATE_GAME);
+          if (done) {
+            /* Save the file to write out the complete progress */
+            save_progress_file(g_picture);
+            change_state(STATE_FINISHED, STATE_GAME);
+          }
         }                     
      }
      clear_render_components(&g_components);
@@ -944,8 +947,11 @@ void process_main_area_mouse_input(void) {
           g_picture->pic_squares[square_offset].correct = 1;
           /* Check to see if we're done with the picture */
           done = check_completion();
-          if (done)
-           change_state(STATE_FINISHED, STATE_GAME);
+          if (done) {
+            /* Save the file to write out the complete progress */
+            save_progress_file(g_picture);            
+            change_state(STATE_FINISHED, STATE_GAME);
+          }
         }                     
       }      
       /* If in erase mode, erase the space if it's drawn incorrectly */      
@@ -1112,10 +1118,14 @@ void input_state_load_dialog(void) {
       if (!g_keypress_lockout[KEY_ENTER]) {
         /* Only load an image if the image side is highlighted */
         if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
-          strncpy(g_picture_file_basename, 
-                  g_pic_items[g_load_picture_index].name, 8);
-          g_load_new_file = 1;
-          change_state(STATE_GAME, STATE_LOAD_DIALOG);
+          /* If the image isn't complete, then load it */
+          if (g_pic_items[g_load_picture_index].progress < 
+              (g_pic_items[g_load_picture_index].width *  g_pic_items[g_load_picture_index].height)) {
+            strncpy(g_picture_file_basename, 
+                    g_pic_items[g_load_picture_index].name, 8);
+            g_load_new_file = 1;
+            change_state(STATE_GAME, STATE_LOAD_DIALOG);
+          }
         }
         g_keypress_lockout[KEY_ENTER] = 1;          
       }

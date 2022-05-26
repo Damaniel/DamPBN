@@ -973,6 +973,7 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
   int collection_start_offset, collection_end_offset;
   int i;
   char text[30];
+  char extra_message[50];
 
   /* If the load dialog was invoked from the title screen, keep drawing
      the title screen parts */
@@ -1129,16 +1130,31 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
              LOAD_FILE_PROGRESS_X + LOAD_FILE_PROGRESS_WIDTH - 1,
              LOAD_FILE_PROGRESS_Y + LOAD_FILE_PROGRESS_HEIGHT - 1,
              208);
-    if(g_pic_items[g_load_picture_index].progress == 0)
+    if(g_pic_items[g_load_picture_index].progress == 0) {
       sprintf(text, "None yet");
-    else
+      sprintf(extra_message, " ");
+    }
+    else if (g_pic_items[g_load_picture_index].progress >= 
+             g_pic_items[g_load_picture_index].width * 
+             g_pic_items[g_load_picture_index].height) {
+      sprintf(text, "Completed!");
+      sprintf(extra_message, "R to reset progress, P to replay");
+    }
+    else {
       sprintf(text, "%d/%d", g_pic_items[g_load_picture_index].progress,
               g_pic_items[g_load_picture_index].width *
               g_pic_items[g_load_picture_index].height);
+      sprintf(extra_message, "R to reset progress");
+    }
 
     render_centered_prop_text(dest, text,
                               LOAD_FILE_PROGRESS_TEXT_X,
                               LOAD_FILE_PROGRESS_TEXT_Y);
+    rectfill(dest, LOAD_FILE_EXTRA_X, LOAD_FILE_EXTRA_Y, 
+             LOAD_FILE_EXTRA_X + LOAD_FILE_EXTRA_WIDTH - 1,
+             LOAD_FILE_EXTRA_Y + LOAD_FILE_EXTRA_HEIGHT - 1,
+             194);
+    render_centered_prop_text(dest, extra_message, LOAD_FILE_EXTRA_CENTER_X, LOAD_FILE_EXTRA_Y);
   }
 }
 
