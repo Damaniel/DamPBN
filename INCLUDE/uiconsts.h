@@ -226,6 +226,9 @@
 
 #define LOAD_FILE_EXTRA_CENTER_X (LOAD_FILE_EXTRA_X + (LOAD_FILE_EXTRA_WIDTH / 2))
 
+#define LOAD_RESET_CONFIRM_X          121
+#define LOAD_RESET_CONFIRM_Y           88
+
 /* Pick the button set depending on whether a button  is pressed or not */
 #define BUTTON_DEFAULT_OFFSET      0
 #define BUTTON_PRESSED_OFFSET      22

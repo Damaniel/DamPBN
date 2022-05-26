@@ -128,6 +128,7 @@ extern BITMAP *g_mouse_cursor;
 extern BITMAP *g_help_previous;
 extern BITMAP *g_help_next;
 extern BITMAP *g_help_exit;
+extern BITMAP *g_sure;
 
 /* The parts of the screen to render */
 extern RenderComponents g_components;
@@ -309,5 +310,11 @@ extern int g_old_mouse_y;
 /* A priority flag, used to determine whether the keyboard or mouse has
    priority in terms of moving the cursor or drawing/erasing squares */
 extern int g_keyboard_has_priority;
+
+/* should the confirm message be displayed? */
+extern int g_load_action_confirm;
+
+/* Check to see if confirmation for an action was made. */
+extern int g_are_you_sure;
 
 #endif

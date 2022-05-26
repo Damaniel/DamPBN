@@ -128,6 +128,7 @@ BITMAP *g_mouse_cursor;
 BITMAP *g_help_next;
 BITMAP *g_help_previous;
 BITMAP *g_help_exit;
+BITMAP *g_sure;
 
 RenderComponents g_components;
 TitleAnimation g_title_anim;
@@ -1156,6 +1157,10 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
              194);
     render_centered_prop_text(dest, extra_message, LOAD_FILE_EXTRA_CENTER_X, LOAD_FILE_EXTRA_Y);
   }
+
+  if (g_load_action_confirm) {
+    draw_sprite(dest, g_sure, LOAD_RESET_CONFIRM_X, LOAD_RESET_CONFIRM_Y);
+  }
 }
 
 /*=============================================================================
@@ -1370,6 +1375,7 @@ int load_graphics(void) {
   g_help_previous = (BITMAP *)g_res[RES_HELP_PREVIOUS].dat;
   g_help_next = (BITMAP *)g_res[RES_HELP_NEXT].dat;
   g_help_exit = (BITMAP *)g_res[RES_HELP_EXIT].dat;
+  g_sure = (BITMAP *)g_res[RES_ARE_YOU_SURE].dat;
 
   /* We only want to create this once, so we check for null before we
      create it */

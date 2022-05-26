@@ -1165,6 +1165,47 @@ void input_state_load_dialog(void) {
       g_keypress_lockout[KEY_ESC] = 0;
     }   
 
+    /* Y confirms the progress reset, but only if the dialog is displayed */
+    if (key[KEY_Y]) {
+      if (!g_keypress_lockout[KEY_Y]) {
+        if (g_load_action_confirm) {
+          g_are_you_sure = 1;
+        }
+        g_keypress_lockout[KEY_Y] = 1;          
+      }
+    }
+    if (!key[KEY_Y] && g_keypress_lockout[KEY_Y]) {
+      g_keypress_lockout[KEY_Y] = 0;
+    }  
+
+    /* N cancels the progress reset, but only if the dialog is displayed */
+    if (key[KEY_N]) {
+      if (!g_keypress_lockout[KEY_N]) {
+        if (g_load_action_confirm) {
+          g_load_action_confirm = 0;
+        }
+        g_keypress_lockout[KEY_N] = 1;          
+      }
+    }
+    if (!key[KEY_N] && g_keypress_lockout[KEY_N]) {
+      g_keypress_lockout[KEY_N] = 0;
+    } 
+
+    /* R brings up the reset progress confirm dialog */
+    if (key[KEY_R]) {
+      if (!g_keypress_lockout[KEY_R]) {
+        /* But only if there's progress */
+        if (g_pic_items[g_load_picture_index].progress > 0) {
+          g_load_action_confirm = 1;
+          g_are_you_sure = 0;
+        }
+        g_keypress_lockout[KEY_R] = 1;          
+      }
+    }
+    if (!key[KEY_R] && g_keypress_lockout[KEY_R]) {
+      g_keypress_lockout[KEY_R] = 0;
+    } 
+
     /* Need the following */
     /* index - the actual value of the picture to load */
     /* offset - the index of the top position on the dialog */
