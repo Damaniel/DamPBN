@@ -633,9 +633,7 @@ void process_load_press(void) {
    * L - load a progress file
    *------------------------------------------------------------------------*/ 
   if (key[KEY_L]) {
-    if(!g_keypress_lockout[KEY_L]) {
-        g_highlight_load_button = 1;       
-        g_components.render_buttons = 1;                     
+    if(!g_keypress_lockout[KEY_L]) {                 
         g_keypress_lockout[KEY_L] = 1;      
         change_state(STATE_LOAD_DIALOG, STATE_GAME);
     }

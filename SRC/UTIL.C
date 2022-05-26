@@ -372,6 +372,9 @@ int load_progress_file(Picture *p) {
 
 }
 
+/*=============================================================================
+ * delete_progress_file
+ *============================================================================*/
 void delete_progress_file(char *filename) {
   remove(filename);
 }
