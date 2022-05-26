@@ -314,7 +314,4 @@ extern int g_keyboard_has_priority;
 /* should the confirm message be displayed? */
 extern int g_load_action_confirm;
 
-/* Check to see if confirmation for an action was made. */
-extern int g_are_you_sure;
-
 #endif

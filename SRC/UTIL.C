@@ -48,7 +48,6 @@ char g_collection_name[9];
 char g_picture_file_basename[9];
 
 int g_load_action_confirm;
-int g_are_you_sure;
 
 Picture *g_picture;
 
@@ -613,7 +612,6 @@ void init_load_dialog_defaults(void) {
   g_num_picture_files = 0;  
   g_load_new_file = 0;
 
-  g_are_you_sure = 0;
   g_load_action_confirm = 0;
 
   g_load_section_active = LOAD_COLLECTION_ACTIVE;

@@ -1201,7 +1201,6 @@ void input_state_load_dialog(void) {
         /* But only if there's progress */
         if (g_pic_items[g_load_picture_index].progress > 0) {
           g_load_action_confirm = 1;
-          g_are_you_sure = 0;
         }
         g_keypress_lockout[KEY_R] = 1;          
       }
