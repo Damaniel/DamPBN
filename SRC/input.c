@@ -1114,6 +1114,8 @@ void input_state_help(void) {
  *============================================================================*/
 void input_state_load_dialog(void) {
 
+    char name[80];
+
     if (key[KEY_ENTER]) {
       if (!g_keypress_lockout[KEY_ENTER]) {
         /* Only load an image if the image side is highlighted */
@@ -1169,7 +1171,11 @@ void input_state_load_dialog(void) {
     if (key[KEY_Y]) {
       if (!g_keypress_lockout[KEY_Y]) {
         if (g_load_action_confirm) {
-          g_are_you_sure = 1;
+          sprintf(name, "%s/%s/%s.pro", PROGRESS_FILE_DIR, g_collection_name, g_pic_items[g_load_picture_index].name);          
+          delete_progress_file(name);
+          /* Reset the progress */
+          g_pic_items[g_load_picture_index].progress = 0;
+          g_load_action_confirm = 0;
         }
         g_keypress_lockout[KEY_Y] = 1;          
       }

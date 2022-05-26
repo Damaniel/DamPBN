@@ -110,6 +110,13 @@ int save_progress_file(Picture *p);
 int load_progress_file(Picture *p);
 
 /*=============================================================================
+ * delete_progress_file
+ *
+ * Erase the progress file for the specified image file
+ *============================================================================*/
+void delete_progress_file(char *filename);
+
+/*=============================================================================
  * load_picture_file
  *
  * Loads an image created using the dampbn convert tool into an appropriate

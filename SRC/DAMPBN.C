@@ -246,7 +246,7 @@ void print_mem_free(void) {
  *============================================================================*/
 int main(int argc, char *argv[]) {
 
-  printf("Loading, please wait...");
+  printf("Loading, please wait...\n");
   allegro_init();
   install_keyboard();
   install_timer();
