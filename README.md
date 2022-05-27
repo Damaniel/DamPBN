@@ -1,5 +1,7 @@
 # Damaniel's Pixel By Number
 
+![Title screen](doc/screens/screen01.png)
+
 This is an in-progress paint by number game.  Think something like the mobile 
 game Cross Stitch World, or something like actual diamond painting.  While the
 game is playable, it's far from complete.  
@@ -7,7 +9,8 @@ game is playable, it's far from complete.
 ### Requirements
 
 - A 386 or higher (it runs in protected mode)
-- Some amount of RAM.  4MB is probably enough.  
+- Some amount of RAM.  4MB is probably enough in all cases.  Smaller images
+  will work with 2.
 - A VGA card.  It uses Mode 13 (320x200, 256 colors), supported by all VGAs.
 - A copy of CWSDPMI.EXE, either in the program directory or on your PATH.
 
@@ -51,6 +54,7 @@ desired.
 
 - Logo screen, title screen
 - Save / Load
+- Mouse support
 - Funcional timer
 - 'Mark' (highlight) function
 - 3 different pixel styles
@@ -59,21 +63,26 @@ desired.
 - Load picture menu
 - Help screen
 - Replay of draw progress on screen when picture is complete
+- Auto save on exit
+- The ability to watch completed replays from the image select screen
 
 ### What's left to do?
 
 Lots. Many of these I'll do, but some probably not.  These include:
 
 - Option screen (continue last, start/continue another)
-- Save on exit confirmation
 - Periodic auto-save
-- Gallery
 - More pictures (and pictures that aren't test/prototype images)!
 - MIDI player
 - Sound effects
-- Mouse support
 - (and plenty of other stuff I haven't thought of yet)
 
 ### Additional notes
 - Currently, images can be up to 320x200 pixels in size, with up to 64 colors.
 
+## Screenshots
+![In-game](doc/screens/screen02.png)
+![Map screen](doc/screens/screen03.png)
+![Replay screen](doc/screens/screen04.png)
+![Load screen](doc/screens/screen05.png)
+![Alternate square style](doc/screens/screen06.png)
