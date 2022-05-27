@@ -523,6 +523,8 @@ void process_exit_press(void) {
                          EXIT_BUTTON_X  + MENU_BUTTON_WIDTH,
                          EXIT_BUTTON_Y  + MENU_BUTTON_HEIGHT,
                          1)) {
+    /* Save on exit */
+    save_progress_file(g_picture);                           
     change_state(STATE_TITLE, STATE_GAME);
   }
   
@@ -533,6 +535,8 @@ void process_exit_press(void) {
     /* If the key was previously up... */
     if (!g_keypress_lockout[KEY_ESC]) {
         g_keypress_lockout[KEY_ESC] = 1;
+        /* Save on exit */
+        save_progress_file(g_picture);        
         change_state(STATE_TITLE, STATE_GAME);
     }
   } 
