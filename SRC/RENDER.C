@@ -858,6 +858,7 @@ void render_help_text(BITMAP *dest, RenderComponents c) {
       render_prop_text(dest, "L : Load a new picture", 8, 124);
       render_prop_text(dest, "H : Help (you must have discovered this one already!)", 8, 134);
       render_prop_text(dest, "ESC : Return to title, or exit the Help menu", 8, 144);
+      render_prop_text(dest, "-- NOTE: progress is automatically saved on exit. --", 8, 164);      
 
       draw_sprite(dest, g_help_previous, 15, 185);
       draw_sprite(dest, g_help_exit, 117, 185);
