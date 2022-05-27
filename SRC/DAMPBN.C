@@ -62,6 +62,13 @@ void change_state(State new_state, State prev_state) {
         g_title_anim.color_start = 0;
       }
       g_title_anim.color_start_counter = FRAME_RATE / 2; 
+      set_palette(title_pal);
+      /* If we just replayed an image from the load screen, go back there */
+      if (g_replay_from_load_screen) {
+        g_title_anim.color_start_counter = 0;
+        do_render();
+        change_state(STATE_LOAD_DIALOG, STATE_TITLE);
+      }
       break;
     case STATE_GAME:
       /* If the player just picked a file to load, load it and any progress
@@ -132,6 +139,15 @@ void change_state(State new_state, State prev_state) {
       g_finished_countdown = FRAME_RATE / 2;
       break;
     case STATE_REPLAY:
+      /* If replaying from the load menu, load the image */
+      if(g_prev_state == STATE_LOAD_DIALOG) {
+        init_new_pic_defaults();     
+        free_picture_file(g_picture);    
+        sprintf(name, "%s/%s/%s.pic", PIC_FILE_DIR, g_collection_name, g_picture_file_basename);
+        g_picture = load_picture_file(name);
+        load_progress_file(g_picture);
+        set_palette(game_pal);
+      }
       /* Draw 1/(5 seconds * frame rate) worth of replay per frame */
       g_replay_increment = g_total_picture_squares / (5 * FRAME_RATE);
       if (g_replay_increment < 1) {

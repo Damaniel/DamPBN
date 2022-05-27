@@ -314,4 +314,6 @@ extern int g_keyboard_has_priority;
 /* should the confirm message be displayed? */
 extern int g_load_action_confirm;
 
+extern int g_replay_from_load_screen;
+
 #endif

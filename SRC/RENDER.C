@@ -197,6 +197,25 @@ void render_logo(BITMAP *dest, RenderComponents c) {
 }
 
 /*=============================================================================
+ * render_title_fill_random_bg
+ *============================================================================*/
+void render_title_fill_random_bg(BITMAP *dest) {
+  int i, j;
+
+  for(i=0;i<32;i++) {
+    for (j=3; j<17; j++) {
+      blit(g_large_pal, g_title_area,
+           (rand() % 64 + 1) * NUMBER_BOX_WIDTH,
+           0,
+           i * (NUMBER_BOX_WIDTH - 1),
+           j * (NUMBER_BOX_HEIGHT - 1),
+           NUMBER_BOX_WIDTH,
+           NUMBER_BOX_HEIGHT);
+    }
+  }
+}
+
+/*=============================================================================
  * render_title_screen
  *============================================================================*/
 void render_title_screen(BITMAP *dest, RenderComponents c) {
@@ -215,6 +234,14 @@ void render_title_screen(BITMAP *dest, RenderComponents c) {
              NUMBER_BOX_HEIGHT);
       }
     }
+
+    /* Fill the background with random blue squares if we've just come back
+       from a load screen replay */
+    if (g_replay_from_load_screen) {
+      render_title_fill_random_bg(dest);
+      g_replay_from_load_screen = 0;
+    }
+    
     hline(g_title_area, 0, 29, 319, 205);
     hline(g_title_area, 0, 171, 319, 205);
 

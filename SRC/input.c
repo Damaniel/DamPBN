@@ -38,6 +38,8 @@ int g_game_area_mouse_mode;
 
 int g_keyboard_has_priority;
 
+int g_replay_from_load_screen;
+
 /*=============================================================================
  * process_input
  *============================================================================*/
@@ -1209,6 +1211,21 @@ void input_state_load_dialog(void) {
       g_keypress_lockout[KEY_R] = 0;
     } 
 
+    /* P does a replay */
+    if (key[KEY_P]) {
+      if (!g_keypress_lockout[KEY_P]) {
+        strncpy(g_picture_file_basename, 
+                g_pic_items[g_load_picture_index].name, 8);
+        g_load_new_file = 1;
+        change_state(STATE_REPLAY, STATE_LOAD_DIALOG);     
+        g_replay_from_load_screen = 1;   
+        g_keypress_lockout[KEY_P] = 1;
+      }
+    }
+    if (!key[KEY_P] && g_keypress_lockout[KEY_P]) {
+      g_keypress_lockout[KEY_P] = 0;
+    } 
+
     /* Need the following */
     /* index - the actual value of the picture to load */
     /* offset - the index of the top position on the dialog */
@@ -1468,7 +1485,7 @@ void input_state_replay(void) {
 
   if (key[KEY_ENTER]) {
     if(!g_keypress_lockout[KEY_ENTER]) {
-      change_state(STATE_TITLE, STATE_REPLAY);          
+      change_state(STATE_TITLE, STATE_REPLAY);
       g_keypress_lockout[KEY_ENTER] = 1;
     }
   }

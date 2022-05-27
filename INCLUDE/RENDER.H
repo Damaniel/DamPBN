@@ -273,4 +273,12 @@ void free_graphics(void);
  *============================================================================*/
 int load_graphics(void);
 
+/*=============================================================================
+ * render_title_fill_random_bg
+ *
+ * Fills each square of the title background with a random color from the 
+ * palette
+ *============================================================================*/
+void render_title_fill_random_bg(BITMAP *dest);
+
 #endif
