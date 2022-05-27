@@ -158,7 +158,6 @@ void change_state(State new_state, State prev_state) {
 
       /* Prep the rest of the replay parameters */
       g_replay_first_time = 1;
-      g_replay_total = 0;
       break;
     default:
       break;

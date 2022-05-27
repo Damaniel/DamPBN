@@ -241,7 +241,7 @@ void render_title_screen(BITMAP *dest, RenderComponents c) {
       render_title_fill_random_bg(dest);
       g_replay_from_load_screen = 0;
     }
-    
+
     hline(g_title_area, 0, 29, 319, 205);
     hline(g_title_area, 0, 171, 319, 205);
 
@@ -1218,6 +1218,7 @@ void render_replay_state(BITMAP *dest, RenderComponents c) {
       rectfill(dest, g_preview_x, g_preview_y, g_preview_x + g_picture->w * g_preview_scale, g_preview_y + g_picture->h * g_preview_scale, 208);
       rect(dest, g_preview_x -1 , g_preview_y - 1, g_preview_x + g_picture->w * g_preview_scale, g_preview_y + g_picture->h * g_preview_scale, 205);
     }
+    g_replay_total = 0;
   }
 
   for(i=g_replay_total; i< g_replay_total + g_replay_increment; i++) {
