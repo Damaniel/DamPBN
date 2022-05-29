@@ -552,13 +552,13 @@ int check_completion(void) {
 void calculate_preview_scale(void) {
         /* Calculate the replay pixel scale */
       g_preview_scale = 1;
-      if(g_picture->w >= g_picture->h) {
-        /* The picture is wider than it is tall, or it's square */
+      if(g_picture->w > g_picture->h) {
+        /* The picture is wider than it is tall */
         if (g_picture->w < 300)
           g_preview_scale = 300 / g_picture->w;
         
       } else {
-        /* The picture is taller than it is wide */
+        /* The picture is taller than it is wide, or it's square */
         if (g_picture->h < 180)
           g_preview_scale = 180 / g_picture->h;
       }
