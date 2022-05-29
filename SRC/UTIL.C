@@ -554,13 +554,13 @@ void calculate_preview_scale(void) {
       g_preview_scale = 1;
       if(g_picture->w >= g_picture->h) {
         /* The picture is wider than it is tall, or it's square */
-        if (g_picture->w < 160)
-          g_preview_scale = 160 / g_picture->w;
+        if (g_picture->w < 300)
+          g_preview_scale = 300 / g_picture->w;
         
       } else {
         /* The picture is taller than it is wide */
-        if (g_picture->h < 100)
-          g_preview_scale = 100 / g_picture->h;
+        if (g_picture->h < 180)
+          g_preview_scale = 180 / g_picture->h;
       }
 
       /* Calculate the start position of the replay */
