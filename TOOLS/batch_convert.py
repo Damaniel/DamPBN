@@ -1,9 +1,29 @@
-# Given a directory of .pcx files, convert them into the DamPBN file format
-
+# Given a directory of image file (.jpg, .png and/or .pcx), convert them into DamPBN format files.
+#
+# If the images are larger than 320x200, they will be scaled by a ratio necessary to make them at most that size,
+# while preserving the aspect ratio.
+# Any images with >64 colors will be quantized to 64 colors with dithering
+#
 # The tool takes 4 command line arguments; an input directory, an output directory, a path to a CSV file
 # containing information about each of the images, and an argument that specifies the kind of compression to be used.
 
+# About the CSV file:
+#
+# The CSV file should contain a series of lines, each with 3 values:
+#  - The name of the file
+#  - A description of the image (will be truncated to 32 characters)
+#  - A category ID
+#
+# Any images without these entries in the CSV file will be given an uncategorized ID and name of 'Default Image'.
+#
+# This code was written with the help of Github Copilot.  'Help' is a bit of a stretch though - it wrote 99% of
+# the code, and I only had to make a couple small changes (mainly due to a PIL bug, not a Copilot issue) to get
+# it all working.  Amazing stuff.
+ 
 import sys, os, PIL.Image
+
+# If True, also writes a copy of the converted image as a PNG for inspection
+debug_output = True
 
 def resize(input_file):
     # Get the width and height of the image
@@ -204,7 +224,8 @@ def main():
         # Close the file
         output_file.close()
 
-        image.save(os.path.join(output_dir, file_name + '_converted' + '.png'), "PNG")
+        if debug_output == True:
+            image.save(os.path.join(output_dir, file_name + '_converted' + '.png'), "PNG")
 
 if __name__ == "__main__":
     main()
