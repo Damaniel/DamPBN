@@ -5,6 +5,30 @@
 
 import sys, os, PIL.Image
 
+def resize(input_file):
+    # Get the width and height of the image
+    width, height = input_file.size
+
+    ratio = 1.0
+
+    # If the width of the image is greater than 320, calculate the ratio to scale it down to 320
+    if width > 320:
+        ratio = 320.0 / width
+
+    # If the resulting image is still too tall, calculate the ratio to scale it down to 200
+    if height * ratio > 200:
+        ratio = 200.0 / height
+
+    # Calculate the new width and height
+    new_width = int(width * ratio)
+    new_height = int(height * ratio)
+
+    # Resize the image
+    if ratio != 1.0:
+        input_file = input_file.resize((new_width, new_height), PIL.Image.BILINEAR)
+
+    return input_file
+
 def run_length_encode(data):
     # Given a set of bytes of data, return a list of bytes encoded with the following method
     # If a byte is not repeated, write the byte to the new list
@@ -36,7 +60,7 @@ def run_length_encode(data):
 
 def get_used_colors(color_data):
     # Given a list of RGB triplets, count the number of unique triplets are in the list and return the count
-    
+
     # Create a set to store the unique colors   
     unique_colors = set()
 
@@ -64,8 +88,8 @@ def main():
     metadata_file = sys.argv[3]
     compression_type = sys.argv[4]
 
-    # Get a list of all files in the input directory with the extension .pcx
-    input_files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f)) and f.endswith(".pcx")]
+    # Get a list of all files in the input directory with the extension .pcx, .jpg, or .png
+    input_files = [file for file in os.listdir(input_dir) if file.endswith(".pcx") or file.endswith(".jpg") or file.endswith(".png")]
 
     # Open the metadata file
     metadata = open(metadata_file, "r")
@@ -78,30 +102,39 @@ def main():
 
     # for each file in input_files
     for file in input_files:
+        print(f"Processing {file}...")
+
+        # Get the name of the file without the extension
+        file_name = os.path.splitext(file)[0]
+
         # Use PIL to open the file
         image = PIL.Image.open(os.path.join(input_dir, file))
 
-        # Get the width and height of the image
-        width, height = image.size
-
-        # If the width of the image is greater than 320 or the height greater than 200, skip the file
-        if width > 320 or height > 200:
-            print(f"Skipping {file} because it is too big")
-            continue
-
-        # Get the pixel data from the image
-        pixel_data = list(image.getdata())
+        # resize it if needed
+        image = resize(image)
 
         # Get the palette from the image
         palette = image.getpalette()
 
-        num_colors = get_used_colors(palette)
-        if num_colors > 64:
-            print("Too many colors!")
-            continue
+        # Quantize to 64 colors if needed
+        if palette != None:
+            num_colors = get_used_colors(palette)
+        if palette == None or num_colors > 64:
+            # Quantize the image to 64 colors
+            pal = image.quantize(64)
+            image = image.quantize(64, palette=pal, dither=PIL.Image.Dither.FLOYDSTEINBERG)
+        # If the image had no palette, get the resulting quantized palette
+        if palette == None:
+            palette = image.getpalette()
+
+        # Get the width and height of the image
+        width, height = image.size
+
+        # Get the pixel data from the image
+        pixel_data = list(image.getdata())
 
         category_id = 0
-        displayed_name = ""
+        displayed_name = "Default Image"
 
         # Find the line in the metadata file where the first field matches the input file name
         for line in metadata_lines:
@@ -118,7 +151,7 @@ def main():
                 break
     
         # Create a new file with the same name as the input file, but with the extension .pic
-        output_file = open(os.path.join(output_dir, file.replace(".pcx", ".pic")), "wb")
+        output_file = open(os.path.join(output_dir, file_name + '.pic'), "wb")
 
         # Write the bytes 'DP' to the file
         output_file.write(b"DP")
@@ -170,6 +203,8 @@ def main():
 
         # Close the file
         output_file.close()
+
+        image.save(os.path.join(output_dir, file_name + '_converted' + '.png'), "PNG")
 
 if __name__ == "__main__":
     main()
