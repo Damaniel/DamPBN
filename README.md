@@ -15,8 +15,8 @@ game is playable, it's far from complete.
 
 ### Additional tools
 
-There are 2 tools in the 'tools' directory.  You can build them by running 
-`make tools` from the root of the main directory.  These tools are:
+There are some tools in the 'tools' directory.  You can build the C programs
+them by running `make tools` from the root of the main directory.  These tools are:
 
 - convert: The tool that creates picture files from PCX files.  Run convert.exe
            for usage instructions
@@ -24,6 +24,19 @@ There are 2 tools in the 'tools' directory.  You can build them by running
           version.  This is important since it allows the creation of picture
           files with fewer than 16 colors while maintaining compatibility with
           Allegro.
+
+The python tools are some batch converters that I'm using to make larger collections.
+They are:
+
+- batch_convert.py: takes a directory of image files and creates a set of DamPBN picture
+                    files in a separate output directory.  Supported image file formats
+                    are JPG, PNG and PCX.  This converter will also adjust the image
+                    size and color palette if needed, so any images can be used without
+                    preprocessing.
+- image_process.py: takes 2 directories of identical files - one with original names, one
+                    with numbered names, and makes a metadata file for batch_convert.py
+- image_split.py: takes a pile of images and divides them into groups of 50, putting each
+                  group into sequentially numbered directories
 
 ### Build requirements
 
@@ -68,7 +81,14 @@ desired.
 ### What's left to do?
 
 Lots. Many of these I'll do, but some probably not.  These include:
-
+- Support for non-rectangluar images (i.e. sprites without extra edge tiles)
+  - This one is highest priority and will require the following:
+    - Updating of the file format spec to support a transparency mask (done)
+    - Rewrite of the file loader to parse the transparency data
+    - Changes to the rendering code to skip drawing numbers in those grid locations
+    - Changes to the tile drawing code to prevent the user from marking empty locations
+    - Changes to the progress checks to ensure that the actual square count, and not
+      just the size of the bounding area, is completed
 - Option screen (continue last, start/continue another)
 - Periodic auto-save
 - More pictures (and pictures that aren't test/prototype images)!

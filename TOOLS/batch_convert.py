@@ -4,8 +4,9 @@
 # while preserving the aspect ratio.
 # Any images with >64 colors will be quantized to 64 colors with dithering
 #
-# The tool takes 4 command line arguments; an input directory, an output directory, a path to a CSV file
-# containing information about each of the images, and an argument that specifies the kind of compression to be used.
+# The tool takes 5 command line arguments; an input directory, an output directory, a path to a CSV file
+# containing information about each of the images, an argument that specifies the kind of compression to be used,
+# and an argument specifing whether files should be created using the v2 format (with transparency)
 
 # About the CSV file:
 #
@@ -23,7 +24,7 @@
 import sys, os, PIL.Image
 
 # If True, also writes a copy of the converted image as a PNG for inspection
-debug_output = True
+debug_output = False
 
 def resize(input_file):
     # Get the width and height of the image
@@ -107,6 +108,7 @@ def main():
     output_dir = sys.argv[2]
     metadata_file = sys.argv[3]
     compression_type = sys.argv[4]
+    use_transparency = sys.argv[5]
 
     # Get a list of all files in the input directory with the extension .pcx, .jpg, or .png
     input_files = [file for file in os.listdir(input_dir) if file.endswith(".pcx") or file.endswith(".jpg") or file.endswith(".png")]
@@ -133,19 +135,99 @@ def main():
         # resize it if needed
         image = resize(image)
 
-        # Get the palette from the image
+        # if the image has a palette, we'll still convert to RGB/RGBA depending on if
+        # it has a alpha channel or not
+        if image.mode == 'P':
+            if 'transparency' in image.info:
+                image = image.convert('RGBA')
+            else:
+                image = image.convert('RGB')
+
+        # If the picture has an alpha channel, extract it for future use, then 
+        # flatten the image, using white pixels where the transparency used to be
+        alpha_channel = []
+        if image.mode == 'RGBA':
+            # Extract the alpha channel for now since we might use it
+            alpha_channel = image.getchannel('A')
+            # Make the alpha channel either fully transparent or fully opaque
+            for j in range(alpha_channel.height):
+                for i in range(alpha_channel.width):
+                    if alpha_channel.getpixel((i,j)) != 0:
+                        alpha_channel.putpixel((i, j), 255)
+            temp_image = PIL.Image.new('RGBA', image.size, (255, 255,255, 255))
+            temp_image.paste(image, mask=alpha_channel)
+            # Convert the image to RGB
+            image = temp_image.convert('RGB')
+
+        # Get the palette from the image (or 'None' if it's RGB)
         palette = image.getpalette()
 
-        # Quantize to 64 colors if needed
-        if palette != None:
-            num_colors = get_used_colors(palette)
-        if palette == None or num_colors > 64:
+        # At this point, the image should have a palette of None, since everything
+        # has been converted to RGB.  If not, this will all still work, but images
+        # with palettes of more than 64 colors will be skipped later.
+        # Quantize to 64 colors
+        if palette == None:
             # Quantize the image to 64 colors
             pal = image.quantize(64)
             image = image.quantize(64, palette=pal, dither=PIL.Image.Dither.FLOYDSTEINBERG)
-        # If the image had no palette, get the resulting quantized palette
-        if palette == None:
             palette = image.getpalette()
+        
+        # Now the image should have a palette.  Find how many colors it has.
+        # If there's more than 64 of them, skip the image
+        num_colors = get_used_colors(palette)
+        print(f" This image has {num_colors} colors")
+        if num_colors > 64:
+            print(f"WARNING: {file} still has more than 64 colors, skipping...")
+            continue
+
+        # This step is tricky.  If we're using transparency, we need to count the pixels in the 
+        # image and determine if there are any pixels in the image with value (255, 255, 255)
+        # that aren't part of the transparency mask
+        # If there are, then do nothing; we can use the image as is
+        # On the other hand, if there aren't:
+        #  - Get the index of (255, 255, 255)
+        #  - Remove it and shift all values past it up one
+        #  - Scan the whole image, and for all values that were shifted, change the value of the
+        #    pixel to (pixel value - 1)
+        #  - Set num_colors to num_colors - 1
+        #
+        # Note - in the alpha mask, 0 is transparent and 255 is opaque
+        if use_transparency == "1":
+            white_count = 0
+            index = -1
+            # get the index of (255, 255, 255) in palette, or -1 if it's not there
+            for i in range(0, len(palette), 3):
+                if palette[i] == 255 and palette[i+1] == 255 and palette[i+2] == 255:
+                    index = int(i/3)
+            for j in range(alpha_channel.height):
+                for i in range(alpha_channel.width):
+                    if alpha_channel.getpixel((i, j)) == 255 and image.getpixel((i, j)) == index:
+                        white_count = white_count + 1
+            print(f"There are {white_count} non-transparent white pixels")
+            if white_count == 0:
+                print(f"No other white pixels found - shifting palette...")
+                print(f"White palette entry found at {index}")
+                # If it's -1, then there was never any white to begin with
+                # (and presumably, never any transparent pixels to begin with, since that's the only way
+                # we'd get zero white pixels without a palette entry)
+                if index == -1:
+                    use_transparency = '0'
+                else:
+                    # Take all values after the index and shift them up one
+                    for i in range(index * 3, len(palette)-6, 3):
+                        palette[i] = palette[i+3]
+                        palette[i+1] = palette[i+4]
+                        palette[i+2] = palette[i+5]
+                    palette[len(palette)-3] = 0
+                    palette[len(palette)-2] = 0
+                    palette[len(palette)-1] = 0
+                    # Scan the whole image and change all values that were shifted
+                    for j in range(image.height):
+                        for i in range(image.width):
+                            if image.getpixel((i, j)) > index:
+                                image.putpixel((i, j), image.getpixel((i, j)) - 1)
+                    image.putpalette(palette)
+                    num_colors = num_colors - 1
 
         # Get the width and height of the image
         width, height = image.size
@@ -169,7 +251,7 @@ def main():
                 category_id = int(fields[2])
                 # Stop searching
                 break
-    
+
         # Create a new file with the same name as the input file, but with the extension .pic
         output_file = open(os.path.join(output_dir, file_name + '.pic'), "wb")
 
@@ -213,13 +295,26 @@ def main():
         
         output_file.write(bytes(palette[:192]))
 
-        # Write 23 0 bytes to the file
-        output_file.write(b"\x00" * 23)
+        if use_transparency == "1":
+            # Write the transparency flag and 22 0 bytes to the file
+            output_file.write(b"\x01")
+            output_file.write(b"\x00" * 22)
+        else:
+            # Write 23 0 bytes to the file
+            output_file.write(b"\x00" * 23)
 
         if write_rle == False:
             output_file.write(bytes(pixel_data))
         else:
             output_file.write(bytes(rle_data))
+
+        if use_transparency == "1":
+            alpha_pixels = list(alpha_channel.getdata())
+            if write_rle == False:
+                output_file.write(bytes(alpha_pixels))
+            else:
+                alpha_rle_pixels = run_length_encode(alpha_pixels)
+                output_file.write(bytes(alpha_rle_pixels))
 
         # Close the file
         output_file.close()
