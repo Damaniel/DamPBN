@@ -62,6 +62,7 @@ typedef struct {
     short height;
     char colors;
     int progress;
+    int total;
 } PictureItem;
 
 /* A collection of metadata representing a collection of pictures */

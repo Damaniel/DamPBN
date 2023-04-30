@@ -1242,15 +1242,13 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
       sprintf(extra_message, " ");
     }
     else if (g_pic_items[g_load_picture_index].progress >= 
-             g_pic_items[g_load_picture_index].width * 
-             g_pic_items[g_load_picture_index].height) {
+             g_pic_items[g_load_picture_index].total) {
       sprintf(text, "Completed!");
       sprintf(extra_message, "R to reset progress, P to replay");
     }
     else {
       sprintf(text, "%d/%d", g_pic_items[g_load_picture_index].progress,
-              g_pic_items[g_load_picture_index].width *
-              g_pic_items[g_load_picture_index].height);
+              g_pic_items[g_load_picture_index].total);
       sprintf(extra_message, "R to reset progress");
     }
 

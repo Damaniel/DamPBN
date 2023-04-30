@@ -297,15 +297,19 @@ def main():
         output_file.write(bytes(palette[:192]))
 
         if use_transparency == "1":
-            # Write the transparency flag and 22 0 bytes to the file
+            # Count the number of zeroes in alpha_channel
+            num_playable_squares = 0
+            for j in range(alpha_channel.height):
+                for i in range(alpha_channel.width):
+                    if alpha_channel.getpixel((i, j)) != 0:
+                        num_playable_squares = num_playable_squares + 1
+            # Write the transparency flag, non-transparent_squares and 22 0 bytes to the file
             output_file.write(b"\x01")
-            output_file.write(b"\x00" * 22)
+            output_file.write(num_playable_squares.to_bytes(2, byteorder="little"))
+            output_file.write(b"\x00" * 20)
         else:
             # Write 23 0 bytes to the file
             output_file.write(b"\x00" * 23)
-
-        print(pixel_data)
-        print(list(alpha_channel.getdata()))
 
         if write_rle == False:
             output_file.write(bytes(pixel_data))

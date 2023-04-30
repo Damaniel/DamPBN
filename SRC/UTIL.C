@@ -93,6 +93,7 @@ void get_picture_metadata(char *basepath, char *filename, PictureItem *p) {
     char full_file[128];
     FILE *fp;
     int i;
+    char v2;
 
     sprintf(full_file, "%s/%s.pic", basepath, filename);
     fp = fopen(full_file, "rb");
@@ -105,9 +106,16 @@ void get_picture_metadata(char *basepath, char *filename, PictureItem *p) {
     fread(&p->height, 1, sizeof(short), fp);
     fread(&p->category, 1, sizeof(char), fp);
     for(i=0;i<32;i++)
-    fgetc(fp);
+       fgetc(fp);
     fread(&p->colors, 1, sizeof(char), fp);
-
+    for(i=0;i<193;i++)
+       fgetc(fp);
+    fread(&v2, 1, sizeof(char), fp);
+    if (v2) {
+      fread(&p->total, 1, sizeof(short), fp);
+    } else {
+      p->total = p->width * p->height;
+    }
     fclose(fp);    
 }
 
@@ -424,13 +432,18 @@ Picture *load_picture_file(char *filename) {
   transparent_flag = fgetc(fp);
   if (transparent_flag) {
     pic->version = 2;
+    fread(&total_trans_picture_squares, 1, sizeof(short), fp);
+    for(i=0;i<20;i++) {
+      fgetc(fp);
+    }
   }
   else {
     pic->version = 1;
+    for(i=0;i<22;i++) {
+      fgetc(fp);
   }
 
-  for(i=0;i<22;i++) {
-    fgetc(fp);
+
   }
 
   /* Set the image portion of the global palette */
@@ -524,11 +537,7 @@ Picture *load_picture_file(char *filename) {
   if (transparent_flag) {
     if(compression == COMPRESSION_NONE) {
      for(i=0; i< (pic->w*pic->h); i++) {
-       transparent_val = fgetc(fp);
-       if (transparent_val != 0) {
-          transparent_val = 1;
-          total_trans_picture_squares++;
-       }       
+       transparent_val = fgetc(fp);  
        (pic->pic_squares[i]).is_transparent = (transparent_val == 0) ? 1 : 0;
      }
    } else {
@@ -539,27 +548,15 @@ Picture *load_picture_file(char *filename) {
          /* found a run.  Load the next byte and write the appropriate
             number of copies to the buffer */
          transparent_val = first_byte & 0x7F;
-         if (transparent_val != 0) {
-          transparent_val = 1;
-         }
          run_length = fgetc(fp);
          for (i=0;i<run_length;i++) {
           (pic->pic_squares[bytes_processed]).is_transparent = (transparent_val == 0) ? 1: 0;
-          if (transparent_val == 1) {
-            total_trans_picture_squares++;
-          }
            bytes_processed++;
          }
        } else {
          /* Found a single value */
          transparent_val = first_byte;
-         if (transparent_val != 0) {
-          transparent_val = 1;
-         }
          (pic->pic_squares[bytes_processed]).is_transparent = (transparent_val == 0) ? 1 : 0;
-         if (transparent_val == 1) {
-           total_trans_picture_squares++;
-         }
          bytes_processed++;
        }
      } 

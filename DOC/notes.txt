@@ -114,7 +114,12 @@ Header:
                 extra colors should be set to 0, 0, 0
   - 1 byte    - does this image have transparency data?  If so, it will be at the 
                 end of the file, after the image data 
+  (v1 only)
   - 22 bytes - padding to bring the total to 256 bytes
+  (v2 only)
+  - 2 bytes - the number of playable squares in this v2 picture
+  - 20 bytes - padding to bring the total to 256 bytes
+  
 Data:
   - an (x * y) grid of image data, read from left to right, top to bottom.  The data
     itself can be run length encoded.  If the upper two bits are 00, then the lower six
