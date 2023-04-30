@@ -134,9 +134,9 @@ def main():
         # resize it if needed
         image = resize(image)
 
-        # if the image has a palette, we'll still convert to RGB/RGBA depending on if
+        # if the image has a palette or is grayscale, we'll still convert to RGB/RGBA depending on if
         # it has a alpha channel or not
-        if image.mode == 'P':
+        if image.mode == 'P' or image.mode == 'L':
             if 'transparency' in image.info:
                 image = image.convert('RGBA')
             else:
