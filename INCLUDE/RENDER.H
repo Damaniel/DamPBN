@@ -229,6 +229,13 @@ void render_help_text(BITMAP *dest, RenderComponents c);
 void render_replay_state(BITMAP *dest, RenderComponents c);
 
 /*=============================================================================
+ * render_draw_cursor
+ *
+ * Draws the draw cursor in the correct place on the screen
+ *============================================================================*/
+void render_draw_cursor(BITMAP *dest);
+
+/*=============================================================================
  * update_overview_area
  *
  * Update the underlying overview area bitmap. Used to seed the entire thing

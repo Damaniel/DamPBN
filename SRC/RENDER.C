@@ -742,15 +742,7 @@ void render_game_screen(BITMAP *dest, RenderComponents c) {
 
  /* Draw the various cursors */
   if(c.render_draw_cursor || c.render_all) {
-    /* Redraw the background locations of where the cursor was and now is */
-    render_main_area_square_at(dest, g_pic_render_x, g_pic_render_y,
-                               g_old_draw_cursor_x, g_old_draw_cursor_y);
-    render_main_area_square_at(dest, g_pic_render_x, g_pic_render_y,
-                               g_draw_cursor_x, g_draw_cursor_y);
-    /* Draw the cursor itself */
-    draw_sprite(dest, g_draw_cursor_sm,
-                DRAW_AREA_X + DRAW_CURSOR_WIDTH * g_draw_cursor_x,
-                DRAW_AREA_Y + DRAW_CURSOR_WIDTH * g_draw_cursor_y);     
+    render_draw_cursor(dest);
   }
 
   if(c.render_palette_cursor || c.render_all) {
@@ -772,6 +764,33 @@ void render_game_screen(BITMAP *dest, RenderComponents c) {
 
   if(c.render_debug) {
     /* Add debug stuff here */
+  }
+}
+
+/*=============================================================================
+ * render_draw_cursor
+ *============================================================================*/
+void render_draw_cursor(BITMAP *dest) {
+  ColorSquare cs;
+
+  cs = g_picture->pic_squares[(g_pic_render_y + g_draw_cursor_y) * g_picture->w + (g_pic_render_x + g_draw_cursor_x)];
+
+  /* Redraw the background locations of where the cursor was and now is */
+  render_main_area_square_at(dest, g_pic_render_x, g_pic_render_y,
+                             g_old_draw_cursor_x, g_old_draw_cursor_y);
+  render_main_area_square_at(dest, g_pic_render_x, g_pic_render_y,
+                             g_draw_cursor_x, g_draw_cursor_y);
+
+  /* Draw the cursor itself */
+  if (cs.is_transparent) {
+    draw_sprite(dest, g_draw_cursor_sm,
+                DRAW_AREA_X + DRAW_CURSOR_WIDTH * g_draw_cursor_x,
+                DRAW_AREA_Y + DRAW_CURSOR_WIDTH * g_draw_cursor_y);     
+  }
+  else {
+    draw_sprite(dest, g_draw_cursor,
+                DRAW_AREA_X + DRAW_CURSOR_WIDTH * g_draw_cursor_x,
+                DRAW_AREA_Y + DRAW_CURSOR_WIDTH * g_draw_cursor_y);         
   }
 }
 
