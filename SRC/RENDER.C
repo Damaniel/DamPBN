@@ -188,6 +188,10 @@ void update_scrollbar_positions(void) {
      g_across_scrollbar_x = floor(across_scroll_x);
      g_across_scrollbar_width = floor(across_scroll_w);
    }
+
+   // used to track down scrollbar issues
+   //printf("Right scrollbar - at %d, height %d\n", g_down_scrollbar_y, g_down_scrollbar_height);
+   //printf("Bottom scrollbar - at %d, width %d\n", g_across_scrollbar_x, g_across_scrollbar_width);
 }
 
 /*=============================================================================
