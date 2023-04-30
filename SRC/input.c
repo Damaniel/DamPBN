@@ -832,38 +832,40 @@ void process_main_area_keyboard_input(void) {
                        g_draw_position_x;
       fill_val = g_picture->pic_squares[square_offset].fill_value;
       pal_val = g_picture->pic_squares[square_offset].pal_entry;
-
-      /* If unfilled, fill with the active color.  If filled, unfill it,
-        but only if it's the incorrect color. */
-      if(fill_val != 0) {
-        if (fill_val != pal_val) {
-          g_picture->pic_squares[square_offset].fill_value = 0;           
-          g_picture->mistakes[square_offset] = 0;
-          g_mistake_count--;
-          g_picture->pic_squares[square_offset].correct = 0;          
-        }
-     } else {
-        g_picture->pic_squares[square_offset].fill_value = g_cur_color;
-        /* Update mistake/progress counters */           
-        if (g_cur_color != pal_val) {
-          g_picture->mistakes[square_offset] = g_cur_color;
-          g_mistake_count++;
-          g_picture->pic_squares[square_offset].correct = 0;          
-        }
-        else {
-          g_picture->draw_order[g_correct_count].x = g_draw_position_x;
-          g_picture->draw_order[g_correct_count].y = g_draw_position_y;
-          g_correct_count++;
-          g_picture->pic_squares[square_offset].correct = 1;
-          /* Check to see if we're done with the picture */
-          done = check_completion();
-          if (done) {
-            /* Save the file to write out the complete progress */
-            save_progress_file(g_picture);
-            change_state(STATE_FINISHED, STATE_GAME);
+      /* Only process the square if it isn't transparent */
+      if (g_picture->pic_squares[square_offset].is_transparent == 0) {
+        /* If unfilled, fill with the active color.  If filled, unfill it,
+          but only if it's the incorrect color. */
+        if(fill_val != 0) {
+          if (fill_val != pal_val) {
+            g_picture->pic_squares[square_offset].fill_value = 0;           
+            g_picture->mistakes[square_offset] = 0;
+            g_mistake_count--;
+            g_picture->pic_squares[square_offset].correct = 0;          
           }
-        }                     
-     }
+        }   else {
+          g_picture->pic_squares[square_offset].fill_value = g_cur_color;
+          /* Update mistake/progress counters */           
+          if (g_cur_color != pal_val) {
+            g_picture->mistakes[square_offset] = g_cur_color;
+            g_mistake_count++;
+            g_picture->pic_squares[square_offset].correct = 0;          
+          }
+          else {
+            g_picture->draw_order[g_correct_count].x = g_draw_position_x;
+            g_picture->draw_order[g_correct_count].y = g_draw_position_y;
+            g_correct_count++;
+            g_picture->pic_squares[square_offset].correct = 1;
+            /* Check to see if we're done with the picture */
+            done = check_completion();
+            if (done) {
+              /* Save the file to write out the complete progress */
+              save_progress_file(g_picture);
+              change_state(STATE_FINISHED, STATE_GAME);
+            }   
+          }                         
+       }
+    }
      clear_render_components(&g_components);
      update_overview_area_at((g_draw_position_x - 
                             (g_draw_position_x % OVERVIEW_BLOCK_SIZE)) /
@@ -928,8 +930,8 @@ void process_main_area_mouse_input(void) {
           g_game_area_mouse_mode = MOUSE_MODE_ERASE;
         }
       }
-      /* If in draw mode, draw in the space if it isn't drawn yet */      
-      if (g_game_area_mouse_mode == MOUSE_MODE_DRAW) {         
+      /* If in draw mode, draw in the space if it isn't drawn yet.  Skip if the square shouldn't be drawn on */      
+      if (g_game_area_mouse_mode == MOUSE_MODE_DRAW && g_picture->pic_squares[square_offset].is_transparent == 0) {         
         /* Update mistake/progress counters */                  
         if (g_cur_color != pal_val && g_picture->mistakes[square_offset] == 0) {          
             if(g_picture->pic_squares[square_offset].correct == 0) {
@@ -958,8 +960,8 @@ void process_main_area_mouse_input(void) {
           }
         }                     
       }      
-      /* If in erase mode, erase the space if it's drawn incorrectly */      
-      if (g_game_area_mouse_mode == MOUSE_MODE_ERASE) {
+      /* If in erase mode, erase the space if it's drawn incorrectly.  Skip the square if it shouldn't be drawn on */      
+      if (g_game_area_mouse_mode == MOUSE_MODE_ERASE && g_picture->pic_squares[square_offset].is_transparent == 0) {
         if (!g_picture->pic_squares[square_offset].correct && g_picture->mistakes[square_offset] != 0) {
           g_picture->pic_squares[square_offset].fill_value = 0;           
           g_picture->mistakes[square_offset] = 0;

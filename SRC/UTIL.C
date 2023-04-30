@@ -388,8 +388,10 @@ Picture *load_picture_file(char *filename) {
   unsigned char magic[2];
   unsigned char compression;
   int i, bytes_processed;
+  int total_trans_picture_squares = 0;
   float pal_offset;
   RGB pic_pal[64];
+  unsigned char transparent_flag = 0, transparent_val = 0;
   unsigned char first_byte, run_length;
 
   fp = fopen(filename, "rb");
@@ -418,12 +420,18 @@ Picture *load_picture_file(char *filename) {
     pic_pal[i].g = fgetc(fp);
     pic_pal[i].b = fgetc(fp);
   }
-  for(i=0;i<23;i++) {
-    fgetc(fp);
+
+  transparent_flag = fgetc(fp);
+  if (transparent_flag) {
+    pic->version = 2;
+  }
+  else {
+    pic->version = 1;
   }
 
-  /* Set the total square count for progress purposes */
-  g_total_picture_squares = pic->w * pic->h;
+  for(i=0;i<22;i++) {
+    fgetc(fp);
+  }
 
   /* Set the image portion of the global palette */
   for (i=0; i<64; i++) {
@@ -478,6 +486,7 @@ Picture *load_picture_file(char *filename) {
   if(compression == COMPRESSION_NONE) {
     for(i=0; i< (pic->w*pic->h); i++) {
       /* Using '+ 1'  since palettes in the Picture go from 1-64, not 0-63 */
+      (pic->pic_squares[i]).is_transparent = 0;
       (pic->pic_squares[i]).pal_entry = fgetc(fp) + 1;
       (pic->pic_squares[i]).fill_value = 0;
       (pic->pic_squares[i]).order = -1;
@@ -492,6 +501,7 @@ Picture *load_picture_file(char *filename) {
            number of copies to the buffer */
         run_length = fgetc(fp);
         for (i=0;i<run_length;i++) {
+          (pic->pic_squares[bytes_processed]).is_transparent = 0;
           (pic->pic_squares[bytes_processed]).pal_entry =(first_byte & 0x7F)+1;
           (pic->pic_squares[bytes_processed]).fill_value = 0;
           (pic->pic_squares[bytes_processed]).order = -1;
@@ -500,19 +510,74 @@ Picture *load_picture_file(char *filename) {
         }
       } else {
         /* Found a single value */
+        (pic->pic_squares[bytes_processed]).is_transparent = 0;
         (pic->pic_squares[bytes_processed]).pal_entry = first_byte + 1;
         (pic->pic_squares[bytes_processed]).fill_value = 0;
         (pic->pic_squares[bytes_processed]).order = -1;
         (pic->pic_squares[bytes_processed]).correct = 0;         
         bytes_processed++;
       }
-    } 
+    }
+  }
+
+  /* Process the transparency data for the image*/
+  if (transparent_flag) {
+    if(compression == COMPRESSION_NONE) {
+     for(i=0; i< (pic->w*pic->h); i++) {
+       transparent_val = fgetc(fp);
+       if (transparent_val != 0) {
+          transparent_val = 1;
+          total_trans_picture_squares++;
+       }       
+       (pic->pic_squares[i]).is_transparent = (transparent_val == 0) ? 1 : 0;
+     }
+   } else {
+     bytes_processed = 0;
+     while (bytes_processed < (pic->w * pic->h)) {
+       first_byte = fgetc(fp);
+       if(first_byte & 0x80) {
+         /* found a run.  Load the next byte and write the appropriate
+            number of copies to the buffer */
+         transparent_val = first_byte & 0x7F;
+         if (transparent_val != 0) {
+          transparent_val = 1;
+         }
+         run_length = fgetc(fp);
+         for (i=0;i<run_length;i++) {
+          (pic->pic_squares[bytes_processed]).is_transparent = (transparent_val == 0) ? 1: 0;
+          if (transparent_val == 1) {
+            total_trans_picture_squares++;
+          }
+           bytes_processed++;
+         }
+       } else {
+         /* Found a single value */
+         transparent_val = first_byte;
+         if (transparent_val != 0) {
+          transparent_val = 1;
+         }
+         (pic->pic_squares[bytes_processed]).is_transparent = (transparent_val == 0) ? 1 : 0;
+         if (transparent_val == 1) {
+           total_trans_picture_squares++;
+         }
+         bytes_processed++;
+       }
+     } 
+    }
   }
 
   base_filename = basename(filename);
   base_no_ext = strtok(base_filename, ".");
   strncpy(g_picture_file_basename, base_no_ext, 8);
 
+ /* Set the total square count for progress purposes */
+  if (transparent_flag == 0) {
+    g_total_picture_squares = pic->w * pic->h;
+
+  } else {
+    /* Insert the calculated non-transparent picture squares here*/
+    g_total_picture_squares = total_trans_picture_squares;
+  }
   fclose(fp);
   return pic;
 

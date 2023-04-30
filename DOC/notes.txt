@@ -77,6 +77,20 @@ Stretch features:
 File formats:
 ==============================================================================
 
+# Note that this is technically version 2 of the format, but it is fully backward
+# compatible with version 1 if the data after the base image data is ignored.  
+# The only difference is the addition of a flag that specifies if the file contains 
+# a transparency mask.  In this case, 'transparency' defines whether a particular 
+# square of the image should be assigned a number or not; the idea is that an 
+# image shouldn't have to be constrained to take up the entire area of an x by y 
+# grid if a lot of the space is the same color (that is, if there's lots of border 
+# area that's otherwise irrleveant to the subject of the image). 
+#
+# Right now, the transparency mask isn't supported and code isn't in the game
+# to process it, but there are many (smaller) source images - largely of sprites -
+# that could eventually take advantage; adding support for this functionality
+# is planned.
+
 Picture file format:
 Header:
   - 2 bytes - "DP"
@@ -98,7 +112,9 @@ Header:
               1 - run length encoded
   - 192 bytes - color palette (64 sets of R,G,B).  If there are fewer than 64 colors,
                 extra colors should be set to 0, 0, 0
-  - 23 bytes - padding to bring the total to 256 bytes
+  - 1 byte    - does this image have transparency data?  If so, it will be at the 
+                end of the file, after the image data 
+  - 22 bytes - padding to bring the total to 256 bytes
 Data:
   - an (x * y) grid of image data, read from left to right, top to bottom.  The data
     itself can be run length encoded.  If the upper two bits are 00, then the lower six
@@ -111,7 +127,13 @@ Data:
     00110000 - 1 square of color 48
     00100000 00001000 - 1 square of color 32, 1 square of color 8
     11010000 00001100 - 12 squares of color 16
-    
+Transparency data:
+  - an (x * y) grid of data, read from left to right, top to bottom.  If the value is
+    0, then that location will have no number assigned on the image, and therefore will
+    not be drawable.  If set to 1, the location will work as it did in previous
+    versions of the file.  This data is run length encoded in the same method as the
+    image data, in the same circumstances (i.e. if the image data is run length encoded,
+    so is the transparency data)
     
 Progress file format:
   The progress file has the same name as the picture file, with the extension .inp.

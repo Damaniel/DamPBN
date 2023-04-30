@@ -76,7 +76,6 @@ def run_length_encode(data):
         else:
             output_data.append(current_byte)
         i += repeat_count
-
     return output_data
 
 def get_used_colors(color_data):
@@ -143,21 +142,23 @@ def main():
             else:
                 image = image.convert('RGB')
 
+
         # If the picture has an alpha channel, extract it for future use, then 
         # flatten the image, using white pixels where the transparency used to be
         alpha_channel = []
         if image.mode == 'RGBA':
             # Extract the alpha channel for now since we might use it
             alpha_channel = image.getchannel('A')
-            # Make the alpha channel either fully transparent or fully opaque
-            for j in range(alpha_channel.height):
-                for i in range(alpha_channel.width):
-                    if alpha_channel.getpixel((i,j)) != 0:
-                        alpha_channel.putpixel((i, j), 255)
             temp_image = PIL.Image.new('RGBA', image.size, (255, 255,255, 255))
             temp_image.paste(image, mask=alpha_channel)
             # Convert the image to RGB
             image = temp_image.convert('RGB')
+            # After flattening the image using the alpha mask, mark the alpha channel either 
+            # 0 for transparent or 1 for opaque to make it easier on the other side
+            for j in range(alpha_channel.height):
+                for i in range(alpha_channel.width):
+                    if alpha_channel.getpixel((i,j)) != 0:
+                        alpha_channel.putpixel((i, j), 1)
 
         # Get the palette from the image (or 'None' if it's RGB)
         palette = image.getpalette()
@@ -302,6 +303,9 @@ def main():
         else:
             # Write 23 0 bytes to the file
             output_file.write(b"\x00" * 23)
+
+        print(pixel_data)
+        print(list(alpha_channel.getdata()))
 
         if write_rle == False:
             output_file.write(bytes(pixel_data))

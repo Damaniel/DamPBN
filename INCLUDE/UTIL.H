@@ -23,6 +23,8 @@
 #define __UTIL_H__
 
 typedef struct {
+  /* Should this square even be drawn at all?*/
+  char is_transparent;
   /* The color this square should be */
   char pal_entry;
   /* 0 = not filled in, x = value actually filled in */
@@ -41,6 +43,7 @@ typedef struct {
 
 /* A picture (that the player can color in) */
 typedef struct {
+  unsigned char version;
   char image_name[32];
   short w;
   short h;

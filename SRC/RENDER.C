@@ -108,6 +108,7 @@ BITMAP *g_bg_right;
 BITMAP *g_mainarea;
 BITMAP *g_pal_col;
 BITMAP *g_draw_cursor;
+BITMAP *g_draw_cursor_sm;
 BITMAP *g_small_pal;
 BITMAP *g_large_pal;
 BITMAP *g_large_diamonds;
@@ -380,6 +381,7 @@ void render_main_area_square_at(BITMAP *dest, int tl_x, int tl_y,
                                int off_x, int off_y) {
   ColorSquare c;
   int pal_offset, color_offset, avg_col;
+  char is_trans;
 
   BITMAP *draw_style;
   RGB rgb;
@@ -399,9 +401,21 @@ void render_main_area_square_at(BITMAP *dest, int tl_x, int tl_y,
       draw_style = g_large_pal;
       break;
   }
+
   c = g_picture->pic_squares[(tl_y + off_y) * g_picture->w + (tl_x +off_x)];
   pal_offset = c.pal_entry;
   color_offset = c.fill_value;
+  is_trans = c.is_transparent;
+
+  if (is_trans) {
+    rectfill(dest, 
+             DRAW_AREA_X + (off_x * NUMBER_BOX_RENDER_X_OFFSET) + 1,
+             DRAW_AREA_Y + (off_y * NUMBER_BOX_RENDER_Y_OFFSET) + 1,
+             DRAW_AREA_X + (off_x * NUMBER_BOX_RENDER_X_OFFSET) + NUMBER_BOX_WIDTH - 2,
+             DRAW_AREA_Y + (off_y * NUMBER_BOX_RENDER_Y_OFFSET) + NUMBER_BOX_HEIGHT - 2,
+             209);
+    return;
+  }
 
   if(color_offset == 0) {
     if (g_cur_color == pal_offset && g_mark_current == 1) {
@@ -705,6 +719,7 @@ void render_game_screen(BITMAP *dest, RenderComponents c) {
 
   /* Draw the squares in the play area */
   if(c.render_main_area_squares || c.render_all) {
+    rectfill(dest, DRAW_AREA_X + 1, DRAW_AREA_Y + 1, DRAW_AREA_X + DRAW_AREA_WIDTH - 1, DRAW_AREA_X + DRAW_AREA_HEIGHT-1, 209);
     /* If the picture is smaller than the play area, only draw the smaller
        area */
     for(i = 0; i < g_play_area_w; i++) {
@@ -733,9 +748,9 @@ void render_game_screen(BITMAP *dest, RenderComponents c) {
     render_main_area_square_at(dest, g_pic_render_x, g_pic_render_y,
                                g_draw_cursor_x, g_draw_cursor_y);
     /* Draw the cursor itself */
-    draw_sprite(dest, g_draw_cursor,
+    draw_sprite(dest, g_draw_cursor_sm,
                 DRAW_AREA_X + DRAW_CURSOR_WIDTH * g_draw_cursor_x,
-                DRAW_AREA_Y + DRAW_CURSOR_WIDTH * g_draw_cursor_y);
+                DRAW_AREA_Y + DRAW_CURSOR_WIDTH * g_draw_cursor_y);     
   }
 
   if(c.render_palette_cursor || c.render_all) {
@@ -1384,6 +1399,7 @@ int load_graphics(void) {
   g_bg_right = (BITMAP *)g_res[RES_BG_RIGHT].dat;
   g_mainarea = (BITMAP *)g_res[RES_MAINAREA].dat;
   g_draw_cursor = (BITMAP *)g_res[RES_DRAWCURS].dat;
+  g_draw_cursor_sm = (BITMAP *)g_res[RES_DRAWCURS_SM].dat;
   g_small_pal = (BITMAP *)g_res[RES_SM_PAL].dat;
   g_large_pal = (BITMAP *)g_res[RES_LG_PAL].dat;
   g_large_diamonds = (BITMAP *)g_res[RES_LG_DIA].dat;

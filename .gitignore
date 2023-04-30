@@ -5,3 +5,5 @@
 *.pro
 .vscode/
 tools/pic_src/in_progress
+tools/in    
+tools/out

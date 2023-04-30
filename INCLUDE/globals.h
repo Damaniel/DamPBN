@@ -108,6 +108,7 @@ extern BITMAP *g_bg_lower;
 extern BITMAP *g_bg_right;
 extern BITMAP *g_mainarea;
 extern BITMAP *g_draw_cursor;
+extern BITMAP *g_draw_cursor_sm;
 extern BITMAP *g_small_pal;
 extern BITMAP *g_large_pal;
 extern BITMAP *g_large_diamonds;
