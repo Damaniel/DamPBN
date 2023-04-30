@@ -786,12 +786,12 @@ void render_draw_cursor(BITMAP *dest) {
    * If the x or y position is on the edges, draw a dark line on their far edge to cover the old cursor
    * droppings. */
   if (g_old_draw_cursor_x == g_draw_cursor_x) {
-    if (g_draw_cursor_x == 0) {
+    if (g_draw_cursor_x == 0) { 
       line(dest, 
            DRAW_AREA_X, 
            DRAW_AREA_Y + NUMBER_BOX_RENDER_Y_OFFSET * g_draw_cursor_y,
            DRAW_AREA_X,
-           DRAW_AREA_Y + (NUMBER_BOX_RENDER_Y_OFFSET + 1) * g_draw_cursor_y + 1,
+           DRAW_AREA_Y + (NUMBER_BOX_RENDER_Y_OFFSET * (g_draw_cursor_y + 1)) + 1,   
            208);
     }
     if (g_draw_cursor_x == MAX_PLAY_AREA_WIDTH-1) {
@@ -799,14 +799,14 @@ void render_draw_cursor(BITMAP *dest) {
            DRAW_AREA_X + DRAW_AREA_WIDTH,
            DRAW_AREA_Y + NUMBER_BOX_RENDER_Y_OFFSET * g_draw_cursor_y,
            DRAW_AREA_X + DRAW_AREA_WIDTH,
-           DRAW_AREA_Y + (NUMBER_BOX_RENDER_Y_OFFSET + 1) * g_draw_cursor_y + 1,
+           DRAW_AREA_Y + (NUMBER_BOX_RENDER_Y_OFFSET  * (g_draw_cursor_y + 1)) + 1,
            208);
     }
     if (g_draw_cursor_y == 0) {
       line(dest,
            DRAW_AREA_X + NUMBER_BOX_RENDER_X_OFFSET * g_draw_cursor_x,
            DRAW_AREA_Y,
-           DRAW_AREA_X + (NUMBER_BOX_RENDER_X_OFFSET + 1) * g_draw_cursor_x + 1,
+           DRAW_AREA_X + (NUMBER_BOX_RENDER_X_OFFSET * (g_draw_cursor_x + 1)) + 1,
            DRAW_AREA_Y,
            208);      
     }
@@ -814,11 +814,12 @@ void render_draw_cursor(BITMAP *dest) {
       line(dest,
            DRAW_AREA_X + NUMBER_BOX_RENDER_X_OFFSET * g_draw_cursor_x,
            DRAW_AREA_Y + DRAW_AREA_HEIGHT,
-           DRAW_AREA_X + (NUMBER_BOX_RENDER_X_OFFSET + 1) * g_draw_cursor_x + 1,
+           DRAW_AREA_X + (NUMBER_BOX_RENDER_X_OFFSET * (g_draw_cursor_x + 1)) + 1,
            DRAW_AREA_Y + DRAW_AREA_HEIGHT,
            208);      
     }
   }
+
   /* Draw the cursor itself */
   if (cs.is_transparent) {
     draw_sprite(dest, g_draw_cursor_sm,
