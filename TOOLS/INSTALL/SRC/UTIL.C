@@ -1,17 +1,6 @@
 #include "UTIL.H"
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <direct.h>
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <malloc.h>
-#include <dos.h>
 
-/*
- * mkdir_recursive
- */
+/* mkdir_recursive */
 int mkdir_recursive(char *path) {
     char *inpath;
     char cur_dir_path[MKDIR_MAX_PATH_LENGTH];
@@ -100,6 +89,7 @@ int mkdir_recursive(char *path) {
     return 0;
 }
 
+/* is_path_valid */
 int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     char *p;
     char *backslash_delim = { "\\" };
@@ -110,6 +100,20 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     struct stat stat_buf;
     struct diskfree_t disk_data;
     unsigned long space_per_cluster;
+
+    // This is ugly.
+    // 
+    // A valid path needs to meet the following criteria:
+    //    - It has no spaces or commas in it
+    //    - It starts with a drive letter, colon and backslash (i.e. absolute paths only)
+    //    - No path component has excess periods
+    //    - No path component has more than 8 characters as the base name or 3 characters after a period
+    //    - No path component uses one of the reserved DOS file names
+    //    - It does or doesn't exist (either is fine, different return values will be used for these)
+    //    - It needs to be on a disk that has sufficient free space (if requested)
+    //
+    // I'm sure there are plenty of corner cases I'm not catching, but this is just an installer for 
+    // a game.  If you want to mess up your running DOS or DOSBox instance, knock yourself out.
 
 	// Path validity:
 	// 	The path should:

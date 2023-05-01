@@ -6,7 +6,7 @@ DEL *.EXE
 REM change to the source directory
 ECHO ********************* Building installer *************************
 CD SRC
-WCL INSTALL.C INPUT.C RENDER.C UTIL.C /zq /i..\INCLUDE %MEMMODEL% /fe=INSTALL.EXE ..\LIBS\TEXTDRAW.LIB
+WCL INSTALL.C INPUT.C RENDER.C UTIL.C MANIFEST.C /zq /i..\INCLUDE %MEMMODEL% /fe=INSTALL.EXE ..\LIBS\TEXTDRAW.LIB
 DEL *.OBJ
 MOVE INSTALL.EXE .. >NUL
 cd ..

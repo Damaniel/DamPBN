@@ -5,6 +5,7 @@
 #include "input.h"
 #include "render.h"
 #include "util.h"
+#include "manifest.h"
 #include <stdio.h>
 #include <bios.h>
 #include <dos.h>

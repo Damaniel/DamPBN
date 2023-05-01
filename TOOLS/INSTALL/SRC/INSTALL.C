@@ -41,22 +41,42 @@ void set_state(State s) {
 
 int main(void) {
     int result;
-    char *path = "C:\\DAMPBN\\";
+    char *path = "C:\\GAMES\\DAMPBN";
     g_exit = 0;
 
-    printf("Path is %s\n", path);
-    result = is_path_valid(path, 1, 3);
-    switch (result) {
-        case 0:
-            printf("Error while checking path!\n");
-            break;
-        case 1:
-            printf("Path is valid and doesn't exist yet!\n");
-            break;
-        case 2:
-            printf("Path is valid but exists already!\n");
-            break;
+    result = load_manifest("TESTMANI", &g_manifest);
+    if (result != 0) {
+        printf("Couldn't load manifest!\n");
+        return -1;
     }
+
+    set_manifest_base_path(&g_manifest, path);
+
+    while (!manifest_complete(&g_manifest)) {
+        result = get_manifest_step(&g_manifest);
+        if(result != 0) {
+            printf("Unable to get next manifest step!\n");
+            unload_manifest(&g_manifest);
+            return 1;
+        }
+        printf("Step %d: %s\n", get_cur_manifest_step(&g_manifest), get_cur_manifest_step_cmd(&g_manifest));
+        result = perform_manifest_step(&g_manifest);
+        if (result != 0) {
+            printf("Couldn't perform manifest step!\n");
+            unload_manifest(&g_manifest);
+            return 1;
+        }
+        printf("Completed step %d of %d\n", get_cur_manifest_step(&g_manifest), get_num_manifest_steps(&g_manifest));
+    }
+
+    unload_manifest(&g_manifest);
+
+    // printf("Path is %s\n", path);
+    // result = is_path_valid(path, 1, 3);
+    // if (result == 1) {
+    //     result = mkdir_recursive(path);
+    //     printf("Result was %d\n", result);
+    // }
 
     return 0;
 
