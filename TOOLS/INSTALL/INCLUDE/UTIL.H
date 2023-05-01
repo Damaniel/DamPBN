@@ -9,4 +9,10 @@
  */
 int mkdir_recursive(char *path);
 
+/*
+ * is_path_valid - determines whether the specified path is a valid one.
+ *                 Returns 1 if valid, 0 if not. 
+ */
+int is_path_valid(char *path, int check_disk_free, int required_free_mb);
+
 #endif

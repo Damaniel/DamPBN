@@ -40,9 +40,23 @@ void set_state(State s) {
 }
 
 int main(void) {
+    int result;
+    char *path = "C:\\DAMPBN\\";
     g_exit = 0;
 
-    mkdir_recursive("C:\\DamPBN\\test1\\test2\\test3");
+    printf("Path is %s\n", path);
+    result = is_path_valid(path, 1, 3);
+    switch (result) {
+        case 0:
+            printf("Error while checking path!\n");
+            break;
+        case 1:
+            printf("Path is valid and doesn't exist yet!\n");
+            break;
+        case 2:
+            printf("Path is valid but exists already!\n");
+            break;
+    }
 
     return 0;
 
