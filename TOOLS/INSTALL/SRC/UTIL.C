@@ -17,7 +17,7 @@ int mkdir_recursive(char *path) {
     // If the last character of the string is a backslash, remove it
     if(inpath[strlen(inpath)-1] == '\\') {
         inpath[strlen(inpath)-1] = '\0';
-        printf("Note: truncated end backslash from path\n");
+        //printf("Note: truncated end backslash from path\n");
     }
 
     // Check if the path already exists and return if it does.
@@ -25,15 +25,15 @@ int mkdir_recursive(char *path) {
     // If it exists and isn't a directory, return an error.
     result = stat(inpath, &stat_buf);
     if (result != 0) {
-        printf("Directory %s doesn't exist - yet\n", inpath);
+        //printf("Directory %s doesn't exist - yet\n", inpath);
     } else {
         if (S_ISDIR(stat_buf.st_mode)) {
-            printf("Path %s exists and is a directory. We're done.\n", inpath);
+            //printf("Path %s exists and is a directory. We're done.\n", inpath);
             free(inpath);
             return 0;
         }
         else {
-            printf("Path %s exists and is *not* a directory. Illegal!\n", inpath);
+            //printf("Path %s exists and is *not* a directory. Illegal!\n", inpath);
             free(inpath);
             return errno;
         }
@@ -51,18 +51,18 @@ int mkdir_recursive(char *path) {
             result = stat(cur_dir_path, &stat_buf);
             // If the directory doesn't already exist, create it
             if (result != 0) {
-                printf("Creating path %s\n", cur_dir_path);
+                //printf("Creating path %s\n", cur_dir_path);
                 result = mkdir(cur_dir_path);
                 if (result != 0) {
                     // Making the directory failed for some reason
-                    printf("Couldn't create the specified path (%s)\n", inpath);
+                    //printf("Couldn't create the specified path (%s)\n", inpath);
                     free(inpath);
                     return errno;
                 }
             }
             // If it does, just skip this time around
             else {
-                printf("Skipping %s - path presumably exists\n", cur_dir_path);
+                //printf("Skipping %s - path presumably exists\n", cur_dir_path);
             }
         }
         // Add a separator before we tack on another path element
@@ -72,14 +72,14 @@ int mkdir_recursive(char *path) {
         p = strtok(NULL, delim);
         // If the string is too long, return an error rather than truncate
         if (length > MKDIR_MAX_PATH_LENGTH) {
-            printf("Can't make more directories; path is too long");
+            //printf("Can't make more directories; path is too long");
             free(inpath);
             return -1;
         }
     }
     // If segments < 2, we made no paths
     if(segments < 2) {
-        printf("Can't make a directory with less than 2 segments!\n");
+        //printf("Can't make a directory with less than 2 segments!\n");
         free(inpath);
         return -1;
     }
@@ -96,7 +96,7 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     char *inpath;
     char drive;
     unsigned char *space, *str, *str2, *upstr;
-    int path_valid, result, len;
+    int path_valid, result, len, segments;
     struct stat stat_buf;
     struct diskfree_t disk_data;
     unsigned long space_per_cluster;
@@ -120,12 +120,12 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
 	// 		- Have no spaces or commas 
     space = strstr(path, " ");
     if (space != NULL) {
-        printf("Spaces in the path!\n");
+        //printf("Spaces in the path!\n");
         return 0;
     }
     space = strstr(path, ",");
     if (space != NULL) {
-        printf("Commas in the path!\n");
+        //printf("Commas in the path!\n");
         return 0;
     }
 
@@ -143,7 +143,7 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     }
 
     if(!path_valid) {
-        printf("Path doesn't start with a drive letter!\n");
+        //printf("Path doesn't start with a drive letter!\n");
         return 0;
     }
 
@@ -153,6 +153,7 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     //      - Have no path components with more than 1 period
     inpath = strdup(path);
     p = strtok(inpath, backslash_delim);
+    segments = 1;
     while (p != NULL) {
         path_valid = 1;
         len = strlen(p);
@@ -177,18 +178,26 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
             path_valid = 0;
         }
         if (!path_valid) {
-            printf("Path component invalid!\n");
+            //printf("Path component invalid!\n");
             free(inpath);
             return 0;
         }
 
+        // a : anywhere outside of the drive letter area
+        if (segments >= 2) {
+            if (strstr(p, ":") != NULL) {
+                //printf("Found : in incorrect place!\n");
+                free(inpath);
+                return 0;
+            }
+        }
         // Any reserved DOS file name
         upstr = _strupr(p);
         if (!strcmp(upstr, "COM1") || 
             !strcmp(upstr, "COM2") ||
             !strcmp(upstr, "COM3") ||
             !strcmp(upstr, "COM4")) {
-                printf("COMn found in path!\n");
+                //printf("COMn found in path!\n");
                 free(inpath);
                 return 0;
         }
@@ -196,7 +205,7 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
             !strcmp(upstr, "LPT2") ||
             !strcmp(upstr, "LPT3") ||
             !strcmp(upstr, "LPT4")) {
-                printf("LPTn found in path!\n");
+                //printf("LPTn found in path!\n");
                 free(inpath);
                 return 0;
         }
@@ -205,12 +214,13 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
             !strcmp(upstr, "AUX") ||
             !strcmp(upstr, "PRN") ||
             !strcmp(upstr, "CLOCK$")) {
-                printf("Invalid path name found in path!\n");
+                //printf("Invalid path name found in path!\n");
                 free(inpath);
                 return 0;
         }
 
         p = strtok(NULL, backslash_delim);
+        segments = segments + 1;
     }
     free(inpath);
 
@@ -219,16 +229,16 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     // If the last character of the string is a backslash, remove it
     if(inpath[strlen(inpath)-1] == '\\') {
         inpath[strlen(inpath)-1] = '\0';
-        printf("Note: truncated end backslash from path\n");
+        //printf("Note: truncated end backslash from path\n");
     }
     result = stat(inpath, &stat_buf);
     if (result == 0) {
         if (S_ISDIR(stat_buf.st_mode)) {
-            printf("Directory already exists!\n");
+            //printf("Directory already exists!\n");
             free(inpath);
             return 2;
         } else {
-            printf("Location exists but isn't a directoty!\n");
+            //printf("Location exists but isn't a directoty!\n");
             free(inpath);
             return 0;
         }
@@ -246,13 +256,13 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     if (check_disk_free) {
         if (_dos_getdiskfree(drive+1, &disk_data) == 0) {
             space_per_cluster = disk_data.sectors_per_cluster * disk_data.bytes_per_sector;
-            printf("Free space on disk = %lu bytes\n", space_per_cluster * disk_data.avail_clusters);
+            //printf("Free space on disk = %lu bytes\n", space_per_cluster * disk_data.avail_clusters);
             if ((space_per_cluster * disk_data.avail_clusters) < (1048576*required_free_mb)) {
-                printf("Insufficient disk space!\n");
+                //printf("Insufficient disk space!\n");
                 return 0;
             }
         } else {
-            printf("Unable to get disk space information for drive %c!\n", drive + 65);
+            //printf("Unable to get disk space information for drive %c!\n", drive + 65);
             return 0;
         }
     }

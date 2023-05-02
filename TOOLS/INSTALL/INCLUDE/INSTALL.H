@@ -60,9 +60,10 @@
 #define KEY_7                   0x08
 #define KEY_8                   0x09
 #define KEY_9                   0x0A
+#define KEY_DELETE              0x53
 
 #define MAX_PATH_LENGTH     64
-#define DEFAULT_PATH "C:\\DamPBN"
+#define DEFAULT_PATH "C:\\DamPBN\\"
 
 typedef enum {
     STATE_MAIN_SCREEN,
@@ -76,7 +77,7 @@ extern State g_prev_state;
 extern int g_exit;
 extern RenderComponents g_render_components;
 extern char g_install_path[MAX_PATH_LENGTH];
-extern int g_edit_cursor_x, g_edit_cursor_y;
+extern int g_edit_cursor_x, g_edit_cursor_y, g_old_edit_cursor_x, g_edit_display_offset;
 
 extern void set_state(State s);
 

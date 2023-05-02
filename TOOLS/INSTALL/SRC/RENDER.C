@@ -24,6 +24,8 @@ void clear_render_components(void) {
 }
 
 void render_main_screen(void) {
+    char debug_text[80];
+
     if (g_render_components.background) {
         fill_box_at(0, 0, 79, 24, 177, g_render_colors.background);
         hline_at(0, 0, 80, ' ', g_render_colors.status_bar);
@@ -51,15 +53,72 @@ void render_main_screen(void) {
     if (g_render_components.destination_edit_area) {
         box_at(20, 17, 59, 19, BORDER_SINGLE, g_render_colors.box_edge);
         string_at(21, 18, " Install to: ", g_render_colors.box_text);
-        string_at(34, 18, "                        ", g_render_colors.edit_box);
+        string_at(PATH_EDIT_BOX_X, 18, "                        ", g_render_colors.edit_box);
         string_at(58, 18, " ", g_render_colors.box_text);
         g_render_components.destination_edit_area = 0;
     }
 
     if (g_render_components.destination_edit) {
-        string_at(34, 18, g_install_path, g_render_colors.edit_box);
-        char_at(g_edit_cursor_x, g_edit_cursor_y, ' ', g_render_colors.edit_text);
+        char a;
+        render_path_text(g_edit_display_offset);
+        a = get_letter_under_cursor(g_edit_cursor_x, g_edit_display_offset);
+        char_at(g_edit_cursor_x, g_edit_cursor_y, a, g_render_colors.edit_text);
         g_render_components.destination_edit = 0;
+        if (g_old_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X == strlen(g_install_path) && g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X == strlen(g_install_path) - 1) {
+            char_at(g_old_edit_cursor_x, g_edit_cursor_y, ' ' , g_render_colors.edit_box);
+        } 
+    }
+
+    if (g_render_components.debug_text) {
+        memset(debug_text, '\0', 80);
+        snprintf(debug_text, 79, " Cursor X: %d, under cursor = %c ", g_edit_cursor_x, (g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X >= strlen(g_install_path)) ? ' ' : g_install_path[g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X]);
+        string_at(5, 20, debug_text, g_render_colors.box_text);
+        memset(debug_text, '\0', 80);
+        snprintf(debug_text, 79, " Edit display offset: %d ", g_edit_display_offset);
+        string_at(5, 21, debug_text, g_render_colors.box_text);
+        memset(debug_text, '\0', 80);
+        snprintf(debug_text, 79, " Path: %s ", g_install_path);
+        string_at(5, 22, debug_text, g_render_colors.box_text);
+        memset(debug_text, '\0', 80);
+        snprintf(debug_text, 79, " Offset in string: %d, strlen = %d ", g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X, strlen(g_install_path));
+        string_at(5, 23, debug_text, g_render_colors.box_text);
+        g_render_components.debug_text = 0;
+    }
+}
+
+char get_letter_under_cursor(int cursor_pos, int left_offset) {
+    int offset = left_offset + cursor_pos - PATH_EDIT_BOX_X ;
+    // If there is a letter under the cursor, then return it
+    if (offset < strlen(g_install_path)) {
+        return g_install_path[offset];
+    }
+    return ' ';
+}
+
+void set_letter_under_cursor(int cursor_pos, int left_offset, char c) {
+    int offset = left_offset + cursor_pos - PATH_EDIT_BOX_X;
+    if (offset < strlen(g_install_path)) {
+        g_install_path[offset] = c;        
+    }
+}
+
+void render_path_text(int left_offset) {
+    int len, empty_space_in_box, i;
+    char path[MAX_VISIBLE_PATH_LENGTH + 1];
+
+    len = strlen(g_install_path);
+    if ((len - left_offset) > MAX_VISIBLE_PATH_LENGTH) {
+        strncpy(path, g_install_path+left_offset, MAX_VISIBLE_PATH_LENGTH);
+    } else {
+        strncpy(path, g_install_path+left_offset, MAX_VISIBLE_PATH_LENGTH);
+    }
+    path[MAX_VISIBLE_PATH_LENGTH] = '\0';
+    string_at(PATH_EDIT_BOX_X, 18, path, g_render_colors.edit_box);
+    // Figure out how much empty space is in the box after the remaining string,
+    // and clear it out
+    empty_space_in_box = MAX_VISIBLE_PATH_LENGTH - len - left_offset;
+    for(i=0;i<empty_space_in_box;i++) {
+        char_at(PATH_EDIT_BOX_X + MAX_VISIBLE_PATH_LENGTH - i - 1, 18, ' ', g_render_colors.edit_box);
     }
 }
 

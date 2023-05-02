@@ -33,22 +33,22 @@ int load_manifest(char *manifest_file, Manifest *m) {
 
     m->manifest_fp = fopen(manifest_file, "r");
     if (m->manifest_fp == NULL) {
-        printf("Manifest file not found!\n");
+        //printf("Manifest file not found!\n");
         return -1;
     }
     result = fgets(line, MAX_MANIFEST_STEP_LEN, m->manifest_fp);
     if (result == NULL) {
-        printf("Couldn't get manifest step count!\n");
+        //printf("Couldn't get manifest step count!\n");
         return -1;
     }
 
     m->num_steps = atoi(line);
     if (m->num_steps <1) {
-        printf("No step count provided!\n");
+        //printf("No step count provided!\n");
         return -1;
     }
 
-    printf("Manifest has %d steps\n", m->num_steps);
+    //printf("Manifest has %d steps\n", m->num_steps);
     return 0;
 }
 
@@ -70,10 +70,10 @@ int get_manifest_step(Manifest *m) {
 
     if (m->manifest_fp == NULL) {
         if (m->cur_step_idx + 1 == m->num_steps) {
-            printf("Last step complete!\n");
+            //printf("Last step complete!\n");
             return 0;
         } else {
-            printf("Step count doesn't match (%d expected, %d performed)\n", m->num_steps, m->cur_step_idx + 1);
+            //printf("Step count doesn't match (%d expected, %d performed)\n", m->num_steps, m->cur_step_idx + 1);
             return 1;
         }
     }
@@ -95,7 +95,7 @@ int get_manifest_step(Manifest *m) {
     } else if (!strcmp(p, "COPY")) {
         m->ms.operation = COPY;
     } else {
-        printf("Unknown command!\n");
+        //printf("Unknown command!\n");
         free(cur_step);
         return 1;
     }
@@ -147,10 +147,10 @@ int perform_manifest_step(Manifest *m) {
         case MKDIR:
             result = mkdir_recursive(source_path);
             if (result != 0) {
-                printf("MKDIR step failed making %s!\n", source_path);
+                //printf("MKDIR step failed making %s!\n", source_path);
                 return -1;
             } else {
-                printf("Created directory %s\n", source_path);
+                //printf("Created directory %s\n", source_path);
             }
             break;
         case COPY:
@@ -160,9 +160,9 @@ int perform_manifest_step(Manifest *m) {
             strncat(command, " ", 1);
             strncat(command, dest_path, MKDIR_MAX_PATH_LENGTH);
             strncat(command, " >NUL", 5);
-            printf("COPY command is '%s'\n", command);
+            //printf("COPY command is '%s'\n", command);
             result = system(command);
-            printf("  Result of system is %d\n", result);
+            //printf("  Result of system is %d\n", result);
             break;
         case COPYDIR:
             memset(command, '\0', MKDIR_MAX_PATH_LENGTH);
@@ -171,12 +171,13 @@ int perform_manifest_step(Manifest *m) {
             strncat(command, " ", 1);
             strncat(command, dest_path, MKDIR_MAX_PATH_LENGTH);
             strncat(command, " /E /Q /N /Y /I >NUL", 20);
-            printf("COPYDIR command is '%s'\n", command);
+            //printf("COPYDIR command is '%s'\n", command);
             result = system(command);
-            printf("  Result of system is %d\n", result);
+            //printf("  Result of system is %d\n", result);
             break;
         default:
-            printf("Warning - unknown operation %d\n", m->ms.operation);
+            //printf("Warning - unknown operation %d\n", m->ms.operation);
+            break;
     }
     return 0;
 }
