@@ -10,6 +10,7 @@
 #include <bios.h>
 #include <dos.h>
 #include <string.h>
+#include <math.h>
 
 // Keyboard scancodes
 #define KEY_ESC                 0x01
@@ -67,6 +68,7 @@
 #define REQUIRED_MB         3
 
 typedef enum {
+    STATE_NONE,
     STATE_MAIN_SCREEN,
     STATE_INVALID_PATH_SCREEN,
     STATE_CONFIRM_EXISTING_SCREEN,
@@ -78,9 +80,10 @@ extern State g_cur_state;
 extern State g_prev_state;
 extern int g_exit;
 extern RenderComponents g_render_components;
-extern char g_install_path[MAX_PATH_LENGTH];
+extern char g_install_path[MAX_PATH_LENGTH + 1];
 extern int g_edit_cursor_x, g_edit_cursor_y, g_old_edit_cursor_x, g_edit_display_offset;
 
 extern void set_state(State s);
+extern int perform_copy_steps(void);
 
 #endif

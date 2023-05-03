@@ -110,6 +110,7 @@ int get_manifest_step(Manifest *m) {
     }
  
     strncpy(m->cur_step_cmd, step, MAX_MANIFEST_STEP_LEN);
+    m->cur_step_idx = m->cur_step_idx+1;
     return 0;
 }
 

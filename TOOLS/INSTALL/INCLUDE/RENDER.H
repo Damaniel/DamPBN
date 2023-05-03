@@ -8,7 +8,9 @@ void clear_render_components(void);
 void render_confirm_existing_screen(void);
 void render_main_screen(void);
 void render_invalid_path_screen(void);
+void render_progress_screen(void);
 void render(void);
+void render_complete_screen(void);
 void render_path_text(int left_offset);
 char get_letter_under_cursor(int cursor_pos, int left_offset);
 void set_letter_under_cursor(int cursor_pos, int left_offset, char c);
@@ -25,7 +27,12 @@ typedef struct {
     int bottom_status_text;
     int error_message;
     int confirm_existing_message;
+    int progress_message_window;
+    int progress_box;
+    int progress_bar;
+    int progress_name;
     int debug_text;
+    int complete_message;
 } RenderComponents;
 
 typedef struct {

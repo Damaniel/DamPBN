@@ -46,6 +46,61 @@ void render_confirm_existing_screen(void) {
         g_render_components.confirm_existing_message = 0;   
     }
 }
+
+void render_progress_screen(void) {
+    char buf[80];
+    float progress_pct;
+    int bar_length, step;
+
+    render_main_screen();
+
+    if (g_render_components.progress_message_window) {
+        box_at(8, 3, 71, 15, BORDER_DOUBLE, g_render_colors.box_edge);
+        fill_box_at(9, 4, 70, 14, ' ', g_render_colors.box_text);
+        string_at(10, 5, "   The game files are now being copied to the hard drive.", g_render_colors.box_text);
+        string_at(10, 8, "Read the README.md file for more information about the game", g_render_colors.box_text);
+        string_at(10, 9, "   and for information about tools you can use to create", g_render_colors.box_text);
+        string_at(10, 10, "                     your own images. ", g_render_colors.box_text);
+        string_at(10, 13, "        This shouldn't take too long, I promise...", g_render_colors.box_text);
+        g_render_components.progress_message_window = 0;
+    }
+
+    if (g_render_components.progress_box) {
+        box_at(4, 18, 75, 21, BORDER_DOUBLE, g_render_colors.box_edge);
+        fill_box_at(5, 19, 74, 20, ' ', g_render_colors.box_text);
+        g_render_components.progress_box = 0;
+    }
+
+    if (g_render_components.progress_bar) {
+        step = g_manifest.cur_step_idx - 1;
+        progress_pct = (float)step / (float)g_manifest.num_steps;
+        bar_length = (int)(floor(67.0 * progress_pct));
+        fill_box_at(6, 20, 73, 20, ' ', g_render_colors.edit_box);
+        fill_box_at(6, 20, 6 + bar_length - 1, 20, 219, g_render_colors.edit_box);
+        g_render_components.progress_bar = 0;
+    }
+
+    if (g_render_components.progress_name) {
+        string_at(6, 19, "                                                                    ", g_render_colors.box_text);
+        switch(g_manifest.ms.operation) {
+            case MKDIR:
+                snprintf(buf, 70, "Creating directory %s...", g_manifest.ms.source);
+                string_at(6, 19, buf, g_render_colors.box_text);
+                break;
+            case COPY:
+                snprintf(buf, 70, "Copying %s...", g_manifest.ms.source, g_manifest.ms.dest);
+                string_at(6, 19, buf, g_render_colors.box_text);
+                break;
+            case COPYDIR:
+                snprintf(buf, 70, "Copying directory %s...", g_manifest.ms.source, g_manifest.ms.dest);
+                string_at(6, 19, buf, g_render_colors.box_text);
+                break;
+        }
+        g_render_components.progress_name = 0;
+        sleep(2);
+    }
+}
+
 void render_main_screen(void) {
     char debug_text[80];
 
@@ -61,6 +116,7 @@ void render_main_screen(void) {
     }
     if (g_render_components.bottom_status_text) {
         string_at(26, 24, "Copyright 2023 Shaun Brandt", g_render_colors.status_text);
+        g_render_components.bottom_status_text = 0;
     }
     if (g_render_components.intro_window) {
         box_at(8, 3, 71, 15, BORDER_DOUBLE, g_render_colors.box_edge);
@@ -87,9 +143,12 @@ void render_main_screen(void) {
         a = get_letter_under_cursor(g_edit_cursor_x, g_edit_display_offset);
         char_at(g_edit_cursor_x, g_edit_cursor_y, a, g_render_colors.edit_text);
         g_render_components.destination_edit = 0;
-        if (g_old_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X == strlen(g_install_path) && g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X == strlen(g_install_path) - 1) {
+        if (g_old_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X  == strlen(g_install_path) && g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X == strlen(g_install_path) - 1) {
             char_at(g_old_edit_cursor_x, g_edit_cursor_y, ' ' , g_render_colors.edit_box);
         } 
+        if (g_old_edit_cursor_x == PATH_EDIT_BOX_X + MAX_VISIBLE_PATH_LENGTH - 1 && g_edit_cursor_x == PATH_EDIT_BOX_X + MAX_VISIBLE_PATH_LENGTH - 2) {
+            char_at(PATH_EDIT_BOX_X + MAX_VISIBLE_PATH_LENGTH - 1, g_edit_cursor_y, ' ', g_render_colors.edit_box);
+        }
     }
 
     if (g_render_components.debug_text) {
@@ -106,6 +165,19 @@ void render_main_screen(void) {
         snprintf(debug_text, 79, " Offset in string: %d, strlen = %d ", g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X, strlen(g_install_path));
         string_at(5, 23, debug_text, g_render_colors.box_text);
         g_render_components.debug_text = 0;
+    }
+}
+
+void render_complete_screen(void) {
+    // results are stacked on top of the main screen, so draw it first
+    render_main_screen();
+    if (g_render_components.complete_message) {
+        box_at(10, 9, 69, 14, BORDER_SINGLE, g_render_colors.box_edge);
+        fill_box_at(11, 10, 68, 13, ' ', g_render_colors.box_text);
+        string_at(12, 10, "              Installation is now complete.", g_render_colors.box_text);
+        string_at(12, 11, "          Thanks for installing DamPBN. Enjoy!", g_render_colors.box_text);
+        string_at(12, 13, "                 Press ENTER to exit.", g_render_colors.box_text);
+        g_render_components.complete_message = 0;   
     }
 }
 
@@ -155,6 +227,14 @@ void render(void) {
             break;
         case STATE_CONFIRM_EXISTING_SCREEN:
             render_confirm_existing_screen();
+            break;
+        case STATE_COPY_SCREEN:
+            render_progress_screen();
+            // Sleep for a bit to progress the bar
+            sleep(1);
+            break;
+        case STATE_COMPLETE_SCREEN:
+            render_complete_screen();
             break;
         default:
             break;
