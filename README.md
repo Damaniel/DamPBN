@@ -24,6 +24,8 @@ them by running `make tools` from the root of the main directory.  These tools a
           version.  This is important since it allows the creation of picture
           files with fewer than 16 colors while maintaining compatibility with
           Allegro.
+- installer: creates an installer for the game, meant for copying files from a floppy
+             disk to (presumably) a hard drive
 
 The python tools are some batch converters that I'm using to make larger collections.
 They are:
@@ -37,6 +39,12 @@ They are:
                     with numbered names, and makes a metadata file for batch_convert.py
 - image_split.py: takes a pile of images and divides them into groups of 50, putting each
                   group into sequentially numbered directories
+
+An additional python tool is present:
+
+- generate_manifest.py: creates a manifest for the installer.  Scans a directory tree
+                        and generates a file that tells the installer what directories to
+                        make and what files to copy
 
 ### Build requirements
 
@@ -62,6 +70,32 @@ on DOSbox due to the compiler setting the executable read-only.  For now,
 until I figure out what to do about it, just run upx on it manually if
 desired. 
 
+### Deployment
+
+The steps required to deploy a copy of the game is:
+
+- Build the code
+- Build the tools
+- (If needed) Build the installer
+- Copy the required distribution files to a target directory and compress them as needed
+- Run the manifest generator in the target directory
+- Take the resulting directory and use a tool like WinImage to make a floppy image file from it
+
+One issue is that the first 4 steps need to be done from a DOS environment, while the last 2
+need to be done in an environment with a copy of Python and a copy of WinImage (or some other tool
+that can generate floppy images from a directory tree).  As a result, my current workflow is to:
+
+- Run 'make' or 'make -f Makefile.295 prod' from the DamPBN directory
+- Run 'make tools' from the DamPBN\tools directory
+- Run 'build' from the DamPBN\tools\install directory
+- Copy the relevant files (binaries, cwsdpmi.exe, resources, pic files) to a DIST directory
+- Run UPX on all the binaries that need it (dampbn.exe, install.exe, covert.exe, expand.exe) in DIST
+- Run the manifest generator from DIST
+- Use WinImage to make a disk from the contents of DIST
+
+Not very convenient (and it certainly could be more automatable with some work), but I make releases
+so infrequently that I don't mind doing a couple manual steps once or twice a year.
+
 ### What's done
 
 - Logo screen, title screen
@@ -77,21 +111,18 @@ desired.
 - Replay of draw progress on screen when picture is complete
 - Auto save on exit
 - The ability to watch completed replays from the image select screen
+- An installer (and a floppy image that uses it)
 
 ### What's left to do?
 
 Lots. Many of these I'll do, but some probably not.  These include:
-- Support for non-rectangluar images (i.e. sprites without extra edge tiles)
-  - This one is highest priority and will require the following:
-    - Updating of the file format spec to support a transparency mask (done)
-    - Rewrite of the file loader to parse the transparency data
-    - Changes to the rendering code to skip drawing numbers in those grid locations
-    - Changes to the tile drawing code to prevent the user from marking empty locations
-    - Changes to the progress checks to ensure that the actual square count, and not
-      just the size of the bounding area, is completed
 - Option screen (continue last, start/continue another)
 - Periodic auto-save
 - More pictures (and pictures that aren't test/prototype images)!
+  - Since the current distribution takes up most of a floppy, I'm planning to do puzzle pack disk images for those
+    (though the files will all be present in my ZIP distributions)
+  - I've already created a set of 1000 images using my batch conversion tools.  They fit on a floppy size-wise, but
+    not sector wise - my pacakage installer will assume zipped or otherwise packed image files anyway.
 - MIDI player
 - Sound effects
 - (and plenty of other stuff I haven't thought of yet)
