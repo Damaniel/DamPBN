@@ -110,7 +110,7 @@ int get_manifest_step(Manifest *m) {
     }
  
     strncpy(m->cur_step_cmd, step, MAX_MANIFEST_STEP_LEN);
-    m->cur_step_idx = m->cur_step_idx+1;
+    m->cur_step_idx = m->cur_step_idx + 1;
     return 0;
 }
 
@@ -130,7 +130,6 @@ int perform_manifest_step(Manifest *m) {
 
     int result;
 
-    m->cur_step_idx = m->cur_step_idx + 1;
     if (m->ms.operation == MKDIR) {
         strncpy(source_path, m->base_path, MAX_MANIFEST_PATH_LEN);
         strncat(source_path, "\\", 1);
@@ -171,7 +170,7 @@ int perform_manifest_step(Manifest *m) {
             strncat(command, source_path, MKDIR_MAX_PATH_LENGTH);
             strncat(command, " ", 1);
             strncat(command, dest_path, MKDIR_MAX_PATH_LENGTH);
-            strncat(command, " /E /Q /N /Y /I >NUL", 20);
+            strncat(command, " /E /Y >NUL", 20);
             //printf("COPYDIR command is '%s'\n", command);
             result = system(command);
             //printf("  Result of system is %d\n", result);

@@ -147,6 +147,8 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
         return 0;
     }
 
+    //printf("Passed initial drive letter check\n");
+
 	// 		- Have no path components longer than 8 letters (or 12 if a period is found no later than the 9th character)
     //      - Have no path components with an invalid name 
     //          (CON, NUL, AUX, COM1, COM2, COM3, COM4, LPT1, LPT2, LPT3, LPT4, PRN, CLOCK$)
@@ -163,19 +165,25 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
             str2 = strstr((str+1), ".");
             if (str2 != NULL) {
                 path_valid = 0;
+                //printf("Failed extra period check!\n");
             }
         }
         // More than 3 characters after the period (4=3+the period)
-        if(strlen(str) > 4) {
+        if(str != NULL && strlen(str) > 4) {
             path_valid = 0;
+            //printf("Str checked is %s\n", str);
+            //printf("strlen of str is %d\n", strlen(str));
+            //printf("Failed period check!\n");
         }
         // No period, string longer than 8 characters
         if(str == NULL && len > 8) {
             path_valid = 0;
+            //printf("Failed component length check!\n");
         }
         // A period, string longer than 12 characters
         if (str != NULL && len > 12) {
             path_valid = 0;
+            //printf("Failed component full length check!\n");
         }
         if (!path_valid) {
             //printf("Path component invalid!\n");
@@ -224,6 +232,8 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
     }
     free(inpath);
 
+    //printf("Passed file component checks\n");
+
 	// 		- Not exist
     inpath = strdup(path);
     // If the last character of the string is a backslash, remove it
@@ -244,6 +254,8 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
         }
     }
     free(inpath);
+
+    //printf("Passes doesn't exist check\n");
 
     // 		- Be on a disk that has sufficient free space (if disk check is enabled)
     drive = path[0];
@@ -267,5 +279,6 @@ int is_path_valid(char *path, int check_disk_free, int required_free_mb) {
         }
     }
 
+    //printf("Passes all checks!\n");
     return 1;
 }

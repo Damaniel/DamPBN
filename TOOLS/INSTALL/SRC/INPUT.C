@@ -139,12 +139,7 @@ void process_confirm_existing_screen_input(unsigned char ascii_code, unsigned ch
 }
 
 void process_copy_screen_input(unsigned char ascii_code, unsigned char scan_code, unsigned char shift_status) {
-    switch (scan_code) {
-        case KEY_ENTER:
-        case KEY_ESC:
-            g_exit = 1;
-            break;
-    }
+    // Nothing happens here.  No input is accepted during this state.
 }
 
 void process_complete_screen_input(unsigned char ascii_code, unsigned char scan_code, unsigned char shift_status) {

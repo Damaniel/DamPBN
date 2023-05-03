@@ -11,6 +11,7 @@ int g_edit_cursor_x, g_edit_cursor_y, g_old_edit_cursor_x;
 int g_edit_display_offset;
 
 void set_state(State s) {
+    int result;
     g_prev_state = g_cur_state;
     g_cur_state = s;
 
@@ -50,8 +51,13 @@ void set_state(State s) {
             g_render_components.progress_box = 1;
             g_render_components.progress_message_window = 1;
             g_render_components.progress_name = 1;
-            perform_copy_steps();
-            set_state(STATE_COMPLETE_SCREEN);
+            result = perform_copy_steps();
+            if (result == 0) {
+                set_state(STATE_COMPLETE_SCREEN);
+            }
+            else {
+                set_state(STATE_COPY_ERROR_SCREEN);
+            }
             break;
         case STATE_COMPLETE_SCREEN:
             g_render_components.background = 1;
@@ -71,7 +77,7 @@ void set_state(State s) {
             break;
         default:
             break;
-    };
+    }
 }
 
 int perform_copy_steps(void) {
@@ -79,8 +85,11 @@ int perform_copy_steps(void) {
 
     set_manifest_base_path(&g_manifest, g_install_path);
 
+    printf("Initial manifest step = %d, number steps = %d\n", g_manifest.cur_step_idx, g_manifest.num_steps);
     while (!manifest_complete(&g_manifest)) {
         result = get_manifest_step(&g_manifest);
+        //printf("Now on step %d\n", g_manifest.cur_step_idx);
+        //printf(" Cmd idx is %d, src is %s , dest is %s\n", g_manifest.ms.operation, g_manifest.ms.source, g_manifest.ms.dest);
         if(result != 0) {
             return -1;
         }
@@ -88,10 +97,10 @@ int perform_copy_steps(void) {
         g_render_components.progress_name = 1;
         // Force a render update
         render();
-        //result = perform_manifest_step(&g_manifest);
-        //if (result !=0) {
-        //    return -1;           
-        //}
+        result = perform_manifest_step(&g_manifest);
+        if (result != 0) {
+            return -1;           
+        }
     }
 
     return 0;
@@ -107,6 +116,7 @@ int main(void) {
          return -1;
     }
 
+    printf("Manifest steps = %d\n", g_manifest.num_steps);
     g_cur_state = STATE_MAIN_SCREEN;
     g_prev_state = STATE_NONE;
 

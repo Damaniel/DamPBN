@@ -97,7 +97,6 @@ void render_progress_screen(void) {
                 break;
         }
         g_render_components.progress_name = 0;
-        sleep(2);
     }
 }
 
@@ -111,7 +110,7 @@ void render_main_screen(void) {
         g_render_components.background = 0;
     }
     if (g_render_components.top_status_text) {
-        string_at(29, 0, "DamPBN Installer v0.10", g_render_colors.status_text);
+        string_at(29, 0, "DamPBN Installer v1.00", g_render_colors.status_text);
         g_render_components.top_status_text = 0;
     }
     if (g_render_components.bottom_status_text) {
@@ -244,7 +243,6 @@ void render(void) {
         case STATE_COPY_SCREEN:
             render_progress_screen();
             // Sleep for a bit to progress the bar
-            sleep(1);
             break;
         case STATE_COMPLETE_SCREEN:
             render_complete_screen();
