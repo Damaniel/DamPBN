@@ -650,6 +650,85 @@ void process_load_press(void) {
 }
 
 /*=============================================================================
+ * process_scroll_bar_mouse_input
+ *============================================================================*/
+void process_scroll_bar_mouse_input(void) {
+  int scrollbar_bottom_begin = X_SCROLLBAR_AREA_X + g_across_scrollbar_x;
+  int scrollbar_bottom_end = scrollbar_bottom_begin + g_across_scrollbar_width;
+  int scrollbar_right_begin = Y_SCROLLBAR_AREA_Y + g_down_scrollbar_y;
+  int scrollbar_right_end = scrollbar_right_begin + g_down_scrollbar_height;
+  int update = 0;
+
+  /* Check to see if the mouse is in the bottom scrollbar area, but not on the 
+     scrollbar */
+  if (g_mouse_y >= X_SCROLLBAR_AREA_Y && g_mouse_y <= X_SCROLLBAR_AREA_Y + X_SCROLLBAR_AREA_HEIGHT &&
+      g_mouse_x >= X_SCROLLBAR_AREA_X && g_mouse_x <= X_SCROLLBAR_AREA_X + X_SCROLLBAR_AREA_WIDTH) {
+      update = 0;
+      if (mouse_clicked_here(X_SCROLLBAR_AREA_X, X_SCROLLBAR_AREA_Y , scrollbar_bottom_begin -1, 
+                             X_SCROLLBAR_AREA_Y + X_SCROLLBAR_AREA_HEIGHT, 1)) {
+          /* If to the left of the scrollbar, move the screen a page to the left */
+          g_pic_render_x -= g_play_area_w;
+          if (g_pic_render_x < 0) {
+              g_pic_render_x = 0;
+          }
+          update = 1;
+      }
+      if (mouse_clicked_here(scrollbar_bottom_end + 1, X_SCROLLBAR_AREA_Y, 
+                             X_SCROLLBAR_AREA_X + X_SCROLLBAR_AREA_WIDTH - 1, 
+                             X_SCROLLBAR_AREA_Y + X_SCROLLBAR_AREA_HEIGHT - 1, 1)) {
+        g_pic_render_x += g_play_area_w;
+        if (g_pic_render_x >= g_picture->w - g_play_area_w) {
+          g_pic_render_x = g_picture->w - g_play_area_w;
+        }
+        update = 1;
+      }
+      if (update) {
+        /* Calculate where we'll be drawing within the whole picture */        
+        g_draw_position_x = g_pic_render_x + g_draw_cursor_x;
+        g_draw_position_y = g_pic_render_y + g_draw_cursor_y;
+        g_components.render_draw_cursor = 1;
+        g_components.render_scrollbars = 1;  
+        g_components.render_overview_display = 1;
+        g_components.render_main_area_squares = 1;
+      }
+  }
+  /* Check to see if the mouse is in the right scrollbar area, but not on the 
+     scrollbar */
+  if (g_mouse_y >= Y_SCROLLBAR_AREA_Y && g_mouse_y <= Y_SCROLLBAR_AREA_Y + Y_SCROLLBAR_AREA_HEIGHT &&
+      g_mouse_x >= Y_SCROLLBAR_AREA_X && g_mouse_x <= Y_SCROLLBAR_AREA_X + Y_SCROLLBAR_AREA_WIDTH) {
+      update = 0;
+      if (mouse_clicked_here(Y_SCROLLBAR_AREA_X, Y_SCROLLBAR_AREA_Y , 
+                             Y_SCROLLBAR_AREA_X + Y_SCROLLBAR_AREA_WIDTH, scrollbar_right_begin - 1, 1)) {
+          /* If to the left of the scrollbar, move the screen a page to the left */
+          g_pic_render_y -= g_play_area_h;
+          if (g_pic_render_y < 0) {
+              g_pic_render_y = 0;
+          }
+          update = 1;
+      }
+      if (mouse_clicked_here(Y_SCROLLBAR_AREA_X, scrollbar_right_end + 1, 
+                             Y_SCROLLBAR_AREA_X + Y_SCROLLBAR_AREA_WIDTH, 
+                             Y_SCROLLBAR_AREA_Y + Y_SCROLLBAR_AREA_HEIGHT - 1, 1)) {
+        g_pic_render_y += g_play_area_h;
+        if (g_pic_render_y >= g_picture->h - g_play_area_h) {
+          g_pic_render_y = g_picture->h - g_play_area_h;
+        }
+        update = 1;
+      }
+      if (update) {
+        /* Calculate where we'll be drawing within the whole picture */        
+        g_draw_position_x = g_pic_render_x + g_draw_cursor_x;
+        g_draw_position_y = g_pic_render_y + g_draw_cursor_y;
+        g_components.render_draw_cursor = 1;
+        g_components.render_scrollbars = 1;  
+        g_components.render_overview_display = 1;
+        g_components.render_main_area_squares = 1;
+      }
+  }
+
+}
+
+/*=============================================================================
  * process_main_area_keyboard_input
  *============================================================================*/
 void process_main_area_keyboard_input(void) {
@@ -1478,6 +1557,7 @@ void input_state_game(void) {
     if (g_keyboard_has_priority)
       process_main_area_keyboard_input();
     process_main_area_mouse_input();
+    process_scroll_bar_mouse_input();
 }
 
 /*=============================================================================

@@ -192,4 +192,9 @@ int is_in_game_area(int x, int y);
  *============================================================================*/
 int is_in_overview_area(int x, int y);
 
+/**
+ * Processes input when the mouse interacts with the in game scroll bars
+ */
+void process_scroll_bar_mouse_input(void);
+
 #endif
