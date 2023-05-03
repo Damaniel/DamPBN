@@ -143,6 +143,7 @@ void process_copy_screen_input(unsigned char ascii_code, unsigned char scan_code
         case KEY_ENTER:
         case KEY_ESC:
             g_exit = 1;
+            break;
     }
 }
 
@@ -150,9 +151,17 @@ void process_complete_screen_input(unsigned char ascii_code, unsigned char scan_
     switch (scan_code) {
         case KEY_ENTER:
             g_exit = 1;
+            break;
     }
 }
 
+void process_copy_error_screen_input(unsigned char ascii_code, unsigned char scan_code, unsigned char shift_status) {
+    switch (scan_code) {
+        case KEY_ENTER:
+            g_exit = 1;
+            break;
+    }
+}
 void process_input(void) {
     unsigned short key, shift_status;
     unsigned char ascii_code, scan_code;
@@ -180,6 +189,9 @@ void process_input(void) {
                 break;
             case STATE_COMPLETE_SCREEN:
                 process_complete_screen_input(ascii_code, scan_code, shift_status);
+                break;
+            case STATE_COPY_ERROR_SCREEN:
+                process_copy_error_screen_input(ascii_code, scan_code, shift_status);
                 break;
             default:
                 break;

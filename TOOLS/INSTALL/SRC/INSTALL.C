@@ -59,6 +59,16 @@ void set_state(State s) {
             g_render_components.bottom_status_text = 1;
             g_render_components.complete_message = 1;   
             break;
+        case STATE_COPY_ERROR_SCREEN:
+            g_render_components.background = 1;
+            g_render_components.top_status_text = 1;
+            g_render_components.bottom_status_text = 1;
+            g_render_components.copy_error_message = 1;   
+            g_render_components.progress_bar = 1;
+            g_render_components.progress_box = 1;
+            g_render_components.progress_name = 1;
+            g_render_components.progress_message_window = 1;
+            break;
         default:
             break;
     };
@@ -105,7 +115,7 @@ int main(void) {
     clear_screen();
     init_render_colors();
 
-    set_state(STATE_MAIN_SCREEN);
+    set_state(g_cur_state);
     
     while (!g_exit) {
         process_input();

@@ -168,6 +168,19 @@ void render_main_screen(void) {
     }
 }
 
+void render_copy_error_screen(void) {
+    // The error message is built on top of the progress screen
+    render_progress_screen();
+    if (g_render_components.copy_error_message) {
+        box_at(10, 11, 69, 16, BORDER_SINGLE, g_render_colors.error_box);
+        fill_box_at(11, 12, 68, 15, ' ', g_render_colors.error_text);
+        string_at(12, 12, "     An error occurred while copying files to disk.", g_render_colors.error_text);
+        string_at(12, 13, "             The installer will now exit.", g_render_colors.error_text);
+        string_at(12, 15, "                     Press ENTER.", g_render_colors.error_text);    
+        g_render_components.copy_error_message = 0;   
+    }
+}
+
 void render_complete_screen(void) {
     // results are stacked on top of the main screen, so draw it first
     render_main_screen();
@@ -235,6 +248,9 @@ void render(void) {
             break;
         case STATE_COMPLETE_SCREEN:
             render_complete_screen();
+            break;
+        case STATE_COPY_ERROR_SCREEN:
+            render_copy_error_screen();
             break;
         default:
             break;

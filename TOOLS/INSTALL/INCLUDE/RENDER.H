@@ -9,6 +9,7 @@ void render_confirm_existing_screen(void);
 void render_main_screen(void);
 void render_invalid_path_screen(void);
 void render_progress_screen(void);
+void render_copy_error_screen(void);
 void render(void);
 void render_complete_screen(void);
 void render_path_text(int left_offset);
@@ -33,6 +34,7 @@ typedef struct {
     int progress_name;
     int debug_text;
     int complete_message;
+    int copy_error_message;
 } RenderComponents;
 
 typedef struct {
