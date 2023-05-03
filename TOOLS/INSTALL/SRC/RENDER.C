@@ -12,6 +12,8 @@ void init_render_colors(void) {
     g_render_colors.box_text = make_attr(COLOR_YELLOW, COLOR_CYAN);
     g_render_colors.edit_box = make_attr(COLOR_WHITE, COLOR_BLUE);
     g_render_colors.edit_text = make_attr(COLOR_BLUE, COLOR_WHITE);
+    g_render_colors.error_box = make_attr(COLOR_YELLOW, COLOR_RED);
+    g_render_colors.error_text = make_attr(COLOR_WHITE, COLOR_RED);
 }
 
 void clear_render_components(void) {
@@ -23,6 +25,27 @@ void clear_render_components(void) {
     g_render_components.error_message = 0;
 }
 
+void render_invalid_path_screen(void) {
+    if (g_render_components.error_message) {
+        box_at(10, 12, 69, 17, BORDER_SINGLE, g_render_colors.error_box);
+        fill_box_at(11, 13, 68, 16, ' ', g_render_colors.error_text);
+        string_at(12, 13, "   The specified path is invalid or there isn't enough", g_render_colors.error_text);
+        string_at(12, 14, "           disk space to complete the install.", g_render_colors.error_text);
+        string_at(12, 16, "                Press ENTER to try again.", g_render_colors.error_text);
+        g_render_components.error_message = 0;
+    }
+}
+
+void render_confirm_existing_screen(void) {
+    if (g_render_components.confirm_existing_message) {
+        box_at(10, 12, 69, 17, BORDER_SINGLE, g_render_colors.error_box);
+        fill_box_at(11, 13, 68, 16, ' ', g_render_colors.error_text);
+        string_at(12, 13, "    The specified path already exists.  Are you sure", g_render_colors.error_text);
+        string_at(12, 14, "               you want to install here?            ", g_render_colors.error_text);
+        string_at(12, 16, "                     Press Y or N.                  ", g_render_colors.error_text);    
+        g_render_components.confirm_existing_message = 0;   
+    }
+}
 void render_main_screen(void) {
     char debug_text[80];
 
@@ -126,6 +149,14 @@ void render(void) {
     switch (g_cur_state) {
         case STATE_MAIN_SCREEN:
             render_main_screen();
+            break;
+        case STATE_INVALID_PATH_SCREEN:
+            render_invalid_path_screen();
+            break;
+        case STATE_CONFIRM_EXISTING_SCREEN:
+            render_confirm_existing_screen();
+            break;
+        default:
             break;
     };
 }

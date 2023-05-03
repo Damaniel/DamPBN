@@ -34,14 +34,13 @@ void set_state(State s) {
             g_render_components.debug_text = 0;
             break;
         case STATE_INVALID_PATH_SCREEN:
-            g_render_components.background = 1;
-            g_render_components.intro_window = 1;
-            g_render_components.destination_edit_area = 1;
-            g_render_components.destination_edit = 1;
-            g_render_components.top_status_text = 1;
-            g_render_components.bottom_status_text = 1;
             g_render_components.error_message = 1;
             break;
+        case STATE_CONFIRM_EXISTING_SCREEN:
+            g_render_components.confirm_existing_message = 1;
+            break;
+        case STATE_COPY_SCREEN:
+            g_exit = 1;
         default:
             break;
     };
@@ -102,8 +101,10 @@ int main(void) {
 
     clear_screen();
 
-    if (is_path_valid(g_install_path, 1, 3)) {
+    if (is_path_valid(g_install_path, 1, 3) == 1) {
         printf("Path %s is valid!\n", g_install_path);
+    } else if (is_path_valid(g_install_path, 1, 3) == 2) {
+        printf("Path %s is valid but exists!\n", g_install_path);
     } else {
         printf("Path %s is invalid!\n", g_install_path);
     }

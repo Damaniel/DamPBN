@@ -1,10 +1,6 @@
 #include "install.h"
 #include "input.h"
 
-int path_valid(char *path) {
-    return 1;
-}
-
 void process_main_screen_input(unsigned char ascii_code, unsigned char scan_code, unsigned char shift_status) {
     int cursor_position_in_string = g_edit_cursor_x + g_edit_display_offset - PATH_EDIT_BOX_X;
     int cursor_position_in_box = g_edit_cursor_x - PATH_EDIT_BOX_X;
@@ -16,14 +12,18 @@ void process_main_screen_input(unsigned char ascii_code, unsigned char scan_code
             g_exit = 1;
             break;
         case KEY_ENTER:
-            g_exit = 1;
-            // if (path_valid(g_install_path)) {
-            //     set_state(STATE_COPY_SCREEN);
-            // } 
-            // // Otherwise, shange to an error state
-            // else {
-            //     set_state(STATE_INVALID_PATH_SCREEN);
-            // }
+            switch(is_path_valid(g_install_path, 1, REQUIRED_MB)) {
+                case 0:
+                    set_state(STATE_INVALID_PATH_SCREEN);
+                    break;
+                case 1:
+                    set_state(STATE_COPY_SCREEN);
+                    break;
+                case 2:
+                    // pop up a dialog confirming they want to install to an existing directory
+                    set_state(STATE_CONFIRM_EXISTING_SCREEN);
+                    break;
+            }
             break;
         case KEY_LEFT:
             // If the cursor is to the right of the leftmost position
@@ -125,6 +125,19 @@ void process_invalid_path_screen_input(unsigned char ascii_code, unsigned char s
     }
 }
 
+void process_confirm_existing_screen_input(unsigned char ascii_code, unsigned char scan_code, unsigned char shift_status) {
+    switch (scan_code) {
+        case KEY_Y:
+            set_state(STATE_COPY_SCREEN);
+            break;
+        case KEY_N:
+            set_state(STATE_MAIN_SCREEN);
+            break;
+        default:
+            break;
+    }
+}
+
 void process_input(void) {
     unsigned short key, shift_status;
     unsigned char ascii_code, scan_code;
@@ -142,6 +155,9 @@ void process_input(void) {
                 break;
             case STATE_INVALID_PATH_SCREEN:
                 process_invalid_path_screen_input(ascii_code, scan_code, shift_status);
+                break;
+            case STATE_CONFIRM_EXISTING_SCREEN:
+                process_confirm_existing_screen_input(ascii_code, scan_code, shift_status);
                 break;
             case STATE_COPY_SCREEN:
                 break;

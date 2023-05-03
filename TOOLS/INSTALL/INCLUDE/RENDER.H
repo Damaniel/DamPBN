@@ -5,7 +5,9 @@
 
 void init_render_colors(void);
 void clear_render_components(void);
+void render_confirm_existing_screen(void);
 void render_main_screen(void);
+void render_invalid_path_screen(void);
 void render(void);
 void render_path_text(int left_offset);
 char get_letter_under_cursor(int cursor_pos, int left_offset);
@@ -22,6 +24,7 @@ typedef struct {
     int top_status_text;
     int bottom_status_text;
     int error_message;
+    int confirm_existing_message;
     int debug_text;
 } RenderComponents;
 
@@ -33,6 +36,8 @@ typedef struct {
     char box_text;
     char edit_box;
     char edit_text;
+    char error_box;
+    char error_text;
 } RenderColors;
 
 #endif
