@@ -242,7 +242,6 @@ void render(void) {
             break;
         case STATE_COPY_SCREEN:
             render_progress_screen();
-            // Sleep for a bit to progress the bar
             break;
         case STATE_COMPLETE_SCREEN:
             render_complete_screen();
