@@ -159,6 +159,14 @@ extern int g_draw_cursor_y;
 extern int g_old_draw_cursor_x;
 extern int g_old_draw_cursor_y;
 
+/* The positio of the scrollbars within the collection and image areas
+ * of the image select menu */
+extern int g_collection_scrollbar_y;
+extern int g_collection_scrollbar_height;
+
+extern int g_picture_scrollbar_y;
+extern int g_picture_scrollbar_height;
+
 /* The position of the picture that's at the top left corner of 
  * the draw area */
 extern int g_pic_render_x;

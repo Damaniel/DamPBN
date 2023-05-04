@@ -1262,7 +1262,7 @@ void input_state_load_dialog(void) {
           g_pic_items[g_load_picture_index].progress = 0;
           g_load_action_confirm = 0;
         }
-        g_keypress_lockout[KEY_Y] = 1;          
+        g_keypress_lockout[KEY_Y] = 1;   
       }
     }
     if (!key[KEY_Y] && g_keypress_lockout[KEY_Y]) {
@@ -1275,7 +1275,7 @@ void input_state_load_dialog(void) {
         if (g_load_action_confirm) {
           g_load_action_confirm = 0;
         }
-        g_keypress_lockout[KEY_N] = 1;          
+        g_keypress_lockout[KEY_N] = 1;       
       }
     }
     if (!key[KEY_N] && g_keypress_lockout[KEY_N]) {
@@ -1289,7 +1289,7 @@ void input_state_load_dialog(void) {
         if (g_pic_items[g_load_picture_index].progress > 0) {
           g_load_action_confirm = 1;
         }
-        g_keypress_lockout[KEY_R] = 1;          
+        g_keypress_lockout[KEY_R] = 1;              
       }
     }
     if (!key[KEY_R] && g_keypress_lockout[KEY_R]) {
@@ -1346,7 +1346,7 @@ void input_state_load_dialog(void) {
               g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES -1;
             }
           }
-        }        
+        }
       }
 
       /* Update the images in the collection */
@@ -1357,7 +1357,7 @@ void input_state_load_dialog(void) {
         g_load_picture_index = 0;
       }
 
-      g_keypress_lockout[KEY_DOWN] = 1;      
+      g_keypress_lockout[KEY_DOWN] = 1;
     }
     if (!key[KEY_DOWN] && g_keypress_lockout[KEY_DOWN]) {
       g_keypress_lockout[KEY_DOWN] = 0;
@@ -1405,7 +1405,7 @@ void input_state_load_dialog(void) {
         g_load_picture_index = 0;
       }
 
-      g_keypress_lockout[KEY_UP] = 1;      
+      g_keypress_lockout[KEY_UP] = 1;
     }
     if (!key[KEY_UP] && g_keypress_lockout[KEY_UP]) {
       g_keypress_lockout[KEY_UP] = 0;

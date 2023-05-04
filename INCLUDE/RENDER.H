@@ -48,11 +48,11 @@ typedef struct {
   int render_scrollbars;
   /* The map on the map screen */
   int render_map;
-
   /* Render everything - convenience function */
   int render_all;
   /* Render debug text.  Must be explicitly set or cleared */
   int render_debug;
+
 } RenderComponents;
 
 typedef struct {
@@ -97,6 +97,13 @@ void update_scrollbar_positions(void);
  * Draws the scrollbars
  *============================================================================*/
 void render_scrollbars(BITMAP *dest);
+
+/**
+ * draws the scrollbars for the category and image boxes on the load screen
+ * 
+ * @param dest the BITMAP to render the bars to
+ */
+void render_load_screen_scrollbars(BITMAP *dest);
 
 /*=============================================================================
  * render_main_area_square_at

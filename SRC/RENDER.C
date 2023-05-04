@@ -88,6 +88,12 @@ int g_across_scrollbar_width;
 int g_down_scrollbar_y;
 int g_down_scrollbar_height;
 
+int g_collection_scrollbar_y;
+int g_collection_scrollbar_height;
+
+int g_picture_scrollbar_y;
+int g_picture_scrollbar_height;
+
 int g_show_map_text;
 
 int g_draw_style;
@@ -133,6 +139,36 @@ BITMAP *g_sure;
 
 RenderComponents g_components;
 TitleAnimation g_title_anim;
+
+/*=============================================================================
+ * update_image_sellct_scrollbar_positions
+ *============================================================================*/
+void update_image_select_scrollbar_positions(void) {
+  float collection_scroll_y, image_scroll_y;
+  float collection_scroll_h, image_scroll_h;
+
+  if (g_num_collections <= LOAD_NUM_VISIBLE_FILES) {
+    g_collection_scrollbar_y = 0;
+    g_collection_scrollbar_height = LOAD_FILE_SCROLLBAR_AREA_HEIGHT;
+  }
+  else {
+    collection_scroll_y = ((float)g_load_collection_offset / (float)g_num_collections) * (float)LOAD_FILE_SCROLLBAR_AREA_HEIGHT;
+    collection_scroll_h = ((float)LOAD_NUM_VISIBLE_FILES / (float)g_num_collections) * (float)LOAD_FILE_SCROLLBAR_AREA_HEIGHT;
+    g_collection_scrollbar_y = floor(collection_scroll_y);
+    g_collection_scrollbar_height = floor(collection_scroll_h);
+  }
+
+  if (g_num_picture_files <= LOAD_NUM_VISIBLE_FILES) {
+    g_picture_scrollbar_y = 0;
+    g_picture_scrollbar_height = LOAD_FILE_SCROLLBAR_AREA_HEIGHT;
+  }
+  else {
+    image_scroll_y = ((float)g_load_picture_offset / (float)g_num_picture_files) * (float)LOAD_FILE_SCROLLBAR_AREA_HEIGHT;
+    image_scroll_h = ((float)LOAD_NUM_VISIBLE_FILES / (float)g_num_picture_files) * (float)LOAD_FILE_SCROLLBAR_AREA_HEIGHT;
+    g_picture_scrollbar_y = floor(image_scroll_y);
+    g_picture_scrollbar_height = floor(image_scroll_h);
+  }
+}
 
 /*=============================================================================
  * update_scrollbar_positions
@@ -270,6 +306,44 @@ void render_title_screen(BITMAP *dest, RenderComponents c) {
 
   blit(g_title_box, g_title_area, 0, 0, 80, 60, g_title_box->w, g_title_box->h);
   blit(g_title_area, dest, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+}
+
+void render_load_screen_scrollbars(BITMAP *dest) {
+  /* Clear the existing scrollbar areas */
+  rectfill(dest, LOAD_FILE_CATEGORY_SCROLLBAR_X + 1 ,
+                 LOAD_FILE_SCROLLBAR_Y, 
+                 LOAD_FILE_CATEGORY_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH - 1, 
+                 LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT -1,
+                 SCROLLBAR_BG_COLOR);
+  rectfill(dest, LOAD_FILE_PICTURE_SCROLLBAR_X, 
+                 LOAD_FILE_SCROLLBAR_Y, 
+                 LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH - 1, 
+                 LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT -1 , 
+                 SCROLLBAR_BG_COLOR);
+
+  /* Draw the category scrollbars */
+  rectfill(dest, LOAD_FILE_CATEGORY_SCROLLBAR_X + 1, 
+                 LOAD_FILE_SCROLLBAR_Y + g_collection_scrollbar_y, 
+                 LOAD_FILE_CATEGORY_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH + 1, 
+                 LOAD_FILE_SCROLLBAR_Y + g_collection_scrollbar_y + g_collection_scrollbar_height, 
+                 SCROLLBAR_INTERIOR_COLOR);
+  rect(dest, LOAD_FILE_CATEGORY_SCROLLBAR_X , 
+             LOAD_FILE_SCROLLBAR_Y + g_collection_scrollbar_y - 1, 
+             LOAD_FILE_CATEGORY_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH + 1, 
+             LOAD_FILE_SCROLLBAR_Y+ g_collection_scrollbar_y + g_collection_scrollbar_height, 
+             SCROLLBAR_BORDER_COLOR);
+
+  /* Draw the image scrollbars */
+  rectfill(dest, LOAD_FILE_PICTURE_SCROLLBAR_X, 
+                 LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y, 
+                 LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH - 1, 
+                 LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y + g_picture_scrollbar_height, 
+                 SCROLLBAR_INTERIOR_COLOR);
+  rect(dest, LOAD_FILE_PICTURE_SCROLLBAR_X - 1, 
+             LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y - 1, 
+             LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, 
+             LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y + g_picture_scrollbar_height, 
+             SCROLLBAR_BORDER_COLOR);
 }
 
 /*=============================================================================
@@ -1082,6 +1156,7 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
   char text[30];
   char extra_message[50];
 
+  update_image_select_scrollbar_positions();
   /* If the load dialog was invoked from the title screen, keep drawing
      the title screen parts */
   if (g_prev_state == STATE_TITLE) {
@@ -1090,7 +1165,7 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
     rectfill(dest, 0, 180, 319, 190, 208);
   }
 
-  draw_sprite(dest, g_load_dialog, LOAD_DIALOG_X, LOAD_DIALOG_Y);
+    draw_sprite(dest, g_load_dialog, LOAD_DIALOG_X, LOAD_DIALOG_Y);
 
   /*---------------------------------------------------------------------
    * Render the collection list
@@ -1187,7 +1262,6 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
    *---------------------------------------------------------------------*/
 
   /* Draw the category, but only if we're on the file tab */
-
   if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
     rectfill(dest,
              LOAD_FILE_CATEGORY_X,
@@ -1261,11 +1335,13 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
              194);
     render_centered_prop_text(dest, extra_message, LOAD_FILE_EXTRA_CENTER_X, LOAD_FILE_EXTRA_Y);
   }
-
+  
   if (g_load_action_confirm) {
     draw_sprite(dest, g_sure, LOAD_RESET_CONFIRM_X, LOAD_RESET_CONFIRM_Y);
   }
-}
+  
+  render_load_screen_scrollbars(dest);
+ }
 
 /*=============================================================================
  * render_save_message

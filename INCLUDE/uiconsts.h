@@ -174,12 +174,14 @@
 #define LOAD_NUM_VISIBLE_FILES      10
 
 /* The position of the top of the file selector scrollbar */
-#define LOAD_FILE_SCROLLBAR_X       (LOAD_DIALOG_X) + 117
+#define LOAD_FILE_CATEGORY_SCROLLBAR_X       (LOAD_DIALOG_X) + 55
+#define LOAD_FILE_PICTURE_SCROLLBAR_X       (LOAD_DIALOG_X) + 117
 #define LOAD_FILE_SCROLLBAR_Y       (LOAD_DIALOG_Y) + 28
 
 /* The width of the scrollbar.  The height and y position of the actual 
    bar are dynamic, so are defined via variables */
 #define LOAD_FILE_SCROLLBAR_WIDTH    4
+#define LOAD_FILE_SCROLLBAR_AREA_HEIGHT      90
 
 /* The dimensions and sizes of the boxes that hold Picture metadata */
 
