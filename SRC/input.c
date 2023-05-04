@@ -1333,7 +1333,6 @@ void input_state_load_dialog(void) {
               g_load_cursor_offset = LOAD_NUM_VISIBLE_FILES -1;
             }
           }
-          printf("D - index = %d, pic offset = %d, curs_offset = %d\n", g_load_picture_index, g_load_picture_offset, g_load_cursor_offset);
         }
         /* Adjust the collection cursor if the collection tab is active */
         if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
@@ -1379,12 +1378,21 @@ void input_state_load_dialog(void) {
             }   
           }
           g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
-          printf("P - index = %d, pic offset = %d, curs_offset = %d\n", g_load_picture_index, g_load_picture_offset, g_load_cursor_offset);
         }
       } 
       if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_PGUP]) {
+          g_load_collection_offset = g_load_collection_offset - LOAD_NUM_VISIBLE_FILES;
+          if (g_load_collection_offset < 0) {
+            adj_offset = -g_load_collection_offset;
+            g_load_collection_offset = 0;
+            g_load_collection_cursor_offset = g_load_collection_cursor_offset - adj_offset;
+            if (g_load_collection_cursor_offset < 0) {
+              g_load_collection_cursor_offset = 0;
+            }
+          }
+          g_load_collection_index = g_load_collection_offset + g_load_collection_cursor_offset;
         }   
       }
 
@@ -1399,6 +1407,51 @@ void input_state_load_dialog(void) {
     }
     if (!key[KEY_PGUP] && g_keypress_lockout[KEY_PGUP]) {
       g_keypress_lockout[KEY_PGUP] = 0;
+    }
+
+    if (key[KEY_PGDN]) {
+      if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
+        /* If the key was previously up */
+        if (!g_keypress_lockout[KEY_PGDN]) {
+          g_load_picture_offset = g_load_picture_offset + LOAD_NUM_VISIBLE_FILES;
+          if (g_load_picture_offset > g_num_picture_files - LOAD_NUM_VISIBLE_FILES) {
+            adj_offset = g_load_picture_offset - (g_num_picture_files - LOAD_NUM_VISIBLE_FILES);
+            g_load_picture_offset = (g_num_picture_files - LOAD_NUM_VISIBLE_FILES);
+            g_load_cursor_offset = g_load_cursor_offset + adj_offset;
+            if (g_load_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+              g_load_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+            }   
+          }
+          g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
+        }
+      } 
+      if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
+        /* If the key was previously up */
+        if (!g_keypress_lockout[KEY_PGDN]) {
+          g_load_collection_offset = g_load_collection_offset + LOAD_NUM_VISIBLE_FILES;
+          if (g_load_collection_offset < g_num_collections - LOAD_NUM_VISIBLE_FILES) {
+            adj_offset = g_load_collection_offset - (g_num_collections - LOAD_NUM_VISIBLE_FILES);
+            g_load_collection_offset = (g_num_collections - LOAD_NUM_VISIBLE_FILES);
+            g_load_collection_cursor_offset = g_load_collection_cursor_offset + adj_offset;
+            if (g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+              g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+            }
+          }
+          g_load_collection_index = g_load_collection_offset + g_load_collection_cursor_offset;
+        }   
+      }
+
+      /* Update the images in the collection */
+      if(g_load_section_active == LOAD_COLLECTION_ACTIVE) {
+        get_picture_files(g_collection_items[g_load_collection_index].name);
+        g_load_picture_offset = 0;
+        g_load_cursor_offset = 0;
+        g_load_picture_index = 0;
+      }
+      g_keypress_lockout[KEY_PGDN] = 1;
+    }
+    if (!key[KEY_PGDN] && g_keypress_lockout[KEY_PGDN]) {
+      g_keypress_lockout[KEY_PGDN] = 0;
     }
 
     if (key[KEY_UP]) {
@@ -1417,7 +1470,6 @@ void input_state_load_dialog(void) {
             } 
           } 
         }
-        printf("U - index = %d, pic offset = %d, curs_offset = %d\n", g_load_picture_index, g_load_picture_offset, g_load_cursor_offset);
       } 
       if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         /* If the key was previously up */
