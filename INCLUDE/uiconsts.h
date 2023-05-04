@@ -298,5 +298,12 @@
 #define FINISHED_X                 0
 #define FINISHED_Y                 185
 
+#define MOVE_UP                    0
+#define MOVE_DOWN                  1
+#define MOVE_SINGLE                0
+#define MOVE_PAGE                  1
+#define MOVE_COLLECTION            0
+#define MOVE_IMAGE                 1
+
 #endif 
  

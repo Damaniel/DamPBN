@@ -1198,9 +1198,7 @@ void input_state_help(void) {
  * input_state_load_dialog
  *============================================================================*/
 void input_state_load_dialog(void) {
-
     char name[80];
-    int adj_offset;
 
     if (key[KEY_ENTER]) {
       if (!g_keypress_lockout[KEY_ENTER]) {
@@ -1322,34 +1320,13 @@ void input_state_load_dialog(void) {
       if (!g_keypress_lockout[KEY_DOWN]) {
         /* Adjust the image cursor if the image tab is active */
         if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
-          g_load_picture_index++;
-          if (g_load_picture_index >= g_num_picture_files) {
-            g_load_picture_index = g_num_picture_files -1;
-          }
-          else {
-            g_load_cursor_offset++;
-            if(g_load_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
-              g_load_picture_offset++;            
-              g_load_cursor_offset = LOAD_NUM_VISIBLE_FILES -1;
-            }
-          }
+            calculate_new_load_item_positions(MOVE_DOWN, MOVE_SINGLE, MOVE_IMAGE);
         }
         /* Adjust the collection cursor if the collection tab is active */
         if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
-          g_load_collection_index++;
-          if (g_load_collection_index >= g_num_collections) {
-            g_load_collection_index = g_num_collections -1;
-          }
-          else {
-            g_load_collection_cursor_offset++;
-            if(g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
-              g_load_collection_offset++;            
-              g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES -1;
-            }
-          }
+            calculate_new_load_item_positions(MOVE_DOWN, MOVE_SINGLE, MOVE_COLLECTION);
         }
       }
-
       /* Update the images in the collection */
       if(g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         get_picture_files(g_collection_items[g_load_collection_index].name);
@@ -1357,7 +1334,6 @@ void input_state_load_dialog(void) {
         g_load_cursor_offset = 0;
         g_load_picture_index = 0;
       }
-
       g_keypress_lockout[KEY_DOWN] = 1;
     }
     if (!key[KEY_DOWN] && g_keypress_lockout[KEY_DOWN]) {
@@ -1368,31 +1344,13 @@ void input_state_load_dialog(void) {
       if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_PGUP]) {
-          g_load_picture_offset = g_load_picture_offset - LOAD_NUM_VISIBLE_FILES;
-          if (g_load_picture_offset < 0) {
-            adj_offset = -g_load_picture_offset;
-            g_load_picture_offset = 0;
-            g_load_cursor_offset = g_load_cursor_offset - adj_offset;
-            if (g_load_cursor_offset < 0) {
-              g_load_cursor_offset = 0;
-            }   
-          }
-          g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
+          calculate_new_load_item_positions(MOVE_UP, MOVE_PAGE, MOVE_IMAGE);
         }
       } 
       if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_PGUP]) {
-          g_load_collection_offset = g_load_collection_offset - LOAD_NUM_VISIBLE_FILES;
-          if (g_load_collection_offset < 0) {
-            adj_offset = -g_load_collection_offset;
-            g_load_collection_offset = 0;
-            g_load_collection_cursor_offset = g_load_collection_cursor_offset - adj_offset;
-            if (g_load_collection_cursor_offset < 0) {
-              g_load_collection_cursor_offset = 0;
-            }
-          }
-          g_load_collection_index = g_load_collection_offset + g_load_collection_cursor_offset;
+          calculate_new_load_item_positions(MOVE_UP, MOVE_PAGE, MOVE_COLLECTION);
         }   
       }
 
@@ -1413,31 +1371,13 @@ void input_state_load_dialog(void) {
       if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_PGDN]) {
-          g_load_picture_offset = g_load_picture_offset + LOAD_NUM_VISIBLE_FILES;
-          if (g_load_picture_offset > g_num_picture_files - LOAD_NUM_VISIBLE_FILES) {
-            adj_offset = g_load_picture_offset - (g_num_picture_files - LOAD_NUM_VISIBLE_FILES);
-            g_load_picture_offset = (g_num_picture_files - LOAD_NUM_VISIBLE_FILES);
-            g_load_cursor_offset = g_load_cursor_offset + adj_offset;
-            if (g_load_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
-              g_load_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
-            }   
-          }
-          g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
+          calculate_new_load_item_positions(MOVE_DOWN, MOVE_PAGE, MOVE_IMAGE);
         }
       } 
       if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_PGDN]) {
-          g_load_collection_offset = g_load_collection_offset + LOAD_NUM_VISIBLE_FILES;
-          if (g_load_collection_offset < g_num_collections - LOAD_NUM_VISIBLE_FILES) {
-            adj_offset = g_load_collection_offset - (g_num_collections - LOAD_NUM_VISIBLE_FILES);
-            g_load_collection_offset = (g_num_collections - LOAD_NUM_VISIBLE_FILES);
-            g_load_collection_cursor_offset = g_load_collection_cursor_offset + adj_offset;
-            if (g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
-              g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
-            }
-          }
-          g_load_collection_index = g_load_collection_offset + g_load_collection_cursor_offset;
+          calculate_new_load_item_positions(MOVE_DOWN, MOVE_PAGE, MOVE_COLLECTION);
         }   
       }
 
@@ -1458,33 +1398,13 @@ void input_state_load_dialog(void) {
       if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_UP]) {
-          g_load_picture_index--;
-          if (g_load_picture_index < 0) {
-            g_load_picture_index = 0;
-          }
-          else {
-            g_load_cursor_offset--;
-            if(g_load_cursor_offset < 0) {
-              g_load_picture_offset--;
-              g_load_cursor_offset = 0;
-            } 
-          } 
+          calculate_new_load_item_positions(MOVE_UP, MOVE_SINGLE, MOVE_IMAGE);
         }
       } 
       if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_UP]) {
-          g_load_collection_index--;
-          if (g_load_collection_index < 0) {
-            g_load_collection_index = 0;
-          }
-          else {
-            g_load_collection_cursor_offset--;
-            if(g_load_collection_cursor_offset < 0) {
-              g_load_collection_offset--;
-              g_load_collection_cursor_offset = 0;
-            } 
-          } 
+          calculate_new_load_item_positions(MOVE_UP, MOVE_SINGLE, MOVE_COLLECTION);
         }         
       }
 
@@ -1501,6 +1421,176 @@ void input_state_load_dialog(void) {
     if (!key[KEY_UP] && g_keypress_lockout[KEY_UP]) {
       g_keypress_lockout[KEY_UP] = 0;
     }
+
+    /* check for mouse input */
+    process_load_screen_mouse_input();
+}
+
+/* calculate_new_load_item_positions */
+void calculate_new_load_item_positions(int direction, int amount, int which) {
+  int adj_offset;
+
+  if (direction == MOVE_UP) {
+    if (amount == MOVE_SINGLE) {
+      if (which == MOVE_COLLECTION) {
+        g_load_collection_index--;
+        if (g_load_collection_index < 0) {
+          g_load_collection_index = 0;
+        }
+        else {
+          g_load_collection_cursor_offset--;
+          if(g_load_collection_cursor_offset < 0) {
+              g_load_collection_offset--;
+              g_load_collection_cursor_offset = 0;
+            } 
+          } 
+      }
+      else if (which == MOVE_IMAGE) {
+        g_load_picture_index--;
+        if (g_load_picture_index < 0) {
+          g_load_picture_index = 0;
+        }
+        else {
+          g_load_cursor_offset--;
+          if(g_load_cursor_offset < 0) {
+            g_load_picture_offset--;
+            g_load_cursor_offset = 0;
+          } 
+        } 
+      }
+    }
+    else if (amount == MOVE_PAGE) {
+      if (which == MOVE_COLLECTION) {
+          g_load_collection_offset = g_load_collection_offset - LOAD_NUM_VISIBLE_FILES;
+          if (g_load_collection_offset < 0) {
+            adj_offset = -g_load_collection_offset;
+            g_load_collection_offset = 0;
+            g_load_collection_cursor_offset = g_load_collection_cursor_offset - adj_offset;
+            if (g_load_collection_cursor_offset < 0) {
+              g_load_collection_cursor_offset = 0;
+            }
+          }
+          g_load_collection_index = g_load_collection_offset + g_load_collection_cursor_offset;
+      }
+      else if (which == MOVE_IMAGE) {
+        g_load_picture_offset = g_load_picture_offset - LOAD_NUM_VISIBLE_FILES;
+        if (g_load_picture_offset < 0) {
+          adj_offset = -g_load_picture_offset;
+          g_load_picture_offset = 0;
+          g_load_cursor_offset = g_load_cursor_offset - adj_offset;
+          if (g_load_cursor_offset < 0) {
+            g_load_cursor_offset = 0;
+          }   
+        }
+        g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
+      }
+    }
+  }
+  else if (direction == MOVE_DOWN) {
+    if (amount == MOVE_SINGLE) {
+      if (which == MOVE_COLLECTION) {
+          g_load_collection_index++;
+          if (g_load_collection_index >= g_num_collections) {
+            g_load_collection_index = g_num_collections -1;
+          }
+          else {
+            g_load_collection_cursor_offset++;
+            if(g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+              g_load_collection_offset++;            
+              g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES -1;
+            }
+          }
+      }
+      else if (which == MOVE_IMAGE) {
+        g_load_picture_index++;
+        if (g_load_picture_index >= g_num_picture_files) {
+          g_load_picture_index = g_num_picture_files -1;
+        }
+        else {
+          g_load_cursor_offset++;
+          if(g_load_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+            g_load_picture_offset++;            
+            g_load_cursor_offset = LOAD_NUM_VISIBLE_FILES -1;
+          }
+        }
+      }
+    }
+    else if (amount == MOVE_PAGE) {
+      if (which == MOVE_COLLECTION) {
+        if (g_num_collections < LOAD_NUM_VISIBLE_FILES) {
+          g_load_collection_offset = 0;
+          g_load_collection_cursor_offset = g_num_collections - 1;
+        }
+        else {
+          g_load_collection_offset = g_load_collection_offset + LOAD_NUM_VISIBLE_FILES;
+          if (g_load_collection_offset < g_num_collections - LOAD_NUM_VISIBLE_FILES) {
+            adj_offset = g_load_collection_offset - (g_num_collections - LOAD_NUM_VISIBLE_FILES);
+            g_load_collection_offset = (g_num_collections - LOAD_NUM_VISIBLE_FILES);
+            g_load_collection_cursor_offset = g_load_collection_cursor_offset + adj_offset;
+            if (g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+              g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+            }
+          }
+        }
+        g_load_collection_index = g_load_collection_offset + g_load_collection_cursor_offset;
+      }
+      else if (which == MOVE_IMAGE) {
+        if (g_num_picture_files < LOAD_NUM_VISIBLE_FILES) {
+          g_load_picture_offset = 0;
+          g_load_cursor_offset = g_num_picture_files - 1;
+        }
+        else {
+          g_load_picture_offset = g_load_picture_offset + LOAD_NUM_VISIBLE_FILES;
+          if (g_load_picture_offset > g_num_picture_files - LOAD_NUM_VISIBLE_FILES) {
+            adj_offset = g_load_picture_offset - (g_num_picture_files - LOAD_NUM_VISIBLE_FILES);
+            g_load_picture_offset = (g_num_picture_files - LOAD_NUM_VISIBLE_FILES);
+            g_load_cursor_offset = g_load_cursor_offset + adj_offset;
+           if (g_load_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+              g_load_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+            }   
+         }
+        }
+        g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
+      }
+    }
+  }  
+}
+
+void process_load_screen_mouse_input(void) {
+  // int picture_scrollbar_begin = LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y;
+  // int picture_scrollbar_end = picture_scrollbar_begin + g_picture_scrollbar_height;
+  // int category_scrollbar_begin = LOAD_FILE_SCROLLBAR_Y + g_collection_scrollbar_y;
+  // int category_scrollbar_end = category_scrollbar_begin + g_collection_scrollbar_height;
+
+  // int update = 0;
+
+  // /* Check to see if the mouse is in the image right scrollbar area, but not on the 
+  //    scrollbar */
+  // if (g_mouse_y >= LOAD_FILE_SCROLLBAR_Y && g_mouse_y <= LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT &&
+  //     g_mouse_x >= LOAD_FILE_PICTURE_SCROLLBAR_X && g_mouse_x <= LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH) {
+  //     update = 0;
+  //     if (mouse_clicked_here(LOAD_FILE_PICTURE_SCROLLBAR_X, LOAD_FILE_SCROLLBAR_Y, 
+  //                            LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, picture_scrollbar_begin - 1, 1)) {
+  //         // Move up by a page
+  //         update = 1;
+  //     }
+  //     if (mouse_clicked_here(LOAD_FILE_PICTURE_SCROLLBAR_X, scrollbar_right_end + 1, 
+  //                            LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, 
+  //                            LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT - 1, 1)) {
+  //       //move down a page
+  //       update = 1;
+  //     }
+  //     if (update) {
+  //       /* Calculate where we'll be drawing within the whole picture */        
+  //       g_draw_position_x = g_pic_render_x + g_draw_cursor_x;
+  //       g_draw_position_y = g_pic_render_y + g_draw_cursor_y;
+  //       g_components.render_draw_cursor = 1;
+  //       g_components.render_scrollbars = 1;  
+  //       g_components.render_overview_display = 1;
+  //       g_components.render_main_area_squares = 1;
+  //     }
+  // }
+
 }
 
 /*=============================================================================

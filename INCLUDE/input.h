@@ -178,6 +178,23 @@ void process_main_area_keyboard_input(void);
  *============================================================================*/
 void process_main_area_mouse_input(void);
 
+/**
+ * Handles mouse input (select item, page up, page down) on the load file
+ * screen.
+ */
+void process_load_screen_mouse_input(void);
+
+/**
+ * Calculates new positions for cursors, indices and offsets for the two
+ * columns of the load screen page
+ * 
+ * @param direction Which direction the menu is moving (0 = up, 1 = down)
+ * @param page Should the menu move an entire page (0 = single, 1 = page)
+ * @param column Which menu should be moved (0 = category, 1 = picture)
+ * 
+*/
+void calculate_new_load_item_positions(int direction, int page, int column);
+
 /*=============================================================================
  * is_in_game_area
  *
