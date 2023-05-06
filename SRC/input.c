@@ -1523,12 +1523,18 @@ void calculate_new_load_item_positions(int direction, int amount, int which) {
         }
         else {
           g_load_collection_offset = g_load_collection_offset + LOAD_NUM_VISIBLE_FILES;
-          if (g_load_collection_offset < g_num_collections - LOAD_NUM_VISIBLE_FILES) {
-            adj_offset = g_load_collection_offset - (g_num_collections - LOAD_NUM_VISIBLE_FILES);
-            g_load_collection_offset = (g_num_collections - LOAD_NUM_VISIBLE_FILES);
-            g_load_collection_cursor_offset = g_load_collection_cursor_offset + adj_offset;
-            if (g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
-              g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+          if (g_load_collection_offset >= g_num_collections) {
+            g_load_collection_offset = g_num_collections - LOAD_NUM_VISIBLE_FILES;
+            g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+          }
+          else { 
+            if (g_load_collection_offset < g_num_collections - LOAD_NUM_VISIBLE_FILES) {
+              adj_offset = g_load_collection_offset - (g_num_collections - LOAD_NUM_VISIBLE_FILES);
+              g_load_collection_offset = (g_num_collections - LOAD_NUM_VISIBLE_FILES);
+              g_load_collection_cursor_offset = g_load_collection_cursor_offset + adj_offset;
+              if (g_load_collection_cursor_offset >= LOAD_NUM_VISIBLE_FILES) {
+                g_load_collection_cursor_offset = LOAD_NUM_VISIBLE_FILES - 1;
+              }
             }
           }
         }
