@@ -1206,7 +1206,7 @@ void input_state_load_dialog(void) {
         if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
           /* If the image isn't complete, then load it */
           if (g_pic_items[g_load_picture_index].progress < 
-              (g_pic_items[g_load_picture_index].width *  g_pic_items[g_load_picture_index].height)) {
+              g_pic_items[g_load_picture_index].total) {
             strncpy(g_picture_file_basename, 
                     g_pic_items[g_load_picture_index].name, 8);
             g_load_new_file = 1;
@@ -1631,12 +1631,11 @@ void process_load_screen_mouse_input(void) {
             cur_offset = (g_num_picture_files - 1) - g_load_picture_offset;
           }
           g_load_cursor_offset = cur_offset;
-          printf("cur_off = %d, num_pic_files = %d, load_pic_offset = %d, load_cursor_offset = %d\n", (g_mouse_y - LOAD_FILE_NAME_Y_OFF) / LOAD_FILE_NAME_HEIGHT, g_num_picture_files, g_load_cursor_offset, g_load_picture_offset);
           g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
           if (g_load_picture_index == g_mouse_selected_load_index) {
             /* If the image isn't complete, then load it */
             if (g_pic_items[g_load_picture_index].progress < 
-                (g_pic_items[g_load_picture_index].width *  g_pic_items[g_load_picture_index].height)) {
+                g_pic_items[g_load_picture_index].total) {
               strncpy(g_picture_file_basename, 
                       g_pic_items[g_load_picture_index].name, 8);
               g_load_new_file = 1;
@@ -1655,7 +1654,17 @@ void process_load_screen_mouse_input(void) {
   }
 
   /* Check to see if the mouse is in the collection selection area */
-   
+  if (mouse_clicked_here(COLLECTION_HIGHLIGHT_X_OFF + 1, COLLECTION_HIGHLIGHT_Y_OFF + 1, COLLECTION_HIGHLIGHT_X_OFF + COLLECTION_HIGHLIGHT_WIDTH -1, COLLECTION_HIGHLIGHT_Y_OFF + COLLECTION_HIGHLIGHT_HEIGHT - 1, 1)) {
+          g_load_section_active = LOAD_COLLECTION_ACTIVE;
+          // Assign the item on the list closest to where the mouse clicked.
+          cur_offset = (g_mouse_y - LOAD_COLLECTION_NAME_Y_OFF) / LOAD_COLLECTION_NAME_HEIGHT;
+          if (cur_offset + g_load_collection_offset > g_num_collections - 1) {
+            cur_offset = (g_num_collections - 1) - g_load_collection_offset;
+          }
+          g_load_collection_index = g_load_collection_offset + cur_offset;
+          g_load_collection_cursor_offset = cur_offset;  
+          get_picture_files(g_collection_items[g_load_collection_index].name);
+  }
 }
 
 /*=============================================================================
