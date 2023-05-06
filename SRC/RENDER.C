@@ -1179,16 +1179,18 @@ void render_load_dialog(BITMAP *dest, RenderComponents c) {
     if (collection_end_offset > g_num_collections)
       collection_end_offset = g_num_collections;
 
-    /* If the collection list is active, highlight the active item on the
-    * collection side and place a highlight aaround the section */
+    /* Highlight the active category item no matter what side we're on*/
+    rectfill(dest,
+            LOAD_COLLECTION_NAME_X_OFF,
+            LOAD_COLLECTION_NAME_Y_OFF +
+            (g_load_collection_cursor_offset * LOAD_COLLECTION_NAME_HEIGHT),
+            LOAD_COLLECTION_NAME_X_OFF + LOAD_COLLECTION_NAME_WIDTH - 1,
+            LOAD_COLLECTION_NAME_Y_OFF +
+            ((g_load_collection_cursor_offset+1) * LOAD_COLLECTION_NAME_HEIGHT) - 1, 204);
+
+    /* Place a highlight box over the active section */
     if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
-      rectfill(dest,
-              LOAD_COLLECTION_NAME_X_OFF,
-              LOAD_COLLECTION_NAME_Y_OFF +
-              (g_load_collection_cursor_offset * LOAD_COLLECTION_NAME_HEIGHT),
-              LOAD_COLLECTION_NAME_X_OFF + LOAD_COLLECTION_NAME_WIDTH - 1,
-              LOAD_COLLECTION_NAME_Y_OFF +
-              ((g_load_collection_cursor_offset+1) * LOAD_COLLECTION_NAME_HEIGHT) - 1, 204);
+
       rect(dest,
           COLLECTION_HIGHLIGHT_X_OFF,
           COLLECTION_HIGHLIGHT_Y_OFF,
