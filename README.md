@@ -128,7 +128,7 @@ Lots. Many of these I'll do, but some probably not.  These include:
 - (and plenty of other stuff I haven't thought of yet)
 
 ### Current bugs to fix
-- Trying to page down when there's exactly a multiple of 10 items causes the index to break out past the end
+- None currently
 
 ### Additional notes
 - Currently, images can be up to 320x200 pixels in size, with up to 64 colors.
