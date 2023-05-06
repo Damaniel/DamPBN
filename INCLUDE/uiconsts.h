@@ -148,25 +148,25 @@
 
 /* Locations of the highlights for the collection and image sections
    of the load dialog */
-#define COLLECTION_HIGHLIGHT_X_OFF     (LOAD_DIALOG_X) + 4
-#define COLLECTION_HIGHLIGHT_Y_OFF     (LOAD_DIALOG_Y) + 26
+#define COLLECTION_HIGHLIGHT_X_OFF     ((LOAD_DIALOG_X) + 4)
+#define COLLECTION_HIGHLIGHT_Y_OFF     ((LOAD_DIALOG_Y) + 26)
 #define COLLECTION_HIGHLIGHT_WIDTH     58
 #define COLLECTION_HIGHLIGHT_HEIGHT    94
 
-#define IMAGE_HIGHLIGHT_X_OFF          (LOAD_DIALOG_X) + 65
-#define IMAGE_HIGHLIGHT_Y_OFF          (LOAD_DIALOG_Y) + 26
+#define IMAGE_HIGHLIGHT_X_OFF          ((LOAD_DIALOG_X) + 65)
+#define IMAGE_HIGHLIGHT_Y_OFF          ((LOAD_DIALOG_Y) + 26)
 #define IMAGE_HIGHLIGHT_WIDTH          58
 #define IMAGE_HIGHLIGHT_HEIGHT         94
 
 /* Position and size of the first collection name item */
-#define LOAD_COLLECTION_NAME_X_OFF        (LOAD_DIALOG_X) + 6
-#define LOAD_COLLECTION_NAME_Y_OFF        (LOAD_DIALOG_Y) + 28
+#define LOAD_COLLECTION_NAME_X_OFF        ((LOAD_DIALOG_X) + 6)
+#define LOAD_COLLECTION_NAME_Y_OFF        ((LOAD_DIALOG_Y) + 28)
 #define LOAD_COLLECTION_NAME_WIDTH        49 
 #define LOAD_COLLECTION_NAME_HEIGHT        9
 
 /* Position and size of the first file name item */
-#define LOAD_FILE_NAME_X_OFF        (LOAD_DIALOG_X) + 67
-#define LOAD_FILE_NAME_Y_OFF        (LOAD_DIALOG_Y) + 28
+#define LOAD_FILE_NAME_X_OFF        ((LOAD_DIALOG_X) + 67)
+#define LOAD_FILE_NAME_Y_OFF        ((LOAD_DIALOG_Y) + 28)
 #define LOAD_FILE_NAME_WIDTH        49 
 #define LOAD_FILE_NAME_HEIGHT        9
 
@@ -174,9 +174,9 @@
 #define LOAD_NUM_VISIBLE_FILES      10
 
 /* The position of the top of the file selector scrollbar */
-#define LOAD_FILE_CATEGORY_SCROLLBAR_X       (LOAD_DIALOG_X) + 55
-#define LOAD_FILE_PICTURE_SCROLLBAR_X       (LOAD_DIALOG_X) + 117
-#define LOAD_FILE_SCROLLBAR_Y       (LOAD_DIALOG_Y) + 28
+#define LOAD_FILE_CATEGORY_SCROLLBAR_X       ((LOAD_DIALOG_X) + 55)
+#define LOAD_FILE_PICTURE_SCROLLBAR_X       ((LOAD_DIALOG_X) + 117)
+#define LOAD_FILE_SCROLLBAR_Y       ((LOAD_DIALOG_Y) + 28)
 
 /* The width of the scrollbar.  The height and y position of the actual 
    bar are dynamic, so are defined via variables */
@@ -185,40 +185,40 @@
 
 /* The dimensions and sizes of the boxes that hold Picture metadata */
 
-#define LOAD_FILE_CATEGORY_X         (LOAD_DIALOG_X) + 130
-#define LOAD_FILE_CATEGORY_Y         (LOAD_DIALOG_Y) + 32
+#define LOAD_FILE_CATEGORY_X         ((LOAD_DIALOG_X) + 130)
+#define LOAD_FILE_CATEGORY_Y         ((LOAD_DIALOG_Y) + 32)
 #define LOAD_FILE_CATEGORY_WIDTH     72
 #define LOAD_FILE_CATEGORY_HEIGHT     9
-#define LOAD_FILE_CATEGORY_TEXT_X    (LOAD_DIALOG_X) + 166
-#define LOAD_FILE_CATEGORY_TEXT_Y    (LOAD_DIALOG_Y) + 33
+#define LOAD_FILE_CATEGORY_TEXT_X    ((LOAD_DIALOG_X) + 166)
+#define LOAD_FILE_CATEGORY_TEXT_Y    ((LOAD_DIALOG_Y) + 33)
 
-#define LOAD_FILE_XSIZE_X            (LOAD_DIALOG_X) + 130
-#define LOAD_FILE_XSIZE_Y            (LOAD_DIALOG_Y) + 55
+#define LOAD_FILE_XSIZE_X            ((LOAD_DIALOG_X) + 130)
+#define LOAD_FILE_XSIZE_Y            ((LOAD_DIALOG_Y) + 55)
 #define LOAD_FILE_XSIZE_WIDTH        29
 #define LOAD_FILE_XSIZE_HEIGHT        9
-#define LOAD_FILE_XSIZE_TEXT_X       (LOAD_DIALOG_X) + 145
-#define LOAD_FILE_XSIZE_TEXT_Y       (LOAD_DIALOG_Y) + 56
+#define LOAD_FILE_XSIZE_TEXT_X       ((LOAD_DIALOG_X) + 145)
+#define LOAD_FILE_XSIZE_TEXT_Y       ((LOAD_DIALOG_Y) + 56)
 
-#define LOAD_FILE_YSIZE_X            (LOAD_DIALOG_X) + 173
-#define LOAD_FILE_YSIZE_Y            (LOAD_DIALOG_Y) + 55
+#define LOAD_FILE_YSIZE_X            ((LOAD_DIALOG_X) + 173)
+#define LOAD_FILE_YSIZE_Y            ((LOAD_DIALOG_Y) + 55)
 #define LOAD_FILE_YSIZE_WIDTH        29
 #define LOAD_FILE_YSIZE_HEIGHT        9
-#define LOAD_FILE_YSIZE_TEXT_X       (LOAD_DIALOG_X) + 188
-#define LOAD_FILE_YSIZE_TEXT_Y       (LOAD_DIALOG_Y) + 56
+#define LOAD_FILE_YSIZE_TEXT_X       ((LOAD_DIALOG_X) + 188)
+#define LOAD_FILE_YSIZE_TEXT_Y       ((LOAD_DIALOG_Y) + 56)
 
-#define LOAD_FILE_COLORS_X           (LOAD_DIALOG_X) + 130
-#define LOAD_FILE_COLORS_Y           (LOAD_DIALOG_Y) + 78
+#define LOAD_FILE_COLORS_X           ((LOAD_DIALOG_X) + 130)
+#define LOAD_FILE_COLORS_Y           ((LOAD_DIALOG_Y) + 78)
 #define LOAD_FILE_COLORS_WIDTH       72
 #define LOAD_FILE_COLORS_HEIGHT       9
-#define LOAD_FILE_COLORS_TEXT_X      (LOAD_DIALOG_X) + 166  
-#define LOAD_FILE_COLORS_TEXT_Y      (LOAD_DIALOG_Y) + 79
+#define LOAD_FILE_COLORS_TEXT_X      ((LOAD_DIALOG_X) + 166)  
+#define LOAD_FILE_COLORS_TEXT_Y      ((LOAD_DIALOG_Y) + 79)
 
-#define LOAD_FILE_PROGRESS_X         (LOAD_DIALOG_X) + 130
-#define LOAD_FILE_PROGRESS_Y         (LOAD_DIALOG_Y) + 101
+#define LOAD_FILE_PROGRESS_X         ((LOAD_DIALOG_X) + 130)
+#define LOAD_FILE_PROGRESS_Y         ((LOAD_DIALOG_Y) + 101)
 #define LOAD_FILE_PROGRESS_WIDTH     72
 #define LOAD_FILE_PROGRESS_HEIGHT     9
-#define LOAD_FILE_PROGRESS_TEXT_X    (LOAD_DIALOG_X) + 166    
-#define LOAD_FILE_PROGRESS_TEXT_Y    (LOAD_DIALOG_Y) + 102
+#define LOAD_FILE_PROGRESS_TEXT_X    ((LOAD_DIALOG_X) + 166)   
+#define LOAD_FILE_PROGRESS_TEXT_Y    ((LOAD_DIALOG_Y) + 102)
 
 #define LOAD_FILE_EXTRA_X             59
 #define LOAD_FILE_EXTRA_Y            166

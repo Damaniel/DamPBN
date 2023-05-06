@@ -1557,40 +1557,105 @@ void calculate_new_load_item_positions(int direction, int amount, int which) {
 }
 
 void process_load_screen_mouse_input(void) {
-  // int picture_scrollbar_begin = LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y;
-  // int picture_scrollbar_end = picture_scrollbar_begin + g_picture_scrollbar_height;
-  // int category_scrollbar_begin = LOAD_FILE_SCROLLBAR_Y + g_collection_scrollbar_y;
-  // int category_scrollbar_end = category_scrollbar_begin + g_collection_scrollbar_height;
+  int picture_scrollbar_begin = LOAD_FILE_SCROLLBAR_Y + g_picture_scrollbar_y;
+  int picture_scrollbar_end = picture_scrollbar_begin + g_picture_scrollbar_height;
+  int category_scrollbar_begin = LOAD_FILE_SCROLLBAR_Y + g_collection_scrollbar_y;
+  int category_scrollbar_end = category_scrollbar_begin + g_collection_scrollbar_height;
+  int cur_offset;
+  int update = 0;
 
-  // int update = 0;
+  /* Get the mouse info */
+  g_old_mouse_x = g_mouse_x;
+  g_old_mouse_y = g_mouse_y;
+  g_mouse_x = mouse_x;
+  g_mouse_y = mouse_y;
 
-  // /* Check to see if the mouse is in the image right scrollbar area, but not on the 
-  //    scrollbar */
-  // if (g_mouse_y >= LOAD_FILE_SCROLLBAR_Y && g_mouse_y <= LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT &&
-  //     g_mouse_x >= LOAD_FILE_PICTURE_SCROLLBAR_X && g_mouse_x <= LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH) {
-  //     update = 0;
-  //     if (mouse_clicked_here(LOAD_FILE_PICTURE_SCROLLBAR_X, LOAD_FILE_SCROLLBAR_Y, 
-  //                            LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, picture_scrollbar_begin - 1, 1)) {
-  //         // Move up by a page
-  //         update = 1;
-  //     }
-  //     if (mouse_clicked_here(LOAD_FILE_PICTURE_SCROLLBAR_X, scrollbar_right_end + 1, 
-  //                            LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, 
-  //                            LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT - 1, 1)) {
-  //       //move down a page
-  //       update = 1;
-  //     }
-  //     if (update) {
-  //       /* Calculate where we'll be drawing within the whole picture */        
-  //       g_draw_position_x = g_pic_render_x + g_draw_cursor_x;
-  //       g_draw_position_y = g_pic_render_y + g_draw_cursor_y;
-  //       g_components.render_draw_cursor = 1;
-  //       g_components.render_scrollbars = 1;  
-  //       g_components.render_overview_display = 1;
-  //       g_components.render_main_area_squares = 1;
-  //     }
-  // }
+  /* If the scrollbar area is clicked:
+   *  - if above the scroll bar, scroll up by a page
+   *  - if below the scroll bar, scroll down by a page
+   *  (maybe)
+   *  - if the current section isn't highlighted, make the current section highlighed, set the cursor offset to 0
+   * If the non-scrollbar area is clicked
+   *  - Make the current area the active one if it's not
+   *  - If a valid item lies under the cursor, highlight it
+   *  - Othewise, highlight the valid item closest to it.
+   */
 
+  /* Check to see if the mouse is in the image right scrollbar area, but not on the 
+     scrollbar */
+  if (g_mouse_y >= LOAD_FILE_SCROLLBAR_Y && g_mouse_y <= LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT &&
+      g_mouse_x >= LOAD_FILE_PICTURE_SCROLLBAR_X && g_mouse_x <= LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH) {
+      update = 0;
+      if (mouse_clicked_here(LOAD_FILE_PICTURE_SCROLLBAR_X, LOAD_FILE_SCROLLBAR_Y, 
+                             LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, picture_scrollbar_begin - 1, 1)) {
+          // Move up by a page
+          calculate_new_load_item_positions(MOVE_UP, MOVE_PAGE, MOVE_IMAGE);
+      }
+      if (mouse_clicked_here(LOAD_FILE_PICTURE_SCROLLBAR_X, picture_scrollbar_end + 1, 
+                             LOAD_FILE_PICTURE_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, 
+                             LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT - 1, 1)) {
+        //move down a page
+        calculate_new_load_item_positions(MOVE_DOWN, MOVE_PAGE, MOVE_IMAGE);
+      }
+  }
+
+  /* Check to see if the mouse is in the collection right scrollbar area, but not on the
+     scrollbar*/
+  if (g_mouse_y >= LOAD_FILE_SCROLLBAR_Y && g_mouse_y <= LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT &&
+      g_mouse_x >= LOAD_FILE_CATEGORY_SCROLLBAR_X && g_mouse_x <= LOAD_FILE_CATEGORY_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH) {
+      update = 0;
+      if (mouse_clicked_here(LOAD_FILE_CATEGORY_SCROLLBAR_X, LOAD_FILE_SCROLLBAR_Y, 
+                             LOAD_FILE_CATEGORY_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, category_scrollbar_begin - 1, 1)) {
+          // Move up by a page
+          calculate_new_load_item_positions(MOVE_UP, MOVE_PAGE, MOVE_COLLECTION);
+      }
+      if (mouse_clicked_here(LOAD_FILE_CATEGORY_SCROLLBAR_X, category_scrollbar_end + 1, 
+                             LOAD_FILE_CATEGORY_SCROLLBAR_X + LOAD_FILE_SCROLLBAR_WIDTH, 
+                             LOAD_FILE_SCROLLBAR_Y + LOAD_FILE_SCROLLBAR_AREA_HEIGHT - 1, 1)) {
+        //move down a page
+        calculate_new_load_item_positions(MOVE_DOWN, MOVE_PAGE, MOVE_COLLECTION);
+      }
+  }
+
+  /* Check to see if the mouse is in the image selection area */
+  /* If clicked, highlight the appropriate entry*/
+  if (mouse_clicked_here(IMAGE_HIGHLIGHT_X_OFF + 1, IMAGE_HIGHLIGHT_Y_OFF + 1, IMAGE_HIGHLIGHT_X_OFF + IMAGE_HIGHLIGHT_WIDTH -1, IMAGE_HIGHLIGHT_Y_OFF + IMAGE_HIGHLIGHT_HEIGHT - 1, 1)) {
+          if (g_load_section_active == LOAD_COLLECTION_ACTIVE &&
+              g_num_picture_files > 0) {
+            g_load_section_active = LOAD_IMAGE_ACTIVE;
+            g_mouse_selected_load_index = -1;
+          }
+          // Assign the item on the list closest to where the mouse clicked.
+          cur_offset = (g_mouse_y - LOAD_FILE_NAME_Y_OFF) / LOAD_FILE_NAME_HEIGHT;
+          if (cur_offset + g_load_picture_offset > g_num_picture_files - 1) {
+            cur_offset = (g_num_picture_files - 1) - g_load_picture_offset;
+          }
+          g_load_cursor_offset = cur_offset;
+          printf("cur_off = %d, num_pic_files = %d, load_pic_offset = %d, load_cursor_offset = %d\n", (g_mouse_y - LOAD_FILE_NAME_Y_OFF) / LOAD_FILE_NAME_HEIGHT, g_num_picture_files, g_load_cursor_offset, g_load_picture_offset);
+          g_load_picture_index = g_load_picture_offset + g_load_cursor_offset;
+          if (g_load_picture_index == g_mouse_selected_load_index) {
+            /* If the image isn't complete, then load it */
+            if (g_pic_items[g_load_picture_index].progress < 
+                (g_pic_items[g_load_picture_index].width *  g_pic_items[g_load_picture_index].height)) {
+              strncpy(g_picture_file_basename, 
+                      g_pic_items[g_load_picture_index].name, 8);
+              g_load_new_file = 1;
+              change_state(STATE_GAME, STATE_LOAD_DIALOG);
+            } 
+            /* If the image is complete, then replay it */
+            else {
+              strncpy(g_picture_file_basename, 
+                      g_pic_items[g_load_picture_index].name, 8);
+              g_load_new_file = 1;
+              change_state(STATE_REPLAY, STATE_LOAD_DIALOG);     
+              g_replay_from_load_screen = 1;
+            }   
+          }
+          g_mouse_selected_load_index = g_load_picture_index;
+  }
+
+  /* Check to see if the mouse is in the collection selection area */
+   
 }
 
 /*=============================================================================

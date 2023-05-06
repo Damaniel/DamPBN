@@ -279,6 +279,12 @@ extern int g_load_collection_cursor_offset;
 /* The position (0 - 10) of the highlighted item in the list */
 extern int g_load_cursor_offset;
 
+/* The index (on screen and overall) of the last clicked option.
+ * If these values are set from a previous click, and the same
+ * values are selected when clicked again, that image will be loaded. */
+extern int g_mouse_selected_load_offset;
+extern int g_mouse_selected_load_index;
+
 /* The number of picture collections available to display */
 extern int g_num_collections;
 

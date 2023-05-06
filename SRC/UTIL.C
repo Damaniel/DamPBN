@@ -74,6 +74,9 @@ int g_load_picture_index;
 int g_load_picture_offset;
 int g_load_cursor_offset;
 
+int g_mouse_selected_load_offset;
+int g_mouse_selected_load_index;
+
 int g_load_new_file;
 
 int g_replay_increment;
