@@ -1220,6 +1220,33 @@ void input_state_load_dialog(void) {
       g_keypress_lockout[KEY_ENTER] = 0;
     }    
 
+    /* Left - select collection tab if image tab */
+    if (key[KEY_LEFT]) {
+      if (!g_keypress_lockout[KEY_LEFT]) {
+        if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
+          g_load_section_active = LOAD_COLLECTION_ACTIVE;
+        }
+      }
+      g_keypress_lockout[KEY_LEFT] = 1;
+    }
+    if (!key[KEY_LEFT] && g_keypress_lockout[KEY_LEFT]) {
+      g_keypress_lockout[KEY_LEFT] = 0;
+    }
+
+    /* Right - select image tab if collection tab */
+    if (key[KEY_RIGHT]) {
+      if (!g_keypress_lockout[KEY_RIGHT]) {
+        if (g_load_section_active == LOAD_COLLECTION_ACTIVE &&
+            g_num_picture_files > 0) {
+          g_load_section_active = LOAD_IMAGE_ACTIVE;
+        } 
+      }
+      g_keypress_lockout[KEY_RIGHT] = 1;
+    }
+    if (!key[KEY_RIGHT] && g_keypress_lockout[KEY_RIGHT]) {
+      g_keypress_lockout[KEY_RIGHT] = 0;
+    }
+
     /* TAB - select between collection and image tabs */
     if (key[KEY_TAB]) {
       if (!g_keypress_lockout[KEY_TAB]) {
@@ -1320,11 +1347,23 @@ void input_state_load_dialog(void) {
       if (!g_keypress_lockout[KEY_DOWN]) {
         /* Adjust the image cursor if the image tab is active */
         if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
-            calculate_new_load_item_positions(MOVE_DOWN, MOVE_SINGLE, MOVE_IMAGE);
+            /* If shift is held, move down a page, otherwise move down a single item*/
+            if (key_shifts & KB_SHIFT_FLAG) {
+              calculate_new_load_item_positions(MOVE_DOWN, MOVE_PAGE, MOVE_IMAGE);
+            } 
+            else {
+              calculate_new_load_item_positions(MOVE_DOWN, MOVE_SINGLE, MOVE_IMAGE);
+            }
         }
         /* Adjust the collection cursor if the collection tab is active */
         if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
-            calculate_new_load_item_positions(MOVE_DOWN, MOVE_SINGLE, MOVE_COLLECTION);
+            /* If shift is held, move down a page, otherwise move down a single item*/
+            if (key_shifts & KB_SHIFT_FLAG) {
+              calculate_new_load_item_positions(MOVE_DOWN, MOVE_PAGE, MOVE_COLLECTION);
+            }
+            else {
+              calculate_new_load_item_positions(MOVE_DOWN, MOVE_SINGLE, MOVE_COLLECTION);
+            }
         }
       }
       /* Update the images in the collection */
@@ -1398,13 +1437,24 @@ void input_state_load_dialog(void) {
       if (g_load_section_active == LOAD_IMAGE_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_UP]) {
-          calculate_new_load_item_positions(MOVE_UP, MOVE_SINGLE, MOVE_IMAGE);
+            /* If shift is held, move up a page, otherwise move up a single item*/
+            if (key_shifts & KB_SHIFT_FLAG) {
+              calculate_new_load_item_positions(MOVE_UP, MOVE_PAGE, MOVE_IMAGE);
+            }
+            else {
+              calculate_new_load_item_positions(MOVE_UP, MOVE_SINGLE, MOVE_IMAGE);
+            }
         }
       } 
       if (g_load_section_active == LOAD_COLLECTION_ACTIVE) {
         /* If the key was previously up */
         if (!g_keypress_lockout[KEY_UP]) {
-          calculate_new_load_item_positions(MOVE_UP, MOVE_SINGLE, MOVE_COLLECTION);
+          /* If shift is held, move up a page, otherwise move up a single item*/
+          if (key_shifts & KB_SHIFT_FLAG) {
+            calculate_new_load_item_positions(MOVE_UP, MOVE_PAGE, MOVE_COLLECTION);
+          } else {
+            calculate_new_load_item_positions(MOVE_UP, MOVE_SINGLE, MOVE_COLLECTION);
+          }
         }         
       }
 
