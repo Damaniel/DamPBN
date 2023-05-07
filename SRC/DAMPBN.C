@@ -1,4 +1,4 @@
-/* Copyright 2021 Shaun Brandt
+/* Copyright 2021-2023 Shaun Brandt
    
    Permission is hereby granted, free of charge, to any person obtaining a 
    copy of this software and associated documentation files (the "Software"),
@@ -257,10 +257,9 @@ void print_mem_free(void) {
 }
 
 /*=============================================================================
- * main
+ * init_game
  *============================================================================*/
-int main(int argc, char *argv[]) {
-
+void init_game(void) {
   printf("Loading, please wait...\n");
   allegro_init();
   install_keyboard();
@@ -293,6 +292,27 @@ int main(int argc, char *argv[]) {
   change_state(STATE_LOGO, STATE_NONE);
   
   blit(buffer, screen, 0, 0, 0, 0, 320, 200);
+}
+
+/*=============================================================================
+ * shut_down_game
+ *============================================================================*/
+void shut_down_game(void) {
+  free_picture_file(g_picture);
+  unload_datafile(g_res);
+  free_graphics();
+  destroy_bitmap(buffer);
+
+  set_gfx_mode(GFX_TEXT, 80, 25, 0, 0);
+  allegro_exit();
+}
+
+/*=============================================================================
+ * main
+ *============================================================================*/
+int main(int argc, char *argv[]) {
+
+  init_game();
 
   while(!g_game_done) {  
     /* Wait until the next frame ticks */
@@ -310,13 +330,6 @@ int main(int argc, char *argv[]) {
     g_next_frame = 0;
   }
 
-  free_picture_file(g_picture);
-  unload_datafile(g_res);
-  free_graphics();
-  destroy_bitmap(buffer);
-
-  set_gfx_mode(GFX_TEXT, 80, 25, 0, 0);
-  allegro_exit();
-
+  shut_down_game();
   return 0;
 }

@@ -1,4 +1,4 @@
-/* Copyright 2021 Shaun Brandt
+/* Copyright 2021-2023 Shaun Brandt
    
    Permission is hereby granted, free of charge, to any person obtaining a 
    copy of this software and associated documentation files (the "Software"),
@@ -21,7 +21,7 @@
 #ifndef __PALETTE_H__
 #define __PALETTE_H__
 
-/* The palette used by the paint by number game.  The palette is divided as
+/* The palettes used by the paint by number game.  The palette is divided as
    follows:
 
    * 64 entries - the primary palette of the image

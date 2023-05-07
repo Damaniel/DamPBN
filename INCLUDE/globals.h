@@ -1,4 +1,4 @@
-/* Copyright 2021 Shaun Brandt
+/* Copyright 2021-2023 Shaun Brandt
    
    Permission is hereby granted, free of charge, to any person obtaining a 
    copy of this software and associated documentation files (the "Software"),
@@ -329,6 +329,8 @@ extern int g_keyboard_has_priority;
 /* should the confirm message be displayed? */
 extern int g_load_action_confirm;
 
+/* Are we attempting to replay the completed image by pressing P (or clicking the mouse)
+   on an image on the load screen? */
 extern int g_replay_from_load_screen;
 
 #endif
