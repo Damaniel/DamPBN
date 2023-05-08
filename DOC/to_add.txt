@@ -1,3 +1,0 @@
-Things to fix:
-
-- Optimize draw calls.  For example, moving the cursor one space and marking an incorrect square redraws the play area 3 times
