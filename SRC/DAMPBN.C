@@ -40,6 +40,7 @@ int g_game_done;
  *============================================================================*/
 void change_state(State new_state, State prev_state) {
   char name[80];
+  int result;
 
   /* Do stuff */
   g_state = new_state;
@@ -73,8 +74,13 @@ void change_state(State new_state, State prev_state) {
         do_render();
         change_state(STATE_LOAD_DIALOG, STATE_TITLE);
       } 
-      if (g_music_enabled) {
+      if (g_music_enabled && g_prev_state != STATE_LOAD_DIALOG) {
         stop_active_midi();
+        g_cur_midi_idx--;
+        result = play_midi_by_name(TITLE_MUSIC, 1);
+        if (result != 0) {
+          //printf("Warning - title music not found; skipping...\n");
+        }
       }
       break;
     case STATE_GAME:
@@ -149,9 +155,8 @@ void change_state(State new_state, State prev_state) {
       get_collections();
       get_picture_files(g_collection_items[g_load_collection_index].name);
       clear_render_components(&g_components);
-      if (g_music_enabled) {
+      if (g_music_enabled) {  
         if (g_prev_state == STATE_TITLE) {
-          stop_active_midi();
           g_midi_is_playing = 0;
         }
         else {

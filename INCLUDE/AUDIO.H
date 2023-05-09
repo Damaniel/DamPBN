@@ -25,6 +25,8 @@
 #define MAX_MIDIS   16
 
 #define DEFAULT_MIDI_DIRECTORY      "res/music"
+#define TITLE_MUSIC                 "res/APPMIDI/title.mid"
+#define COMPLETE_MUSIC              "res/APPMIDI/complete.mid"
 
 extern char g_midi_files[MAX_MIDIS][80];
 extern MIDI *g_active_midi;
@@ -84,7 +86,7 @@ int play_midi_by_idx(int idx);
  * @param name The file name (including path) of the MIDI file to play
  * @return 0 on success, non-zero on failure
  */
-int play_midi_by_name(char *name);
+int play_midi_by_name(char *name, int loop);
 
 /**
  * Stops the (playing) active MIDI file

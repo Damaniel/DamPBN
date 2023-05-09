@@ -157,13 +157,13 @@ int is_midi_done(void) {
     return 0;
 }
 
-int play_midi_by_name(char *name) {
+int play_midi_by_name(char *name, int loop) {
     g_active_midi = load_midi(name);
     if(g_active_midi == NULL) {
         //printf("Couldn't load MIDI!\n");
         return -1;
     }
-    play_midi(g_active_midi, 0);
+    play_midi(g_active_midi, loop);
     return 0;
 }
 

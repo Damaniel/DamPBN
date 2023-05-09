@@ -112,6 +112,14 @@ so infrequently that I don't mind doing a couple manual steps once or twice a ye
 - Auto save on exit
 - The ability to watch completed replays from the image select screen
 - An installer (and a floppy image that uses it)
+- An experimental MIDI player
+
+Note that the MIDI player itself isn't experimental (it's just using Allegro code), the behavior is.
+It currently plays through a series of MIDI files that are placed into RES/MUSIC, as long as
+the player is working on an image.  It doesn't play on the title screen, loading screen 
+(when coming from the title screen), or the image complete screen, since if I were to provide MIDI files,
+there would be separate ones for each of those.  I'm sure I'll come up with
+something better and I'm planning to add keys to play the previous/next song in the list. 
 
 ### What's left to do?
 
@@ -123,7 +131,6 @@ Lots. Many of these I'll do, but some probably not.  These include:
     (though the files will all be present in my ZIP distributions)
   - I've already created a set of 1000 images using my batch conversion tools.  They fit on a floppy size-wise, but
     not sector wise - my pacakage installer will assume zipped or otherwise packed image files anyway.
-- MIDI player
 - Sound effects
 - (and plenty of other stuff I haven't thought of yet)
 
