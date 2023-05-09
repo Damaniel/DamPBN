@@ -3,6 +3,7 @@
 *.bak
 *.json
 *.pro
+*.mid
 .vscode/
 tools/pic_src/in_progress
 tools/in    

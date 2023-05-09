@@ -26,6 +26,7 @@
 #include "../include/globals.h"
 #include "../include/util.h"
 #include "../include/render.h"
+#include "../include/audio.h"
 
 BITMAP *buffer;
 DATAFILE *g_res;
@@ -312,7 +313,33 @@ void shut_down_game(void) {
  *============================================================================*/
 int main(int argc, char *argv[]) {
 
-  init_game();
+  int result; 
+  int count;
+
+  //init_game();
+
+  allegro_init();
+  install_keyboard();
+  install_timer();
+
+  result = initialize_audio_subsystem();
+  printf("Result was %d\n", result);
+
+  result = load_midis_from_default_dir();
+  printf("Found %d MIDI files in the default directory\n", result);
+
+  play_cur_midi(0);
+
+  count = 0;
+  while(count < 10) {
+    rest(1000);
+    count++;
+  }
+  stop_active_midi();
+
+  //shut_down_game();
+
+  return 0;
 
   while(!g_game_done) {  
     /* Wait until the next frame ticks */
