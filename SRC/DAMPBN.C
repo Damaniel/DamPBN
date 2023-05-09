@@ -152,6 +152,7 @@ void change_state(State new_state, State prev_state) {
       if (g_music_enabled) {
         if (g_prev_state == STATE_TITLE) {
           stop_active_midi();
+          g_midi_is_playing = 0;
         }
         else {
           g_midi_is_playing = 1;
