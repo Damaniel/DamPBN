@@ -120,4 +120,13 @@ int resume_active_midi(void);
  */
 int is_midi_done(void);
 
+int cue_next_midi(int play_next_after);
+
+void mute_music(void);
+
+void mute_sound(void);
+
+void restore_sound(void);
+void restore_music(void);
+
 #endif

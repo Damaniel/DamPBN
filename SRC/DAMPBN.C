@@ -51,6 +51,9 @@ void change_state(State new_state, State prev_state) {
       set_palette(logo_pal);      
       clear_render_components(&g_components);      
       g_title_countdown = 2 * FRAME_RATE;
+      if (g_music_enabled) {
+        stop_active_midi();
+      }
       break;
     case STATE_TITLE:
       /* If we're coming back from pressing ESC on the load dialog, skip
@@ -69,6 +72,9 @@ void change_state(State new_state, State prev_state) {
         g_title_anim.color_start_counter = 0;
         do_render();
         change_state(STATE_LOAD_DIALOG, STATE_TITLE);
+      } 
+      if (g_music_enabled) {
+        stop_active_midi();
       }
       break;
     case STATE_GAME:
@@ -87,6 +93,18 @@ void change_state(State new_state, State prev_state) {
       set_palette(game_pal);
       clear_render_components(&g_components);
       g_components.render_all = 1;
+      /* If sound is on and we're not coming back from the load menu, cue up the first song in the list */
+      if (g_music_enabled) {
+        if (g_midi_is_playing == 0) {
+          g_next_midi_countdown = -1;
+          g_cur_midi_idx = -1;
+          cue_next_midi(1);
+          g_midi_is_playing = 1;
+        }
+        else {
+          g_midi_is_playing = 0;
+        }
+      }
       /* Start the timer */
       game_timer_set(1);      
       break;
@@ -130,7 +148,15 @@ void change_state(State new_state, State prev_state) {
          collection */
       get_collections();
       get_picture_files(g_collection_items[g_load_collection_index].name);
-      clear_render_components(&g_components);    
+      clear_render_components(&g_components);
+      if (g_music_enabled) {
+        if (g_prev_state == STATE_TITLE) {
+          stop_active_midi();
+        }
+        else {
+          g_midi_is_playing = 1;
+        }
+      }
       break;
     case STATE_FINISHED:
       game_timer_set(0);
@@ -138,6 +164,11 @@ void change_state(State new_state, State prev_state) {
       /* Force redraw the game screen so the last pixel gets displayed */
       render_game_screen(buffer, g_components);
       g_finished_countdown = FRAME_RATE / 2;
+      if (g_music_enabled && g_prev_state == STATE_TITLE) {
+        stop_active_midi();
+        g_midi_is_playing = 0;
+      }
+      break;
       break;
     case STATE_REPLAY:
       /* If replaying from the load menu, load the image */
@@ -154,11 +185,14 @@ void change_state(State new_state, State prev_state) {
       if (g_replay_increment < 1) {
         g_replay_increment = 1;
       }
-
       calculate_preview_scale();
-
       /* Prep the rest of the replay parameters */
       g_replay_first_time = 1;
+      if (g_music_enabled) {
+        stop_active_midi();
+      }
+      break;
+
       break;
     default:
       break;
@@ -237,6 +271,30 @@ void process_timing_stuff(void) {
     g_components.render_status_text = 1;
   }
 
+  /* If MIDI hardware is enabled, check to see if the current MIDI is done.
+     If it is and the 'delay to next start' timer hasn't started, start it.
+   */
+  if (g_music_enabled && (g_state == STATE_GAME || g_state == STATE_MAP || (g_state == STATE_LOAD && g_prev_state == STATE_GAME))) {
+    if (is_midi_done() && g_next_midi_countdown < 0) {
+      //printf("Song end reached!\n");
+      mute_music();
+      g_next_midi_countdown = 2 * FRAME_RATE;
+    }
+   /* If sound is enabled and the MIDI delay to next start timer is started,
+      decrement it.  If the timer ends and the MIDI system is set to play
+      songs continously, cue the next song.
+    */
+    else if (g_next_midi_countdown > 0) {
+      //printf("Countdown - %d frames remaining\n", g_next_midi_countdown);
+      g_next_midi_countdown = g_next_midi_countdown - 1;
+      if (g_next_midi_countdown == 0) {
+        restore_music();
+        cue_next_midi(1);
+      }
+    }
+  }
+
+
   /* Actually update the screen */
   do_render();
 }
@@ -261,6 +319,7 @@ void print_mem_free(void) {
  * init_game
  *============================================================================*/
 void init_game(void) {
+  int midi_count;
   printf("Loading, please wait...\n");
   allegro_init();
   install_keyboard();
@@ -285,6 +344,16 @@ void init_game(void) {
 
   load_graphics();
   init_defaults();
+
+  initialize_audio_subsystem();
+
+  if (g_music_enabled) {
+    midi_count = load_midis_from_default_dir();
+    if (midi_count <=0) {
+      printf("Warning: no MIDIs found; music will be disabled\n");
+      g_music_enabled = 0;
+    }
+  }
 
   set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
 
@@ -313,33 +382,7 @@ void shut_down_game(void) {
  *============================================================================*/
 int main(int argc, char *argv[]) {
 
-  int result; 
-  int count;
-
-  //init_game();
-
-  allegro_init();
-  install_keyboard();
-  install_timer();
-
-  result = initialize_audio_subsystem();
-  printf("Result was %d\n", result);
-
-  result = load_midis_from_default_dir();
-  printf("Found %d MIDI files in the default directory\n", result);
-
-  play_cur_midi(0);
-
-  count = 0;
-  while(count < 10) {
-    rest(1000);
-    count++;
-  }
-  stop_active_midi();
-
-  //shut_down_game();
-
-  return 0;
+  init_game();
 
   while(!g_game_done) {  
     /* Wait until the next frame ticks */

@@ -333,4 +333,28 @@ extern int g_load_action_confirm;
    on an image on the load screen? */
 extern int g_replay_from_load_screen;
 
+/* Should music/sound effects be played? */
+extern int g_sound_enabled;
+extern int g_music_enabled;
+
+/* A timer to put a gap of silence between songs */
+extern int g_next_midi_countdown;
+
+/* The global digital sound volume (0-255)*/
+extern int g_sound_volume;
+
+/* The global music volume (0-255)*/
+extern int g_music_volume;
+
+/* Is the sound on or off? */
+extern int g_sound_muted;
+
+/* Is the music on or off? */
+extern int g_music_muted;
+
+/* Used to determine whether to continue playing through a state change.  This is
+   mainly to ensure that the music keeps playing through the load dialog screen when
+   the L key is pressed in game and that the music doesn't re-cue when going back.  
+   It's a bit of a hack but it does the job. */
+extern int g_midi_is_playing;
 #endif

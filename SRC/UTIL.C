@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <dir.h>
 #include "../include/globals.h"
+#include "../include/audio.h"
 
 #define NUM_CATEGORIES 8
 
@@ -711,6 +712,16 @@ void init_defaults(void) {
 
   g_game_area_mouse_mode = MOUSE_MODE_NEUTRAL;
   g_keyboard_has_priority = 1;
+  
+  g_music_volume = 255;
+  g_sound_volume = 255;
+  g_next_midi_countdown = -1;
+  g_cur_midi_idx = -1;
+  g_sound_enabled = 0;
+  g_music_enabled = 0;
+  g_sound_muted = 0;
+  g_music_muted = 0;
+  g_midi_is_playing = 0;
   
   /* Variables used in the interrupt handler */
   LOCK_VARIABLE(g_elapsed_time);

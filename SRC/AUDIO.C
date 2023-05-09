@@ -31,6 +31,17 @@ MIDI *g_active_midi;
 int g_cur_midi_idx;
 int g_total_midis;
 
+int g_sound_enabled;
+int g_music_enabled;
+
+int g_sound_volume;
+int g_music_volume;
+
+int g_sound_muted;
+int g_music_muted;
+
+int g_next_midi_countdown;
+int g_midi_is_playing;
 
 int initialize_audio_subsystem(void) {
     int result;
@@ -41,6 +52,7 @@ int initialize_audio_subsystem(void) {
         return -1;
     } else {
         printf("Sound card detected - %d voices available\n", result);
+        g_sound_enabled = 1;
     }
 
     result = detect_midi_driver(MIDI_AUTODETECT);
@@ -49,14 +61,19 @@ int initialize_audio_subsystem(void) {
         return -1;
     } else {
         printf("MIDI card detected - %d voices available\n", result);
+        g_music_enabled = 1;
     }
 
-    result = install_sound(DIGI_NONE, MIDI_AUTODETECT, NULL);
+    result = install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL);
     if (result == -1) {
         printf("Unable to initialize sound system!\n");
         printf("Error was %s\n", allegro_error);
+        g_sound_enabled = 0;
+        g_music_enabled = 0;
         return -1;
     }
+
+    set_volume(g_sound_volume, g_music_volume);
     return 0;
 }
 
@@ -101,10 +118,10 @@ int load_midis_from_dir(char *directory) {
 }
 
 int play_cur_midi(int play_next_after) {
-    printf("Playing %s\n", g_midi_files[g_cur_midi_idx]);
+    //printf("Playing MIDI %s\n", g_midi_files[g_cur_midi_idx]);
     g_active_midi = load_midi(g_midi_files[g_cur_midi_idx]);
     if(g_active_midi == NULL) {
-        printf("Couldn't load MIDI!\n");
+        //printf("Couldn't load MIDI!\n");
         return -1;
     }
     play_midi(g_active_midi, 0);
@@ -113,13 +130,12 @@ int play_cur_midi(int play_next_after) {
 
 int play_midi_by_idx(int idx) {
     if (idx >= g_total_midis) {
-        printf("MIDI index invalid!\n");
+        //printf("MIDI index invalid!\n");
         return -1;
     }
-    printf("Playing %s\n", g_midi_files[idx]);
     g_active_midi = load_midi(g_midi_files[idx]);
     if(g_active_midi == NULL) {
-        printf("Couldn't load MIDI!\n");
+        //printf("Couldn't load MIDI!\n");
         return -1;
     }
     play_midi(g_active_midi, 0);    
@@ -127,8 +143,11 @@ int play_midi_by_idx(int idx) {
 }
 
 int cue_next_midi(int play_next_after) {
+    int result;
     g_cur_midi_idx = (g_cur_midi_idx + 1) % g_total_midis;
-    play_cur_midi(1);
+    result = play_cur_midi(1);
+    g_next_midi_countdown = -1;
+    return result;
 }
 
 int is_midi_done(void) {
@@ -141,7 +160,7 @@ int is_midi_done(void) {
 int play_midi_by_name(char *name) {
     g_active_midi = load_midi(name);
     if(g_active_midi == NULL) {
-        printf("Couldn't load MIDI!\n");
+        //printf("Couldn't load MIDI!\n");
         return -1;
     }
     play_midi(g_active_midi, 0);
@@ -161,4 +180,34 @@ int resume_active_midi(void) {
 int stop_active_midi(void) {
     stop_midi();
     return 0;
+}
+
+void mute_sound(void) {
+    set_volume(0, g_music_volume);
+    g_sound_muted = 1;
+}
+
+void mute_music(void) {
+    set_volume(g_sound_volume, 0);
+    g_music_muted = 1;
+}
+
+void restore_sound(void) {
+    if (g_music_muted) {
+        set_volume(g_sound_volume, 0);
+    }
+    else {
+        set_volume(g_sound_volume, g_music_volume);
+    }
+    g_sound_muted = 0;
+}
+
+void restore_music(void) {
+    if (g_sound_muted) {
+        set_volume(0, g_music_volume);
+    }
+    else {
+        set_volume(g_sound_volume, g_music_volume);
+    }
+    g_music_muted = 0;
 }
