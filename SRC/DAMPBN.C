@@ -57,8 +57,14 @@ void change_state(State new_state, State prev_state) {
       }
       break;
     case STATE_TITLE:
+      /* Force a palette change and clear to remove junk from the logo state
+         on slow hardware. This is mainly of concern on this particular transition
+         since all states other than the logo state share a common palette. */
+      if (g_prev_state == STATE_LOGO) {
+         render_force_clear(); 
+      }
       /* If we're coming back from pressing ESC on the load dialog, skip
-         some of the init stuff */       
+         some of the init stuff */      
       if(g_prev_state != STATE_LOAD_DIALOG) {
          g_title_anim.update_background = 1;          
          load_title();        

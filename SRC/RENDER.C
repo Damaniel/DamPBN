@@ -1519,6 +1519,11 @@ int load_logo(void) {
   return 0;
 }
 
+void render_force_clear(void) {
+  set_palette(title_pal);
+  clear_to_color(screen, 208);
+}
+
 void free_graphics(void) {
   /* A couple graphics need to be deallocated before shutdown */
   if(g_overview_box != NULL)
