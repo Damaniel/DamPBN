@@ -357,4 +357,6 @@ extern int g_music_muted;
    the L key is pressed in game and that the music doesn't re-cue when going back.  
    It's a bit of a hack but it does the job. */
 extern int g_midi_is_playing;
+extern int g_midi_is_paused;
+
 #endif

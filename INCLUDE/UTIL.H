@@ -56,7 +56,7 @@ typedef struct {
  */
 typedef struct {
   unsigned char version;
-  char image_name[32];
+  char image_name[32 + 1];
   short w;
   short h;
   unsigned char category;

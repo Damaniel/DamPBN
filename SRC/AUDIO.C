@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <dir.h>
 
-char g_midi_files[MAX_MIDIS][80];
+char g_midi_files[MAX_MIDIS][81];
 MIDI *g_active_midi;
 
 int g_cur_midi_idx;
@@ -42,6 +42,7 @@ int g_music_muted;
 
 int g_next_midi_countdown;
 int g_midi_is_playing;
+int g_midi_is_paused;
 
 int initialize_audio_subsystem(void) {
     int result;
@@ -142,6 +143,14 @@ int play_midi_by_idx(int idx) {
     return 0;
 }
 
+int cue_prev_midi(int play_next_after) {
+    int result;
+    g_cur_midi_idx = (g_cur_midi_idx - 1) % g_total_midis;
+    result = play_cur_midi(1);
+    g_next_midi_countdown = -1;
+    return result;
+}
+
 int cue_next_midi(int play_next_after) {
     int result;
     g_cur_midi_idx = (g_cur_midi_idx + 1) % g_total_midis;
@@ -169,11 +178,13 @@ int play_midi_by_name(char *name, int loop) {
 
 int pause_active_midi(void) {
     midi_pause();
+    g_midi_is_paused = 1;
     return 0;
 }
 
 int resume_active_midi(void) {
     midi_resume();
+    g_midi_is_paused = 0;
     return 0;
 }
 

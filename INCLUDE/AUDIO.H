@@ -28,7 +28,7 @@
 #define TITLE_MUSIC                 "res/APPMIDI/title.mid"
 #define COMPLETE_MUSIC              "res/APPMIDI/complete.mid"
 
-extern char g_midi_files[MAX_MIDIS][80];
+extern char g_midi_files[MAX_MIDIS][81];
 extern MIDI *g_active_midi;
 
 extern int g_cur_midi_idx;
@@ -123,6 +123,8 @@ int resume_active_midi(void);
 int is_midi_done(void);
 
 int cue_next_midi(int play_next_after);
+
+int cue_prev_midi(int play_next_after);
 
 void mute_music(void);
 

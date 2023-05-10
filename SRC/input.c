@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../include/globals.h"
+#include "../include/audio.h"
 
 unsigned char g_keypress_lockout[128];
 int g_mouse_click_lockout;
@@ -963,6 +964,46 @@ void process_main_area_keyboard_input(void) {
   }
 }
 
+void process_midi_inputs(void) {
+  if (key[KEY_Q]) {
+    /* If the key was previously up */
+    if (!g_keypress_lockout[KEY_Q]) {
+      cue_prev_midi(1);
+      g_keypress_lockout[KEY_Q] = 1;
+    }
+  }
+  if (!key[KEY_Q] && g_keypress_lockout[KEY_Q]) {
+    g_keypress_lockout[KEY_Q] = 0;
+  }
+
+  if (key[KEY_W]) {
+    /* If the key was previously up */
+    if (!g_keypress_lockout[KEY_W]) {
+      cue_next_midi(1);
+      g_keypress_lockout[KEY_W] = 1;
+    }
+  }
+  if (!key[KEY_W] && g_keypress_lockout[KEY_W]) {
+    g_keypress_lockout[KEY_W] = 0;
+  }
+
+  if (key[KEY_E]) {
+    /* If the key was previously up */
+    if (!g_keypress_lockout[KEY_E]) {
+      if (g_midi_is_paused) {
+        resume_active_midi();
+      }
+      else {
+        pause_active_midi();
+      }
+      g_keypress_lockout[KEY_E] = 1;
+    }
+  }
+  if (!key[KEY_E] && g_keypress_lockout[KEY_E]) {
+    g_keypress_lockout[KEY_E] = 0;
+  }
+}
+
 /*=============================================================================
  * process_main_area_mouse_input
  *============================================================================*/
@@ -1862,6 +1903,8 @@ void input_state_game(void) {
     process_style_press();
     process_save_press();
     process_load_press();
+    process_midi_inputs();
+
     // Only process keyboard movement if the keyboard has priority.
     // The mouse input function will confirm its own priority since it needs
     // to check to see if it's moving or the button is clicked first.

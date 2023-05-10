@@ -722,6 +722,7 @@ void init_defaults(void) {
   g_sound_muted = 0;
   g_music_muted = 0;
   g_midi_is_playing = 0;
+  g_midi_is_paused = 0;
   
   /* Variables used in the interrupt handler */
   LOCK_VARIABLE(g_elapsed_time);
