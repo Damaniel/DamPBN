@@ -102,6 +102,8 @@ int g_help_page;
 
 int g_preview_scale;
 
+GameOption g_current_option;
+
 BITMAP *g_logo;
 
 BITMAP *g_title_area;
@@ -404,6 +406,13 @@ void clear_render_components(RenderComponents *c) {
   c->render_scrollbars = 0;
   c->render_map = 0;
   c->render_all = 0;
+
+  c->render_option_dialog = 0;
+  c->render_option_base_text = 0;
+  c->render_option_cursor_text = 0;   
+  c->render_option_volume_bar_base = 0;
+  c->render_option_volume_positions = 0;
+  c->render_option_highlights = 0;
 }
 
 /*=============================================================================
@@ -912,6 +921,43 @@ void render_draw_cursor(BITMAP *dest) {
 
 }
 
+void render_options_screen(BITMAP *dest, RenderComponents c) {
+
+  /* Draw the background */
+  if (c.render_option_dialog) {
+    rect(dest, OPTION_SCREEN_X, OPTION_SCREEN_Y, OPTION_SCREEN_X + OPTION_SCREEN_W, OPTION_SCREEN_Y + OPTION_SCREEN_H, 208);
+    rect(dest, OPTION_SCREEN_X + 1, OPTION_SCREEN_Y + 1, OPTION_SCREEN_X + OPTION_SCREEN_W - 1, OPTION_SCREEN_Y + OPTION_SCREEN_H - 1, 203); 
+    rectfill(dest, OPTION_SCREEN_X + 2, OPTION_SCREEN_Y + 2, OPTION_SCREEN_X + OPTION_SCREEN_W - 2, OPTION_SCREEN_Y + OPTION_SCREEN_H - 2, 194);
+  }
+
+
+  /* Draw the text */
+  if (c.render_option_base_text) {
+
+  }
+
+  /* Draw the volume buttons */
+  if (c.render_option_volume_bar_base) {
+
+  }
+
+  /* Draw the current volume setting (and clear the one on each side)*/
+  if (c.render_option_volume_positions) {
+
+  }
+
+  /* Draw the cursor (and fix the text where the cursor used to be) */
+  if (c.render_option_cursor_text) {
+
+  }
+
+  /* Draw the lines under the appropriate settings (and fix the others) */
+  if (c.render_option_highlights) {
+
+  }
+
+}
+
 /*=============================================================================
  * render_screen
  *============================================================================*/
@@ -940,6 +986,7 @@ void render_screen(BITMAP *dest, RenderComponents c) {
       render_help_text(dest, c);
       break;
     case STATE_OPTS:
+      render_options_screen(dest, c);
       break;
     case STATE_LOAD_DIALOG:
       render_load_dialog(dest, c);

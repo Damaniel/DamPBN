@@ -53,6 +53,15 @@ typedef struct {
   /* Render debug text.  Must be explicitly set or cleared */
   int render_debug;
 
+  /* Option screen components*/
+  int render_option_dialog;
+  int render_option_base_text;
+  /* Draws both the active cursor text and fixes the old cursor location */
+  int render_option_cursor_text;   
+  int render_option_volume_bar_base;
+  int render_option_volume_positions;
+  int render_option_highlights;
+
 } RenderComponents;
 
 typedef struct {
@@ -69,6 +78,17 @@ typedef enum {
   STYLE_CROSS,
   NUM_STYLES
 } Style;
+
+typedef enum {
+  OPTION_SOUND,
+  OPTION_SOUND_VOL,
+  OPTION_MUSIC,
+  OPTION_MUSIC_VOL,
+  OPTION_AUTOSAVE,
+  OPTION_SAVE_ON_EXIT,
+  OPTION_OK,
+  OPTION_CANCEL
+} GameOption;
 
 /**
  * Resets all of the render flags for the display.
@@ -190,6 +210,14 @@ void render_title_screen(BITMAP *dest, RenderComponents c);
  * @param c a list of render components to reference
  */
 void render_game_screen(BITMAP *dest, RenderComponents c);
+
+/**
+ * Draws the option screen
+ * 
+ * @param dest the BITMAP to draw to
+ * @param c a list of render components to reference
+*/
+void render_options_screen(BITMAP *dest, RenderComponents c);
 
 /**
  * Draws screen components.  The components that are drawn is dictated by

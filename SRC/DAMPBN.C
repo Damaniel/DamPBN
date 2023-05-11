@@ -150,6 +150,7 @@ void change_state(State new_state, State prev_state) {
       g_help_page = 0;
       break;
     case STATE_OPTS:
+      g_components.render_option_dialog = 1;
       break;
     case STATE_LOAD_DIALOG:
       /* Reset the load dialog positions and such*/

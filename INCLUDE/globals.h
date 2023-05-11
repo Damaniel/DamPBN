@@ -340,10 +340,10 @@ extern int g_music_enabled;
 /* A timer to put a gap of silence between songs */
 extern int g_next_midi_countdown;
 
-/* The global digital sound volume (0-255)*/
+/* The global digital sound volume (0-16) (multiplied by 16 to get the final volume) */
 extern int g_sound_volume;
 
-/* The global music volume (0-255)*/
+/* The global music volume (0-16) (multiplied by 16 to get the final volume) */
 extern int g_music_volume;
 
 /* Is the sound on or off? */
@@ -358,5 +358,17 @@ extern int g_music_muted;
    It's a bit of a hack but it does the job. */
 extern int g_midi_is_playing;
 extern int g_midi_is_paused;
+
+/* Should the game autosave? */
+extern int g_autosave;
+
+/* How often (in seconds) should the game autosave?*/
+extern int g_autosave_frequency;
+
+/* Should the game automatically save on exit? */
+extern int  g_save_on_exit;
+
+/* The currently highlighted option on the options screen */
+extern GameOption g_current_option;
 
 #endif

@@ -90,6 +90,10 @@ int g_replay_first_time;
 
 int g_load_section_active;
 
+int g_autosave;
+int g_autosave_frequency;
+int g_save_on_exit;
+  
 /*=============================================================================
  * get_picture_metadata
  *============================================================================*/
@@ -724,6 +728,11 @@ void init_defaults(void) {
   g_midi_is_playing = 0;
   g_midi_is_paused = 0;
   
+  g_autosave = 0;
+  g_autosave_frequency = 5;
+  g_save_on_exit = 0;
+  g_current_option = OPTION_SOUND;
+
   /* Variables used in the interrupt handler */
   LOCK_VARIABLE(g_elapsed_time);
   LOCK_VARIABLE(g_frame_counter);

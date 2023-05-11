@@ -305,5 +305,145 @@
 #define MOVE_COLLECTION            0
 #define MOVE_IMAGE                 1
 
+/* Option screen defines */
+
+#define OPTION_SCREEN_X             63
+#define OPTION_SCREEN_Y             31
+#define OPTION_SCREEN_W             194
+#define OPTION_SCREEN_H             130
+
+#define OPTION_CURSOR_MARGIN       2
+
+#define SOUND_MENU_X                71
+#define SOUND_MENU_Y                54
+#define SOUND_MENU_W                32
+#define SOUND_MENU_H                 7
+
+#define SOUND_ON_X                  120
+#define SOUND_ON_Y                  54
+#define SOUND_ON_OPT_X              119
+#define SOUND_ON_OPT_Y              62
+#define SOUND_ON_OPT_W              12
+
+#define SOUND_OFF_X                 153
+#define SOUND_OFF_Y                 54
+#define SOUND_OFF_OPT_X             152
+#define SOUND_OFF_OPT_Y             62
+#define SOUND_OFF_OPT_W             16
+
+#define SOUND_VOL_MENU_X            77
+#define SOUND_VOL_MENU_Y            66
+#define SOUND_VOL_MINUS_X           134
+#define SOUND_VOL_MINUS_Y           66
+#define SOUND_VOL_MINUS_W           9
+#define SOUND_VOL_MINUS_H           9
+#define SOUND_VOL_PLUS_X            209
+#define SOUND_VOL_PLUS_Y            66
+#define SOUND_VOL_PLUS_W            9
+#define SOUND_VOL_PLUS_H            9
+
+#define SOUND_BAR_START_X           145
+#define SOUND_BAR_START_Y           68
+#define SOUND_BAR_BAR_W             2
+#define SOUND_BAR_BAR_H             5
+#define SOUND_BAR_NUM_BARS          16
+#define SOUND_BAR_X_GAP             2
+
+#define MUSIC_MENU_X                71
+#define MUSIC_MENU_Y                80
+#define MUSIC_MENU_W                25
+#define MUSIC_MENU_H                7
+
+#define MUSIC_ON_X                  120
+#define MUSIC_ON_Y                  80
+#define MUSIC_ON_OPT_X              119
+#define MUSIC_ON_OPT_Y              88
+#define MUSIC_ON_OPT_W              12
+
+#define MUSIC_OFF_X                 153
+#define MUSIC_OFF_Y                 80
+#define MUSIC_OFF_OPT_X             152
+#define MUSIC_OFF_OPT_Y             88
+#define MUSIC_OFF_OPT_W             16
+
+#define MUSIC_VOL_MENU_X            77
+#define MUSIC_VOL_MENU_Y            82
+#define MUSIC_VOL_MINUS_X           134
+#define MUSIC_VOL_MINUS_Y           92
+#define MUSIC_VOL_MINUS_W           9
+#define MUSIC_VOL_MINUS_H           9
+#define MUSIC_VOL_PLUS_X            209
+#define MUSIC_VOL_PLUS_Y            92
+#define MUSIC_VOL_PLUS_W            9
+#define MUSIC_VOL_PLUS_H            9
+
+#define MUSIC_BAR_START_X           145
+#define MUSIC_BAR_START_Y           94
+#define MUSIC_BAR_BAR_W             2
+#define MUSIC_BAR_BAR_H             5
+#define MUSIC_BAR_NUM_BARS          16
+#define MUSIC_BAR_X_GAP             2
+
+#define AUTOSAVE_MENU_X             71
+#define AUTOSAVE_MENU_Y             109
+#define AUTOSAVE_MENU_W             49
+#define AUTOSAVE_MENU_H             7
+
+#define AUTOSAVE_OFF_X              133
+#define AUTOSAVE_OFF_Y              109
+#define AUTOSAVE_OFF_OPT_X          132
+#define AUTOSAVE_OFF_OPT_Y          117
+#define AUTOSAVE_OFF_OPT_W          16
+
+#define AUTOSAVE_1M_X               158
+#define AUTOSAVE_1M_Y               109
+#define AUTOSAVE_1M_OPT_X           157  
+#define AUTOSAVE_1M_OPT_Y           117
+#define AUTOSAVE_1M_OPT_W           12
+
+#define AUTOSAVE_2M_X               179
+#define AUTOSAVE_2M_Y               109
+#define AUTOSAVE_2M_OPT_X           178
+#define AUTOSAVE_2M_OPT_Y           117
+#define AUTOSAVE_2M_OPT_W           12
+
+#define AUTOSAVE_5M_X               200
+#define AUTOSAVE_5M_Y               109
+#define AUTOSAVE_5M_OPT_X           199
+#define AUTOSAVE_5M_OPT_Y           117
+#define AUTOSAVE_5M_OPT_W           12
+
+#define AUTOSAVE_10M_X              221
+#define AUTOSAVE_10M_Y              109
+#define AUTOSAVE_10M_OPT_X          220
+#define AUTOSAVE_10M_OPT_Y          117
+#define AUTOSAVE_10M_OPT_W          18
+
+#define SAVE_ON_EXIT_MENU_X         71
+#define SAVE_ON_EXIT_MENU_Y         125
+#define SAVE_ON_EXIT_MENU_W         64
+#define SAVE_ON_EXIT_MENU_H         7
+
+#define SAVE_ON_EXIT_YES_X          149
+#define SAVE_ON_EXIT_YES_Y          125
+#define SAVE_ON_EXIT_YES_OPT_X      148
+#define SAVE_ON_EXIT_YES_OPT_Y      133
+#define SAVE_ON_EXIT_YES_OPT_W       18
+#define SAVE_ON_EXIT_NO_X           189
+#define SAVE_ON_EXIT_NO_Y           125
+#define SAVE_ON_EXIT_NO_OPT_X       188
+#define SAVE_ON_EXIT_NO_OPT_Y       133   
+#define SAVE_ON_EXIT_NO_OPT_W       12
+
+#define OPT_OK_X                    121
+#define OPT_OK_Y                    145
+#define OPT_OK_W                    11
+#define OPT_OK_H                    7
+
+#define OPT_CANCEL_X                168
+#define OPT_CANCEL_Y                145
+#define OPT_CANCEL_W                31
+#define OPT_CANCEL_H                7
+
 #endif 
  

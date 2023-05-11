@@ -71,6 +71,7 @@ void process_input(int state) {
       input_state_help();
       break;
     case STATE_OPTS:
+      input_state_options();
       break;
     case STATE_LOAD_DIALOG:
       input_state_load_dialog();
@@ -485,6 +486,28 @@ void process_help_press(void) {
   }      
 }
 
+/*=============================================================================
+ * process_opts_press
+ *============================================================================*/
+void process_opts_press(void) {
+  if (mouse_clicked_here(OPTS_BUTTON_X,
+                         OPTS_BUTTON_Y,
+                         OPTS_BUTTON_X + MENU_BUTTON_WIDTH,
+                         OPTS_BUTTON_Y + MENU_BUTTON_HEIGHT,
+                         1)) {
+     change_state(STATE_OPTS, STATE_GAME);
+  }
+
+  if (key[KEY_O]) {
+    if (!g_keypress_lockout[KEY_O]) {    
+      change_state(STATE_OPTS, STATE_GAME);
+      g_keypress_lockout[KEY_O] = 1;        
+    }
+  }
+  if (!key[KEY_O] && g_keypress_lockout[KEY_O]) {
+    g_keypress_lockout[KEY_O] = 0;
+  }      
+}
  /*=============================================================================
  * process_map_press
  *============================================================================*/
@@ -1764,6 +1787,18 @@ void process_load_screen_mouse_input(void) {
   }
 }
 
+void input_state_options(void) {
+    if (key[KEY_ESC]) {
+      if (!g_keypress_lockout[KEY_ESC]) {
+        change_state(STATE_GAME, STATE_OPTS);
+        g_keypress_lockout[KEY_ESC] = 1;
+      }
+    }
+    if (!key[KEY_ESC] && g_keypress_lockout[KEY_ESC]) {
+      g_keypress_lockout[KEY_ESC] = 0;
+    }
+}
+
 /*=============================================================================
  * input_state_logo
  *============================================================================*/
@@ -1899,6 +1934,7 @@ void input_state_game(void) {
     process_mark_press();
     process_help_press();
     process_exit_press();
+    process_opts_press();
     process_map_press();
     process_style_press();
     process_save_press();

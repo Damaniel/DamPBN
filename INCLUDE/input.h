@@ -71,6 +71,11 @@ void input_state_game(void);
 void input_state_map(void);
 
 /**
+ * Process input for the options screen (g_cur_state = STATE_OPTS)
+*/
+void input_state_options(void);
+
+/**
  * Process input for the complete state (g_cur_state = STATE_REPLAY)
  */
 void input_state_replay(void);
