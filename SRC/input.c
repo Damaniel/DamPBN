@@ -1789,16 +1789,140 @@ void process_load_screen_mouse_input(void) {
   }
 }
 
-void input_state_options(void) {
-    if (key[KEY_ESC]) {
-      if (!g_keypress_lockout[KEY_ESC]) {
-        change_state(STATE_GAME, STATE_OPTS);
-        g_keypress_lockout[KEY_ESC] = 1;
+void process_option_left_right(int left) {
+  /* There are 3 different things that can change:
+      - For OK / Cancel, just toggle between the two and redraw them
+      - For volume, adjust the volume slider and redraw it
+      - For everything else, adjust the relevant setting and redraw it
+  */
+  switch (g_current_option) {
+    case OPTION_SOUND:
+      if (g_sound_enabled) {
+        g_sound_enabled = 0;
       }
+      else {
+        g_sound_enabled = 1;
+      }
+      g_components.render_option_highlights = 1;
+      break;
+    case OPTION_SOUND_VOL:
+      if (left == 1) {
+        g_sound_volume = g_sound_volume - 1;
+        if (g_sound_volume < 0) {
+          g_sound_volume = 0;
+        }
+      }
+      else {
+        g_sound_volume = g_sound_volume + 1;
+        if (g_sound_volume >= SOUND_BAR_NUM_BARS) {
+          g_sound_volume = SOUND_BAR_NUM_BARS - 1;
+        }        
+      }
+      set_sound_volume(g_sound_volume);
+      g_components.render_option_volume_positions = 1;
+      break;
+    case OPTION_MUSIC:
+      if (g_music_enabled) {
+        g_music_enabled = 0;
+        stop_active_midi();
+      }
+      else {
+        g_music_enabled = 1;
+        play_cur_midi(1);
+      }
+      g_components.render_option_highlights = 1;
+      break;
+    case OPTION_MUSIC_VOL:
+      if (left == 1) {
+        g_music_volume = g_music_volume - 1;
+        if (g_music_volume < 0) {
+          g_music_volume = 0;
+        }
+      }
+      else {
+        g_music_volume = g_music_volume + 1;
+        if (g_music_volume >= MUSIC_BAR_NUM_BARS) {
+          g_music_volume = MUSIC_BAR_NUM_BARS - 1;
+        }        
+      }
+      set_music_volume(g_music_volume);
+      g_components.render_option_volume_positions = 1;
+      break;
+    case OPTION_AUTOSAVE:
+      if (left == 1) {
+        switch (g_autosave_frequency) {
+          case 0:
+            g_autosave_frequency = 10;
+            break;
+          case 1:
+            g_autosave_frequency = 0;
+            break;
+          case 2:
+            g_autosave_frequency = 1;
+            break;
+          case 5:
+            g_autosave_frequency = 2;
+            break;
+          case 10:
+            g_autosave_frequency = 5;
+            break;
+        }
+      }
+      else {
+        switch (g_autosave_frequency) {
+          case 0:
+            g_autosave_frequency = 1;
+            break;
+          case 1:
+            g_autosave_frequency = 2;
+            break;
+          case 2:
+            g_autosave_frequency = 5;
+            break;
+          case 5:
+            g_autosave_frequency = 10;
+            break;
+          case 10:
+            g_autosave_frequency = 0;
+            break;
+        }
+      }
+      g_components.render_option_highlights = 1;
+      break;
+    case OPTION_SAVE_ON_EXIT:
+      if (g_save_on_exit) {
+        g_save_on_exit = 0;
+      }
+      else {
+        g_save_on_exit = 1;
+      }
+      g_components.render_option_highlights = 1;
+      break;
+  }
+}
+
+void input_state_options(void) {
+  if (key[KEY_ESC]) {
+    if (!g_keypress_lockout[KEY_ESC]) {
+      change_state(STATE_GAME, STATE_OPTS);
+      g_keypress_lockout[KEY_ESC] = 1;
     }
-    if (!key[KEY_ESC] && g_keypress_lockout[KEY_ESC]) {
-      g_keypress_lockout[KEY_ESC] = 0;
+  }
+  if (!key[KEY_ESC] && g_keypress_lockout[KEY_ESC]) {
+    g_keypress_lockout[KEY_ESC] = 0;
+  }
+
+  if (key[KEY_ENTER]) {
+    if (!g_keypress_lockout[KEY_ENTER]) {
+      if (g_current_option == OPTION_OK) {
+        change_state(STATE_GAME, STATE_OPTS);
+      }
+      g_keypress_lockout[KEY_ENTER] = 1;
     }
+  }
+  if (!key[KEY_ENTER] && g_keypress_lockout[KEY_ENTER]) {
+    g_keypress_lockout[KEY_ENTER] = 0;
+  }
 
   if (key[KEY_UP]) {
     if (!g_keypress_lockout[KEY_UP]) {    
@@ -1828,7 +1952,29 @@ void input_state_options(void) {
   }
   if (!key[KEY_DOWN] && g_keypress_lockout[KEY_DOWN]) {
     g_keypress_lockout[KEY_DOWN] = 0;
+  }
+
+  if (key[KEY_LEFT]) {
+    if (!g_keypress_lockout[KEY_LEFT]) {    
+      process_option_left_right(1);
+      g_components.render_option_highlights = 1;
+      g_keypress_lockout[KEY_LEFT] = 1;        
+    }
+  }
+  if (!key[KEY_LEFT] && g_keypress_lockout[KEY_LEFT]) {
+    g_keypress_lockout[KEY_LEFT] = 0;
   }     
+
+  if (key[KEY_RIGHT]) {
+    if (!g_keypress_lockout[KEY_RIGHT]) {    
+      process_option_left_right(0);
+      g_components.render_option_highlights = 1;
+      g_keypress_lockout[KEY_RIGHT] = 1;        
+    }
+  }
+  if (!key[KEY_RIGHT] && g_keypress_lockout[KEY_RIGHT]) {
+    g_keypress_lockout[KEY_RIGHT] = 0;
+  }    
 
 }
 

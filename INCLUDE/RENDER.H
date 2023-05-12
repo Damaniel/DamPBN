@@ -85,8 +85,7 @@ typedef enum {
 #define OPTION_AUTOSAVE       4
 #define OPTION_SAVE_ON_EXIT   5
 #define OPTION_OK             6
-#define OPTION_CANCEL         7
-#define NUM_OPTIONS           8
+#define NUM_OPTIONS           7
 
 /**
  * Resets all of the render flags for the display.

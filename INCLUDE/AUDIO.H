@@ -126,6 +126,9 @@ int cue_next_midi(int play_next_after);
 
 int cue_prev_midi(int play_next_after);
 
+void set_sound_volume(int vol);
+void set_music_volume(int vol);
+
 void mute_music(void);
 
 void mute_sound(void);

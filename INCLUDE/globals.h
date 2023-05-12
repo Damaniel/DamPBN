@@ -360,10 +360,7 @@ extern int g_music_muted;
 extern int g_midi_is_playing;
 extern int g_midi_is_paused;
 
-/* Should the game autosave? */
-extern int g_autosave;
-
-/* How often (in seconds) should the game autosave?*/
+/* How often (in minutes) should the game autosave?  (0 = don't autosave) */
 extern int g_autosave_frequency;
 
 /* Should the game automatically save on exit? */

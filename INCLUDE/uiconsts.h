@@ -443,15 +443,10 @@
 #define SAVE_ON_EXIT_NO_OPT_Y       133   
 #define SAVE_ON_EXIT_NO_OPT_W       12
 
-#define OPT_OK_X                    121
+#define OPT_OK_X                    154
 #define OPT_OK_Y                    145
 #define OPT_OK_W                    11
 #define OPT_OK_H                    7
-
-#define OPT_CANCEL_X                168
-#define OPT_CANCEL_Y                145
-#define OPT_CANCEL_W                31
-#define OPT_CANCEL_H                7
 
 #endif 
  

@@ -193,32 +193,44 @@ int stop_active_midi(void) {
     return 0;
 }
 
+/* Note - the sound mixer gets really quiet with values under 128, so
+   we'll adjust the sound by steps between 128 and 255 instead.  
+ */
+void set_sound_volume(int vol) {
+
+    if (vol == 0) {
+        set_volume(0, 128 + ((g_music_volume + 1) * 8) - 1);
+    }
+    else {
+        set_volume(128 + ((vol + 1) * 8) - 1, 128 + ((g_music_volume + 1) * 8) - 1);
+    }
+}
+
+void set_music_volume(int vol) {
+    if (vol == 0) {
+        set_volume(128 + ((g_sound_volume + 1) * 8) - 1, 0);
+    }
+    else {
+        set_volume(128 + ((g_sound_volume + 1) * 8) - 1, 128 + ((vol + 1) * 8) - 1);
+    }
+}
+
 void mute_sound(void) {
-    set_volume(0, (g_music_volume + 1) * 16 - 1);
+    set_sound_volume(0);
     g_sound_muted = 1;
 }
 
 void mute_music(void) {
-    set_volume((g_sound_volume + 1) * 16 - 1, 0);
+    set_music_volume(0);
     g_music_muted = 1;
 }
 
 void restore_sound(void) {
-    if (g_music_muted) {
-        set_volume((g_sound_volume + 1) * 16 - 1, 0);
-    }
-    else {
-        set_volume((g_sound_volume + 1) * 16 - 1, (g_music_volume + 1) * 16 - 1);
-    }
+    set_sound_volume(g_sound_volume);
     g_sound_muted = 0;
 }
 
 void restore_music(void) {
-    if (g_sound_muted) {
-        set_volume(0, (g_music_volume + 1) * 16 - 1);
-    }
-    else {
-        set_volume((g_sound_volume + 1) * 16 - 1, (g_music_volume + 1) * 16 - 1);
-    }
+    set_music_volume(g_music_volume);
     g_music_muted = 0;
 }
