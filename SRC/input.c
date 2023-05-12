@@ -23,6 +23,7 @@
 #include <string.h>
 #include "../include/globals.h"
 #include "../include/audio.h"
+#include "../include/util.h"
 
 unsigned char g_keypress_lockout[128];
 int g_mouse_click_lockout;
@@ -1922,6 +1923,8 @@ void input_state_options(void) {
         if (g_autosave_frequency != 0) {
           g_autosave_counter = g_autosave_frequency * 60;
         }
+        /* Save the configuration*/
+        write_config_file();
       }
       g_keypress_lockout[KEY_ENTER] = 1;
     }

@@ -4,6 +4,7 @@
 *.json
 *.pro
 *.mid
+DAMPBN.CFG
 .vscode/
 tools/pic_src/in_progress
 tools/in    

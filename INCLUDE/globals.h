@@ -62,6 +62,8 @@
 #define PIC_FILE_DIR "res/pics"
 #define PROGRESS_FILE_DIR "progress"
 
+#define CONFIG_FILE "dampbn.cfg"
+
 #define MOUSE_MODE_NEUTRAL             0
 #define MOUSE_MODE_DRAW                1
 #define MOUSE_MODE_ERASE               2

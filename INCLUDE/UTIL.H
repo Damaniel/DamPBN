@@ -209,4 +209,20 @@ void init_load_dialog_defaults(void);
  */
 void init_defaults(void);
 
+/**
+ * Opens the configuration file and reads in the settings
+ * 
+ * @return 0 on success, non-zero on failure
+ * 
+ * @note The file not being there is not failure.
+*/
+int read_config_file(void);
+
+/** 
+ * Writes the configuration to a configuration file.
+ * 
+ * @return 0 on success, non-zero on failure 
+ */
+int write_config_file(void);
+
 #endif

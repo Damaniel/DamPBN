@@ -687,6 +687,46 @@ void init_load_dialog_defaults(void) {
   g_load_section_active = LOAD_COLLECTION_ACTIVE;
 }
 
+/* write_config_file */
+int write_config_file(void) {
+  FILE *fp;
+
+  fp = fopen(CONFIG_FILE, "wb");
+
+  if (fp == NULL) {
+    return -1;
+  }
+
+  fwrite(&g_sound_enabled, sizeof(int), 1, fp);
+  fwrite(&g_sound_volume, sizeof(int), 1, fp);
+  fwrite(&g_music_enabled, sizeof(int), 1, fp);
+  fwrite(&g_music_volume, sizeof(int), 1, fp);
+  fwrite(&g_autosave_frequency, sizeof(int), 1, fp);
+  fwrite(&g_save_on_exit, sizeof(int), 1, fp);
+
+  fclose(fp);
+  return 0;
+}
+
+int read_config_file(void) {
+  FILE *fp;
+
+  fp = fopen(CONFIG_FILE, "rb");
+  if (fp == NULL) {
+    return 0;
+  }
+
+  fread(&g_sound_enabled, sizeof(int), 1, fp);
+  fread(&g_sound_volume, sizeof(int), 1, fp);
+  fread(&g_music_enabled, sizeof(int), 1, fp);
+  fread(&g_music_volume, sizeof(int), 1, fp);
+  fread(&g_autosave_frequency, sizeof(int), 1, fp);
+  fread(&g_save_on_exit, sizeof(int), 1, fp);
+  
+  fclose(fp);
+  return 0;
+}
+
 /*=============================================================================
  * init_defaults
  *============================================================================*/
@@ -739,5 +779,8 @@ void init_defaults(void) {
   LOCK_VARIABLE(g_next_frame);
   LOCK_FUNCTION(int_handler);
 
+  /* Load config file for any overrides */
+  read_config_file();
+  
   g_state = STATE_GAME;
 }

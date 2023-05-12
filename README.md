@@ -113,6 +113,8 @@ so infrequently that I don't mind doing a couple manual steps once or twice a ye
 - The ability to watch completed replays from the image select screen
 - An installer (and a floppy image that uses it)
 - An experimental MIDI player
+- Option screen (continue last, start/continue another)
+- Periodic auto-save
 
 Note that the MIDI player itself isn't experimental (it's just using Allegro code), the behavior is.
 It currently plays through a series of MIDI files that are placed into RES/MUSIC, as long as
@@ -124,13 +126,7 @@ something better and I'm planning to add keys to play the previous/next song in 
 ### What's left to do?
 
 Lots. Many of these I'll do, but some probably not.  These include:
-- Option screen (continue last, start/continue another)
-- Periodic auto-save
-- More pictures (and pictures that aren't test/prototype images)!
-  - Since the current distribution takes up most of a floppy, I'm planning to do puzzle pack disk images for those
-    (though the files will all be present in my ZIP distributions)
-  - I've already created a set of 1000 images using my batch conversion tools.  They fit on a floppy size-wise, but
-    not sector wise - my pacakage installer will assume zipped or otherwise packed image files anyway.
+- Dump options to file
 - Sound effects
 - (and plenty of other stuff I haven't thought of yet)
 
