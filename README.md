@@ -1,9 +1,9 @@
 # Damaniel's Pixel By Number
 ![Title screen](https://user-images.githubusercontent.com/1784332/170628024-9f7f6ee1-70ab-44e0-99c3-d670a45a9e28.png)
 
-This is an in-progress paint by number game.  Think something like the mobile 
-game Cross Stitch World, or something like actual diamond painting.  While the
-game is playable, it's far from complete.  
+This is a paint by number game.  Think something like the mobile game Cross Stitch World, or something like actual diamond painting.
+
+While I'm not ready to call the game 'complete', I believe that all of the planned functionality is in.
 
 ### Requirements
 
@@ -113,7 +113,7 @@ so infrequently that I don't mind doing a couple manual steps once or twice a ye
 - The ability to watch completed replays from the image select screen
 - An installer (and a floppy image that uses it)
 - An experimental MIDI player
-- Option screen (continue last, start/continue another)
+- Option screen (continue last, start/continue another), with configuration save
 - Periodic auto-save
 
 Note that the MIDI player itself isn't experimental (it's just using Allegro code), the behavior is.
@@ -125,16 +125,22 @@ something better and I'm planning to add keys to play the previous/next song in 
 
 ### What's left to do?
 
-Lots. Many of these I'll do, but some probably not.  These include:
-- Dump options to file
-- Sound effects
-- (and plenty of other stuff I haven't thought of yet)
+Right now, the only other feature I might add is some sound effects, but I don't think that would
+add very much.  Functionally, I think the game is complete.
+
+Outside of the game, I need to finish up the manual, which is mainly adding the option section, make the
+terminology more consistent ('Image' instead of 'Picture'), and check for typos/incorrect stuff.
 
 ### Current bugs to fix
-- None currently
+- None that I know of, but I'm sure there's plenty.
 
 ### Additional notes
-- Currently, images can be up to 320x200 pixels in size, with up to 64 colors.
+Currently, images can be up to 320x200 pixels in size, with up to 64 colors.  There are two Image versions:
+ - version 1 only supports square/rectangular images (i.e. every square in a X x Y region needs to be a color)
+ - version 2 allows non-square/irregular images.  The tools that create these use a transparency mask to
+   determine which squares will need to be colored and which won't.
+ - Version 2 is backward and forward compatible.  The version 1 reader will skip version 2 data, and 
+   the version 2 reader treats the version 1 files like earlier versions of the game.
 
 ## Screenshots
 ![In-game](https://user-images.githubusercontent.com/1784332/170628027-d92280e7-9306-422f-be59-8887636a4a65.png)
