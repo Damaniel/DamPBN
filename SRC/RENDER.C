@@ -102,7 +102,8 @@ int g_help_page;
 
 int g_preview_scale;
 
-GameOption g_current_option;
+int g_current_option;
+int g_prev_option;
 
 BITMAP *g_logo;
 
@@ -138,6 +139,7 @@ BITMAP *g_help_next;
 BITMAP *g_help_previous;
 BITMAP *g_help_exit;
 BITMAP *g_sure;
+BITMAP *g_vol_buttons;
 
 RenderComponents g_components;
 TitleAnimation g_title_anim;
@@ -922,6 +924,7 @@ void render_draw_cursor(BITMAP *dest) {
 }
 
 void render_options_screen(BITMAP *dest, RenderComponents c) {
+  int idx;
 
   /* Draw the background */
   if (c.render_option_dialog) {
@@ -933,22 +936,320 @@ void render_options_screen(BITMAP *dest, RenderComponents c) {
 
   /* Draw the text */
   if (c.render_option_base_text) {
-
+    render_prop_text(dest, "Game Options", OPTION_HEADER_X, OPTION_HEADER_Y);
+    render_prop_text(dest, "Sound:", SOUND_MENU_X, SOUND_MENU_Y);
+    render_prop_text(dest, "On", SOUND_ON_X, SOUND_ON_Y);
+    render_prop_text(dest, "Off", SOUND_OFF_X, SOUND_OFF_Y);
+    render_prop_text(dest, "Volume:", SOUND_VOL_MENU_X, SOUND_VOL_MENU_Y);
+    render_prop_text(dest, "Music:", MUSIC_MENU_X, MUSIC_MENU_Y);
+    render_prop_text(dest, "On", MUSIC_ON_X, MUSIC_ON_Y);
+    render_prop_text(dest, "Off", MUSIC_OFF_X, MUSIC_OFF_Y);
+    render_prop_text(dest, "Volume:", MUSIC_VOL_MENU_X, MUSIC_VOL_MENU_Y);
+    render_prop_text(dest, "Autosave:", AUTOSAVE_MENU_X, AUTOSAVE_MENU_Y);
+    render_prop_text(dest, "Off", AUTOSAVE_OFF_X, AUTOSAVE_OFF_Y);
+    render_prop_text(dest, "1m", AUTOSAVE_1M_X, AUTOSAVE_1M_Y);
+    render_prop_text(dest, "2m", AUTOSAVE_2M_X, AUTOSAVE_2M_Y);
+    render_prop_text(dest, "5m", AUTOSAVE_5M_X, AUTOSAVE_5M_Y);
+    render_prop_text(dest, "10m", AUTOSAVE_10M_X, AUTOSAVE_10M_Y);
+    render_prop_text(dest, "Save on exit:", SAVE_ON_EXIT_MENU_X, SAVE_ON_EXIT_MENU_Y);
+    render_prop_text(dest, "Yes", SAVE_ON_EXIT_YES_X, SAVE_ON_EXIT_YES_Y);
+    render_prop_text(dest, "No", SAVE_ON_EXIT_NO_X, SAVE_ON_EXIT_NO_Y);
+    render_prop_text(dest, "OK", OPT_OK_X, OPT_OK_Y);
+    render_prop_text(dest, "Cancel", OPT_CANCEL_X, OPT_CANCEL_Y);
   }
 
   /* Draw the volume buttons */
   if (c.render_option_volume_bar_base) {
-
+    blit(g_vol_buttons, dest, 0, 0, SOUND_VOL_MINUS_X, SOUND_VOL_MINUS_Y, SOUND_VOL_MINUS_W, SOUND_VOL_MINUS_H);
+    blit(g_vol_buttons, dest, SOUND_VOL_MINUS_W, 0, SOUND_VOL_PLUS_X, SOUND_VOL_PLUS_Y, SOUND_VOL_PLUS_W, SOUND_VOL_PLUS_H);
+    blit(g_vol_buttons, dest, 0, 0, MUSIC_VOL_MINUS_X, MUSIC_VOL_MINUS_Y, MUSIC_VOL_MINUS_W, MUSIC_VOL_MINUS_H);
+    blit(g_vol_buttons, dest, MUSIC_VOL_MINUS_W, 0, MUSIC_VOL_PLUS_X, MUSIC_VOL_PLUS_Y, MUSIC_VOL_PLUS_W, MUSIC_VOL_PLUS_H);
+    for (idx=0; idx < SOUND_BAR_NUM_BARS; idx++) {
+      vline(dest, SOUND_BAR_START_X + (idx * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)), SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 206);
+      vline(dest, SOUND_BAR_START_X + (idx * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)) + 1, SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 206);
+      vline(dest, MUSIC_BAR_START_X + (idx * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)), MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 206);
+      vline(dest, MUSIC_BAR_START_X + (idx * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)) + 1, MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 206);
+    }
   }
 
   /* Draw the current volume setting (and clear the one on each side)*/
   if (c.render_option_volume_positions) {
+      if (g_sound_volume > 0) {
+        vline(dest, SOUND_BAR_START_X + ((g_sound_volume - 1) * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)), SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 206);
+        vline(dest, SOUND_BAR_START_X + ((g_sound_volume - 1)  * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)) + 1, SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 206);
 
+      }
+      vline(dest, SOUND_BAR_START_X + (g_sound_volume * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)), SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 210);
+      vline(dest, SOUND_BAR_START_X + (g_sound_volume * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)) + 1, SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 210);
+
+      if (g_sound_volume < 15 ) {
+        vline(dest, SOUND_BAR_START_X + ((g_sound_volume + 1) * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)), SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 206);
+        vline(dest, SOUND_BAR_START_X + ((g_sound_volume + 1) * (SOUND_BAR_BAR_W + SOUND_BAR_X_GAP)) + 1, SOUND_BAR_START_Y, SOUND_BAR_START_Y + SOUND_BAR_BAR_H, 206);
+      }
+      
+      if (g_music_volume > 0) {
+        vline(dest, MUSIC_BAR_START_X + ((g_music_volume - 1) * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)), MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 206);
+        vline(dest, MUSIC_BAR_START_X + ((g_music_volume - 1) * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)) + 1, MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 206);
+      }
+      vline(dest, MUSIC_BAR_START_X + (g_music_volume * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)), MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 210);
+      vline(dest, MUSIC_BAR_START_X + (g_music_volume * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)) + 1, MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 210);
+      if (g_music_volume < 15) {
+        vline(dest, MUSIC_BAR_START_X + ((g_music_volume + 1) * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)), MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 206);
+        vline(dest, MUSIC_BAR_START_X + ((g_music_volume + 1) * (MUSIC_BAR_BAR_W + MUSIC_BAR_X_GAP)) + 1, MUSIC_BAR_START_Y, MUSIC_BAR_START_Y + MUSIC_BAR_BAR_H, 206);
+      }
   }
 
   /* Draw the cursor (and fix the text where the cursor used to be) */
   if (c.render_option_cursor_text) {
+    switch (g_current_option) {
+      case OPTION_SOUND:
+        if (g_prev_option == OPTION_SOUND_VOL) {
+          rectfill(dest, SOUND_VOL_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SOUND_VOL_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SOUND_VOL_MENU_X + SOUND_VOL_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SOUND_VOL_MENU_Y + SOUND_VOL_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Volume:", SOUND_VOL_MENU_X, SOUND_VOL_MENU_Y);
+        }
+        if (g_prev_option == OPTION_CANCEL) {
+          rectfill(dest, OPT_CANCEL_X - OPTION_CURSOR_MARGIN, 
+                   OPT_CANCEL_Y - OPTION_CURSOR_MARGIN,
+                   OPT_CANCEL_X + OPT_CANCEL_W + OPTION_CURSOR_MARGIN - 1,
+                   OPT_CANCEL_Y + OPT_CANCEL_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Cancel", OPT_CANCEL_X, OPT_CANCEL_Y);
+        }
+        rect(dest, SOUND_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SOUND_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SOUND_MENU_X + SOUND_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SOUND_MENU_Y + SOUND_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 SOUND_MENU_X - OPTION_CURSOR_INNER_MARGIN,
+                 SOUND_MENU_Y - OPTION_CURSOR_INNER_MARGIN,
+                 SOUND_MENU_X + SOUND_MENU_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 SOUND_MENU_Y + SOUND_MENU_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Sound:", SOUND_MENU_X, SOUND_MENU_Y);
+        break;
 
+      case OPTION_SOUND_VOL:
+        if (g_prev_option == OPTION_MUSIC) {
+          rectfill(dest, MUSIC_MENU_X - OPTION_CURSOR_MARGIN, 
+                   MUSIC_MENU_Y - OPTION_CURSOR_MARGIN,
+                   MUSIC_MENU_X + MUSIC_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   MUSIC_MENU_Y + MUSIC_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Music:", MUSIC_MENU_X, MUSIC_MENU_Y);
+        }
+        if (g_prev_option == OPTION_SOUND) {
+          rectfill(dest, SOUND_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SOUND_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SOUND_MENU_X + SOUND_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SOUND_MENU_Y + SOUND_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Sound:", SOUND_MENU_X, SOUND_MENU_Y);
+        }
+        rect(dest, SOUND_VOL_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SOUND_VOL_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SOUND_VOL_MENU_X + SOUND_VOL_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SOUND_VOL_MENU_Y + SOUND_VOL_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 SOUND_VOL_MENU_X - OPTION_CURSOR_INNER_MARGIN,
+                 SOUND_VOL_MENU_Y - OPTION_CURSOR_INNER_MARGIN,
+                 SOUND_VOL_MENU_X + SOUND_VOL_MENU_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 SOUND_VOL_MENU_Y + SOUND_VOL_MENU_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Volume:", SOUND_VOL_MENU_X, SOUND_VOL_MENU_Y);
+        break;
+
+      case OPTION_MUSIC:
+        if (g_prev_option == OPTION_MUSIC_VOL) {
+          rectfill(dest, MUSIC_VOL_MENU_X - OPTION_CURSOR_MARGIN, 
+                   MUSIC_VOL_MENU_Y - OPTION_CURSOR_MARGIN,
+                   MUSIC_VOL_MENU_X + MUSIC_VOL_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   MUSIC_VOL_MENU_Y + MUSIC_VOL_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Volume:", MUSIC_VOL_MENU_X, MUSIC_VOL_MENU_Y);
+        }     
+        if (g_prev_option == OPTION_SOUND_VOL) {
+          rectfill(dest, SOUND_VOL_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SOUND_VOL_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SOUND_VOL_MENU_X + SOUND_VOL_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SOUND_VOL_MENU_Y + SOUND_VOL_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Volume:", SOUND_VOL_MENU_X, SOUND_VOL_MENU_Y);
+        }  
+        rect(dest, MUSIC_MENU_X - OPTION_CURSOR_MARGIN, 
+                   MUSIC_MENU_Y - OPTION_CURSOR_MARGIN,
+                   MUSIC_MENU_X + MUSIC_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   MUSIC_MENU_Y + MUSIC_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 MUSIC_MENU_X - OPTION_CURSOR_INNER_MARGIN,
+                 MUSIC_MENU_Y - OPTION_CURSOR_INNER_MARGIN,
+                 MUSIC_MENU_X + MUSIC_MENU_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 MUSIC_MENU_Y + MUSIC_MENU_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Music:", MUSIC_MENU_X, MUSIC_MENU_Y);
+        break;
+
+      case OPTION_MUSIC_VOL:
+        if (g_prev_option == OPTION_AUTOSAVE) {
+          rectfill(dest, AUTOSAVE_MENU_X - OPTION_CURSOR_MARGIN, 
+                   AUTOSAVE_MENU_Y - OPTION_CURSOR_MARGIN,
+                   AUTOSAVE_MENU_X + AUTOSAVE_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   AUTOSAVE_MENU_Y + AUTOSAVE_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Autosave:", AUTOSAVE_MENU_X, AUTOSAVE_MENU_Y);
+        }
+        if (g_prev_option == OPTION_MUSIC) {
+          rectfill(dest, MUSIC_MENU_X - OPTION_CURSOR_MARGIN, 
+                   MUSIC_MENU_Y - OPTION_CURSOR_MARGIN,
+                   MUSIC_MENU_X + MUSIC_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   MUSIC_MENU_Y + MUSIC_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Music:", MUSIC_MENU_X, MUSIC_MENU_Y);
+        }
+        rect(dest, MUSIC_VOL_MENU_X - OPTION_CURSOR_MARGIN, 
+                   MUSIC_VOL_MENU_Y - OPTION_CURSOR_MARGIN,
+                   MUSIC_VOL_MENU_X + MUSIC_VOL_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   MUSIC_VOL_MENU_Y + MUSIC_VOL_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 MUSIC_VOL_MENU_X - OPTION_CURSOR_INNER_MARGIN,
+                 MUSIC_VOL_MENU_Y - OPTION_CURSOR_INNER_MARGIN,
+                 MUSIC_VOL_MENU_X + MUSIC_VOL_MENU_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 MUSIC_VOL_MENU_Y + MUSIC_VOL_MENU_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Volume:", MUSIC_VOL_MENU_X, MUSIC_VOL_MENU_Y);
+        break;
+
+      case OPTION_AUTOSAVE:
+        if (g_prev_option == OPTION_SAVE_ON_EXIT) {
+          rectfill(dest, SAVE_ON_EXIT_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SAVE_ON_EXIT_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SAVE_ON_EXIT_MENU_X + SAVE_ON_EXIT_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SAVE_ON_EXIT_MENU_Y + SAVE_ON_EXIT_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Save on exit:", SAVE_ON_EXIT_MENU_X, SAVE_ON_EXIT_MENU_Y);
+        }
+        if (g_prev_option == OPTION_MUSIC_VOL) {
+          rectfill(dest, MUSIC_VOL_MENU_X - OPTION_CURSOR_MARGIN, 
+                   MUSIC_VOL_MENU_Y - OPTION_CURSOR_MARGIN,
+                   MUSIC_VOL_MENU_X + MUSIC_VOL_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   MUSIC_VOL_MENU_Y + MUSIC_VOL_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Volume:", MUSIC_VOL_MENU_X, MUSIC_VOL_MENU_Y);
+        }
+        rect(dest, AUTOSAVE_MENU_X - OPTION_CURSOR_MARGIN, 
+                   AUTOSAVE_MENU_Y - OPTION_CURSOR_MARGIN,
+                   AUTOSAVE_MENU_X + AUTOSAVE_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   AUTOSAVE_MENU_Y + AUTOSAVE_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 AUTOSAVE_MENU_X - OPTION_CURSOR_INNER_MARGIN,
+                 AUTOSAVE_MENU_Y - OPTION_CURSOR_INNER_MARGIN,
+                 AUTOSAVE_MENU_X + AUTOSAVE_MENU_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 AUTOSAVE_MENU_Y + AUTOSAVE_MENU_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Autosave:", AUTOSAVE_MENU_X, AUTOSAVE_MENU_Y);
+        break;
+
+      case OPTION_SAVE_ON_EXIT:
+        if (g_prev_option == OPTION_OK) {
+          rectfill(dest, OPT_OK_X - OPTION_CURSOR_MARGIN, 
+                   OPT_OK_Y - OPTION_CURSOR_MARGIN,
+                   OPT_OK_X + OPT_OK_W + OPTION_CURSOR_MARGIN - 1,
+                   OPT_OK_Y + OPT_OK_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "OK", OPT_OK_X, OPT_OK_Y);
+        }
+        if (g_prev_option == OPTION_AUTOSAVE) {
+          rectfill(dest, AUTOSAVE_MENU_X - OPTION_CURSOR_MARGIN, 
+                   AUTOSAVE_MENU_Y - OPTION_CURSOR_MARGIN,
+                   AUTOSAVE_MENU_X + AUTOSAVE_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   AUTOSAVE_MENU_Y + AUTOSAVE_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Autosave:", AUTOSAVE_MENU_X, AUTOSAVE_MENU_Y);
+        }
+        rect(dest, SAVE_ON_EXIT_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SAVE_ON_EXIT_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SAVE_ON_EXIT_MENU_X + SAVE_ON_EXIT_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SAVE_ON_EXIT_MENU_Y + SAVE_ON_EXIT_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 SAVE_ON_EXIT_MENU_X - OPTION_CURSOR_INNER_MARGIN,
+                 SAVE_ON_EXIT_MENU_Y - OPTION_CURSOR_INNER_MARGIN,
+                 SAVE_ON_EXIT_MENU_X + SAVE_ON_EXIT_MENU_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 SAVE_ON_EXIT_MENU_Y + SAVE_ON_EXIT_MENU_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Save on exit:", SAVE_ON_EXIT_MENU_X, SAVE_ON_EXIT_MENU_Y);
+        break;
+
+      case OPTION_OK:
+        if (g_prev_option == OPTION_CANCEL) {
+          rectfill(dest, OPT_CANCEL_X - OPTION_CURSOR_MARGIN, 
+                   OPT_CANCEL_Y - OPTION_CURSOR_MARGIN,
+                   OPT_CANCEL_X + OPT_CANCEL_W + OPTION_CURSOR_MARGIN - 1,
+                   OPT_CANCEL_Y + OPT_CANCEL_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Cancel", OPT_CANCEL_X, OPT_CANCEL_Y);
+        }
+        if (g_prev_option == OPTION_SAVE_ON_EXIT) {
+          rectfill(dest, SAVE_ON_EXIT_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SAVE_ON_EXIT_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SAVE_ON_EXIT_MENU_X + SAVE_ON_EXIT_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SAVE_ON_EXIT_MENU_Y + SAVE_ON_EXIT_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Save on exit:", SAVE_ON_EXIT_MENU_X, SAVE_ON_EXIT_MENU_Y);
+        }
+        rect(dest, OPT_OK_X - OPTION_CURSOR_MARGIN, 
+                   OPT_OK_Y - OPTION_CURSOR_MARGIN,
+                   OPT_OK_X + OPT_OK_W + OPTION_CURSOR_MARGIN - 1,
+                   OPT_OK_Y + OPT_OK_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 OPT_OK_X - OPTION_CURSOR_INNER_MARGIN,
+                 OPT_OK_Y - OPTION_CURSOR_INNER_MARGIN,
+                 OPT_OK_X + OPT_OK_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 OPT_OK_Y + OPT_OK_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "OK", OPT_OK_X, OPT_OK_Y);
+        break;
+
+      case OPTION_CANCEL:
+        if (g_prev_option == OPTION_SOUND) {
+          rectfill(dest, SOUND_MENU_X - OPTION_CURSOR_MARGIN, 
+                   SOUND_MENU_Y - OPTION_CURSOR_MARGIN,
+                   SOUND_MENU_X + SOUND_MENU_W + OPTION_CURSOR_MARGIN - 1,
+                   SOUND_MENU_Y + SOUND_MENU_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "Sound:", SOUND_MENU_X, SOUND_MENU_Y);
+        }
+        if (g_prev_option == OPTION_OK) {
+          rectfill(dest, OPT_OK_X - OPTION_CURSOR_MARGIN, 
+                   OPT_OK_Y - OPTION_CURSOR_MARGIN,
+                   OPT_OK_X + OPT_OK_W + OPTION_CURSOR_MARGIN - 1,
+                   OPT_OK_Y + OPT_OK_H + OPTION_CURSOR_MARGIN - 1,
+                   194);
+          render_prop_text(dest, "OK", OPT_OK_X, OPT_OK_Y);
+        }
+        rect(dest, OPT_CANCEL_X - OPTION_CURSOR_MARGIN, 
+                   OPT_CANCEL_Y - OPTION_CURSOR_MARGIN,
+                   OPT_CANCEL_X + OPT_CANCEL_W + OPTION_CURSOR_MARGIN - 1,
+                   OPT_CANCEL_Y + OPT_CANCEL_H + OPTION_CURSOR_MARGIN - 1,
+                   204);
+        rectfill(dest, 
+                 OPT_CANCEL_X - OPTION_CURSOR_INNER_MARGIN,
+                 OPT_CANCEL_Y - OPTION_CURSOR_INNER_MARGIN,
+                 OPT_CANCEL_X + OPT_CANCEL_W + OPTION_CURSOR_INNER_MARGIN - 1,
+                 OPT_CANCEL_Y + OPT_CANCEL_H + OPTION_CURSOR_INNER_MARGIN - 1,
+                 199);
+        render_prop_text(dest, "Cancel", OPT_CANCEL_X, OPT_CANCEL_Y);
+        break;
+    }
   }
 
   /* Draw the lines under the appropriate settings (and fix the others) */
@@ -1612,6 +1913,7 @@ int load_graphics(void) {
   g_help_next = (BITMAP *)g_res[RES_HELP_NEXT].dat;
   g_help_exit = (BITMAP *)g_res[RES_HELP_EXIT].dat;
   g_sure = (BITMAP *)g_res[RES_ARE_YOU_SURE].dat;
+  g_vol_buttons = (BITMAP *)g_res[RES_VOL_BUTTONS].dat;
 
   /* We only want to create this once, so we check for null before we
      create it */

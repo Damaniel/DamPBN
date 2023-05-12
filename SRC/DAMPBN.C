@@ -106,7 +106,7 @@ void change_state(State new_state, State prev_state) {
       clear_render_components(&g_components);
       g_components.render_all = 1;
       /* If sound is on and we're not coming back from the load menu, cue up the first song in the list */
-      if (g_music_enabled && g_prev_state != STATE_MAP && g_prev_state != STATE_SAVE && g_prev_state != STATE_LOAD) {
+      if (g_music_enabled && g_prev_state != STATE_MAP && g_prev_state != STATE_SAVE && g_prev_state != STATE_LOAD && g_prev_state != STATE_OPTS) {
         if (g_midi_is_playing == 0) {
           g_next_midi_countdown = -1;
           g_cur_midi_idx = -1;
@@ -151,6 +151,11 @@ void change_state(State new_state, State prev_state) {
       break;
     case STATE_OPTS:
       g_components.render_option_dialog = 1;
+      g_components.render_option_base_text = 1;
+      g_components.render_option_volume_bar_base = 1;
+      g_components.render_option_volume_positions = 1;
+      g_components.render_option_cursor_text = 1;
+      g_components.render_option_highlights = 1;
       break;
     case STATE_LOAD_DIALOG:
       /* Reset the load dialog positions and such*/

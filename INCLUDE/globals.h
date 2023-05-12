@@ -130,6 +130,7 @@ extern BITMAP *g_help_previous;
 extern BITMAP *g_help_next;
 extern BITMAP *g_help_exit;
 extern BITMAP *g_sure;
+extern BITMAP *g_vol_buttons;
 
 /* The parts of the screen to render */
 extern RenderComponents g_components;
@@ -369,6 +370,7 @@ extern int g_autosave_frequency;
 extern int  g_save_on_exit;
 
 /* The currently highlighted option on the options screen */
-extern GameOption g_current_option;
+extern int g_current_option;
+extern int g_prev_option;
 
 #endif

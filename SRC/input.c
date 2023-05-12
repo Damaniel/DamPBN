@@ -506,8 +506,10 @@ void process_opts_press(void) {
   }
   if (!key[KEY_O] && g_keypress_lockout[KEY_O]) {
     g_keypress_lockout[KEY_O] = 0;
-  }      
+  }     
+
 }
+
  /*=============================================================================
  * process_map_press
  *============================================================================*/
@@ -1797,6 +1799,37 @@ void input_state_options(void) {
     if (!key[KEY_ESC] && g_keypress_lockout[KEY_ESC]) {
       g_keypress_lockout[KEY_ESC] = 0;
     }
+
+  if (key[KEY_UP]) {
+    if (!g_keypress_lockout[KEY_UP]) {    
+      g_prev_option = g_current_option;
+      g_current_option = g_current_option - 1;
+      if (g_current_option < 0) {
+        g_current_option = NUM_OPTIONS - 1;
+      }
+      g_components.render_option_cursor_text = 1;
+      g_keypress_lockout[KEY_UP] = 1;        
+    }
+  }
+  if (!key[KEY_UP] && g_keypress_lockout[KEY_UP]) {
+    g_keypress_lockout[KEY_UP] = 0;
+  }
+
+  if (key[KEY_DOWN]) {
+    if (!g_keypress_lockout[KEY_DOWN]) {    
+      g_prev_option = g_current_option;
+      g_current_option = g_current_option + 1;
+      if (g_current_option >= NUM_OPTIONS) {
+        g_current_option = 0;
+      }
+      g_components.render_option_cursor_text = 1;
+      g_keypress_lockout[KEY_DOWN] = 1;        
+    }
+  }
+  if (!key[KEY_DOWN] && g_keypress_lockout[KEY_DOWN]) {
+    g_keypress_lockout[KEY_DOWN] = 0;
+  }     
+
 }
 
 /*=============================================================================

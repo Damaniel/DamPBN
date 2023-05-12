@@ -312,11 +312,15 @@
 #define OPTION_SCREEN_W             194
 #define OPTION_SCREEN_H             130
 
-#define OPTION_CURSOR_MARGIN       2
+#define OPTION_HEADER_X             128
+#define OPTION_HEADER_Y             37
+
+#define OPTION_CURSOR_MARGIN        2
+#define OPTION_CURSOR_INNER_MARGIN  1
 
 #define SOUND_MENU_X                71
 #define SOUND_MENU_Y                54
-#define SOUND_MENU_W                32
+#define SOUND_MENU_W                31
 #define SOUND_MENU_H                 7
 
 #define SOUND_ON_X                  120
@@ -333,6 +337,8 @@
 
 #define SOUND_VOL_MENU_X            77
 #define SOUND_VOL_MENU_Y            66
+#define SOUND_VOL_MENU_W            35
+#define SOUND_VOL_MENU_H            7
 #define SOUND_VOL_MINUS_X           134
 #define SOUND_VOL_MINUS_Y           66
 #define SOUND_VOL_MINUS_W           9
@@ -343,7 +349,7 @@
 #define SOUND_VOL_PLUS_H            9
 
 #define SOUND_BAR_START_X           145
-#define SOUND_BAR_START_Y           68
+#define SOUND_BAR_START_Y           67
 #define SOUND_BAR_BAR_W             2
 #define SOUND_BAR_BAR_H             5
 #define SOUND_BAR_NUM_BARS          16
@@ -351,7 +357,7 @@
 
 #define MUSIC_MENU_X                71
 #define MUSIC_MENU_Y                80
-#define MUSIC_MENU_W                25
+#define MUSIC_MENU_W                28
 #define MUSIC_MENU_H                7
 
 #define MUSIC_ON_X                  120
@@ -367,7 +373,9 @@
 #define MUSIC_OFF_OPT_W             16
 
 #define MUSIC_VOL_MENU_X            77
-#define MUSIC_VOL_MENU_Y            82
+#define MUSIC_VOL_MENU_Y            92
+#define MUSIC_VOL_MENU_W            35
+#define MUSIC_VOL_MENU_H            7
 #define MUSIC_VOL_MINUS_X           134
 #define MUSIC_VOL_MINUS_Y           92
 #define MUSIC_VOL_MINUS_W           9

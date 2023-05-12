@@ -717,8 +717,8 @@ void init_defaults(void) {
   g_game_area_mouse_mode = MOUSE_MODE_NEUTRAL;
   g_keyboard_has_priority = 1;
   
-  g_music_volume = 255;
-  g_sound_volume = 255;
+  g_music_volume = 15;
+  g_sound_volume = 15;
   g_next_midi_countdown = -1;
   g_cur_midi_idx = -1;
   g_sound_enabled = 0;
@@ -732,7 +732,8 @@ void init_defaults(void) {
   g_autosave_frequency = 5;
   g_save_on_exit = 0;
   g_current_option = OPTION_SOUND;
-
+  g_prev_option = OPTION_SOUND;
+  
   /* Variables used in the interrupt handler */
   LOCK_VARIABLE(g_elapsed_time);
   LOCK_VARIABLE(g_frame_counter);

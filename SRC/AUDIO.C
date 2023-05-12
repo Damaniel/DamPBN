@@ -74,7 +74,7 @@ int initialize_audio_subsystem(void) {
         return -1;
     }
 
-    set_volume(g_sound_volume, g_music_volume);
+    set_volume((g_sound_volume + 1) * 16 - 1, (g_music_volume + 1) * 16 - 1);
     return 0;
 }
 
@@ -194,31 +194,31 @@ int stop_active_midi(void) {
 }
 
 void mute_sound(void) {
-    set_volume(0, g_music_volume);
+    set_volume(0, (g_music_volume + 1) * 16 - 1);
     g_sound_muted = 1;
 }
 
 void mute_music(void) {
-    set_volume(g_sound_volume, 0);
+    set_volume((g_sound_volume + 1) * 16 - 1, 0);
     g_music_muted = 1;
 }
 
 void restore_sound(void) {
     if (g_music_muted) {
-        set_volume(g_sound_volume, 0);
+        set_volume((g_sound_volume + 1) * 16 - 1, 0);
     }
     else {
-        set_volume(g_sound_volume, g_music_volume);
+        set_volume((g_sound_volume + 1) * 16 - 1, (g_music_volume + 1) * 16 - 1);
     }
     g_sound_muted = 0;
 }
 
 void restore_music(void) {
     if (g_sound_muted) {
-        set_volume(0, g_music_volume);
+        set_volume(0, (g_music_volume + 1) * 16 - 1);
     }
     else {
-        set_volume(g_sound_volume, g_music_volume);
+        set_volume((g_sound_volume + 1) * 16 - 1, (g_music_volume + 1) * 16 - 1);
     }
     g_music_muted = 0;
 }

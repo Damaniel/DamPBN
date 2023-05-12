@@ -61,7 +61,6 @@ typedef struct {
   int render_option_volume_bar_base;
   int render_option_volume_positions;
   int render_option_highlights;
-
 } RenderComponents;
 
 typedef struct {
@@ -79,16 +78,15 @@ typedef enum {
   NUM_STYLES
 } Style;
 
-typedef enum {
-  OPTION_SOUND,
-  OPTION_SOUND_VOL,
-  OPTION_MUSIC,
-  OPTION_MUSIC_VOL,
-  OPTION_AUTOSAVE,
-  OPTION_SAVE_ON_EXIT,
-  OPTION_OK,
-  OPTION_CANCEL
-} GameOption;
+#define OPTION_SOUND          0
+#define OPTION_SOUND_VOL      1
+#define OPTION_MUSIC          2
+#define OPTION_MUSIC_VOL      3
+#define OPTION_AUTOSAVE       4
+#define OPTION_SAVE_ON_EXIT   5
+#define OPTION_OK             6
+#define OPTION_CANCEL         7
+#define NUM_OPTIONS           8
 
 /**
  * Resets all of the render flags for the display.
