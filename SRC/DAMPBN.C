@@ -117,7 +117,10 @@ void change_state(State new_state, State prev_state) {
           g_midi_is_playing = 0;
         }
       }
-      /* Start the timer */
+      /* Start both the game and the autoset timer */
+      if (g_autosave_frequency != 0 ) {
+        g_autosave_counter = 60 * g_autosave_frequency;
+      }
       game_timer_set(1);      
       break;
     case STATE_MAP:
@@ -285,6 +288,13 @@ void process_timing_stuff(void) {
     if(g_elapsed_time % 20 == 0)
       print_mem_free();
     */
+    if (g_autosave_counter != 0) {
+        g_autosave_counter--;
+        if (g_autosave_counter <= 0) {
+          change_state(STATE_SAVE, g_state);
+          g_autosave_counter = g_autosave_frequency * 60;
+        }
+    }
     g_time_to_update_elapsed = FRAME_RATE;
     g_components.render_status_text = 1;
   }

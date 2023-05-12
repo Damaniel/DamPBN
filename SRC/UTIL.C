@@ -91,6 +91,7 @@ int g_replay_first_time;
 int g_load_section_active;
 
 int g_autosave_frequency;
+int g_autosave_counter;
 int g_save_on_exit;
   
 /*=============================================================================

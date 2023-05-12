@@ -549,8 +549,10 @@ void process_exit_press(void) {
                          EXIT_BUTTON_X  + MENU_BUTTON_WIDTH,
                          EXIT_BUTTON_Y  + MENU_BUTTON_HEIGHT,
                          1)) {
-    /* Save on exit */
-    save_progress_file(g_picture);                           
+    /* Save on exit if the user wants it */
+    if (g_save_on_exit) {
+      save_progress_file(g_picture);                           
+    }
     change_state(STATE_TITLE, STATE_GAME);
   }
   
@@ -1916,6 +1918,10 @@ void input_state_options(void) {
     if (!g_keypress_lockout[KEY_ENTER]) {
       if (g_current_option == OPTION_OK) {
         change_state(STATE_GAME, STATE_OPTS);
+        /* Update the autosave counter */
+        if (g_autosave_frequency != 0) {
+          g_autosave_counter = g_autosave_frequency * 60;
+        }
       }
       g_keypress_lockout[KEY_ENTER] = 1;
     }

@@ -363,6 +363,9 @@ extern int g_midi_is_paused;
 /* How often (in minutes) should the game autosave?  (0 = don't autosave) */
 extern int g_autosave_frequency;
 
+/* How long until the next autosave */
+extern int g_autosave_counter;
+
 /* Should the game automatically save on exit? */
 extern int  g_save_on_exit;
 
